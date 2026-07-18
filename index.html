@@ -1,0 +1,1307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>G.VIISUALS, George Charbel · Creative Portfolio</title>
+<meta name="description" content="George Charbel, Graphic & Brand Identity Designer. Branding, packaging & social design. Beirut, Lebanon." />
+<!-- favicon (embedded) -->
+<link rel="icon" type="image/png" href="assets/img/favicon.png">
+<link rel="apple-touch-icon" href="assets/img/favicon.png">
+<meta name="theme-color" content="#EFEBDF">
+<!-- share preview (Open Graph / Twitter), replace gviisuals.com after publishing -->
+<meta property="og:type" content="website">
+<link rel="canonical" href="https://gviisuals.com/">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"ProfessionalService","name":"G.VIISUALS","alternateName":"George Charbel","description":"Graphic and brand identity design studio. Branding, packaging and social design.","url":"https://gviisuals.com/","email":"georgescharbel6@gmail.com","founder":{"@type":"Person","name":"George Charbel","jobTitle":"Graphic & Brand Identity Designer"},"address":{"@type":"PostalAddress","addressLocality":"Beirut","addressCountry":"LB"},"sameAs":["https://www.instagram.com/g.viisuals"],"knowsAbout":["Brand Identity","Logo Design","Packaging Design","Social Media Design"]}</script>
+<meta property="og:title" content="G.VIISUALS, George Charbel · Creative Portfolio">
+<meta property="og:description" content="Branding, packaging & brand identity design from Beirut. Selected works by George Charbel.">
+<meta property="og:image" content="https://gviisuals.com/og-image.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:url" content="https://gviisuals.com/">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="G.VIISUALS, George Charbel · Creative Portfolio">
+<meta name="twitter:description" content="Branding, packaging & brand identity design from Beirut. Selected works by George Charbel.">
+<meta name="twitter:image" content="https://gviisuals.com/og-image.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=Hanken+Grotesk:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#EFEBDF; --paper-hi:#F5F2E9; --paper-lo:#E5E0D1; --paper-edge:#DCD6C5;
+  --ink:#000000; --ink-soft:#15140F;
+  --ink-70:rgba(21,20,15,.70); --ink-50:rgba(21,20,15,.50); --ink-35:rgba(21,20,15,.35);
+  --line:rgba(21,20,15,.16); --line-soft:rgba(21,20,15,.09);
+  --serif:"Fraunces", Georgia, "Times New Roman", serif;
+  --sans:"Hanken Grotesk", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+  --maxw:1280px; --pad:clamp(28px,6vw,72px);
+  --ease:cubic-bezier(.22,1,.36,1);
+  --mask:url("assets/img/mask.png");
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%;overflow-x:hidden}
+body{font-family:var(--sans);background:var(--paper);color:var(--ink-soft);line-height:1.5;
+  -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;overflow-x:hidden}
+body.lock{overflow:hidden;height:100vh}
+img{display:block;max-width:100%}
+a{color:inherit;text-decoration:none}
+::selection{background:var(--ink);color:var(--paper)}
+
+.grain{position:fixed;inset:0;z-index:9999;pointer-events:none;opacity:.05;mix-blend-mode:multiply;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+
+.gv{-webkit-mask:var(--mask) center/contain no-repeat;mask:var(--mask) center/contain no-repeat;background:var(--ink);display:block}
+
+/* ===== INTRO / FOLDER ===== */
+#intro{position:fixed;inset:0;z-index:1000;
+  background:radial-gradient(120% 90% at 50% 28%, var(--paper-hi) 0%, var(--paper) 46%, var(--paper-lo) 100%);
+  display:flex;flex-direction:column;transition:opacity 1s var(--ease), visibility 1s}
+#intro.gone{opacity:0;visibility:hidden;pointer-events:none}
+.intro__bar{display:flex;justify-content:space-between;align-items:flex-start;padding:var(--pad);
+  font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--ink-70);font-weight:600}
+.intro__bar .col{display:flex;flex-direction:column;gap:4px}
+.intro__bar .col.r{text-align:right}
+.intro__bar b{color:var(--ink-soft);font-weight:700;letter-spacing:.24em}
+.stage{flex:1;display:flex;align-items:center;justify-content:center;perspective:2200px;padding:0 var(--pad)}
+.folder{position:relative;width:min(620px,86vw);aspect-ratio:1.34/1;transform-style:preserve-3d;
+  transform:rotateX(6deg);transition:transform 1.1s var(--ease);cursor:pointer}
+.folder:focus-visible{outline:none}
+.folder:focus-visible .folder__front{box-shadow:0 0 0 2px var(--ink-soft), var(--cover-shadow)}
+.folder__shadow{position:absolute;left:6%;right:6%;bottom:-7%;height:18%;
+  background:radial-gradient(50% 60% at 50% 50%, rgba(21,20,15,.34), rgba(21,20,15,0) 72%);
+  filter:blur(8px);transform:translateZ(-40px);transition:opacity .9s var(--ease), transform 1.1s var(--ease)}
+.folder__inner{position:absolute;inset:0;transform-style:preserve-3d}
+.sheet-peek{position:absolute;background:var(--paper-hi);border-radius:2px 2px 3px 3px;
+  box-shadow:0 1px 0 var(--paper-edge), 0 12px 26px -16px rgba(21,20,15,.4);transition:transform 1.1s var(--ease)}
+.sheet-peek.s1{left:7%;right:12%;top:-5%;height:94%;transform:translateZ(4px) rotate(-1.8deg)}
+.sheet-peek.s2{left:12%;right:7%;top:-7%;height:96%;transform:translateZ(6px) rotate(1.4deg);background:#F1EDE2}
+.sheet-peek.s3{left:9%;right:9%;top:-3.5%;height:95%;transform:translateZ(8px)}
+.cover-sheet{position:absolute;left:5%;right:5%;top:3%;height:91%;
+  background:linear-gradient(180deg,var(--paper-hi),#F1ECE1);border-radius:3px;transform:translateZ(10px);
+  box-shadow:0 1px 0 #fff6 inset, 0 24px 50px -26px rgba(21,20,15,.5);overflow:hidden;
+  display:flex;flex-direction:column;justify-content:space-between;padding:clamp(18px,3vw,30px);
+  transition:transform 1.1s var(--ease), opacity .6s var(--ease)}
+.cover-sheet .cs-top,.cover-sheet .cs-bot{display:flex;justify-content:space-between;
+  font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-50);font-weight:600}
+.cover-sheet .cs-mid{display:flex;align-items:center;gap:14px}
+.cover-sheet .cs-mid .gv{width:clamp(40px,7vw,64px);aspect-ratio:1.489/1}
+.cover-sheet .cs-mid h3{font-family:var(--serif);font-weight:300;font-size:clamp(20px,4vw,34px);font-style:italic;letter-spacing:-.01em}
+.cover-sheet .cs-mid h3 b{display:block;font-style:normal;font-weight:700;letter-spacing:-.02em;text-transform:uppercase}
+.folder__back{position:absolute;inset:0;background:linear-gradient(165deg,#E7E2D3,#D7D1C0);
+  border-radius:7px;box-shadow:0 34px 64px -30px rgba(21,20,15,.55);transform:translateZ(0)}
+.folder__front{--cover-shadow:0 30px 60px -26px rgba(21,20,15,.5);position:absolute;inset:0;
+  background:linear-gradient(158deg,#F2EDE2 0%, var(--paper) 44%, #E6E1D2 100%);border-radius:6px;
+  box-shadow:var(--cover-shadow);transform-origin:top center;transform:translateZ(22px) rotateX(0deg);
+  transition:transform 1.15s var(--ease), box-shadow 1.15s var(--ease);
+  backface-visibility:hidden;transform-style:preserve-3d;overflow:hidden;display:flex;flex-direction:column}
+.folder__front::after{content:"";position:absolute;left:0;right:0;bottom:0;height:16%;
+  background:linear-gradient(to top,rgba(21,20,15,.12),transparent);pointer-events:none}
+.folder__front::before{content:"";position:absolute;inset:0;
+  background:linear-gradient(115deg,rgba(255,255,255,.5),rgba(255,255,255,0) 30%);pointer-events:none}
+.folder__tab{position:absolute;top:-26px;left:10%;width:36%;height:30px;
+  background:linear-gradient(180deg,#EEE9DD,#E2DCCC);border-radius:10px 10px 0 0;
+  box-shadow:0 -7px 14px -9px rgba(21,20,15,.4);display:flex;align-items:center;justify-content:center;
+  font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--ink-70);font-weight:700}
+.cover-pad{flex:1;padding:clamp(26px,5vw,52px);display:flex;flex-direction:column;justify-content:space-between;position:relative;z-index:1}
+.cover-row{display:flex;justify-content:space-between;align-items:flex-start;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-70);font-weight:600}
+.cover-center{position:absolute;inset:0;display:flex;align-items:center;justify-content:center}
+.cover-center .gv{width:clamp(120px,26vw,210px);aspect-ratio:1.489/1;filter:drop-shadow(0 2px 0 rgba(255,255,255,.4))}
+.cover-foot{display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center}
+.cover-foot .wm{font-family:var(--serif);font-weight:300;font-size:clamp(15px,3vw,22px);letter-spacing:.04em}
+.cover-foot .sub{font-size:10px;letter-spacing:.32em;text-transform:uppercase;color:var(--ink-50);font-weight:600}
+.hint{position:absolute;left:0;right:0;bottom:6%;text-align:center;color:var(--ink-50);
+  font-size:11px;letter-spacing:.28em;text-transform:uppercase;font-weight:600;
+  display:flex;flex-direction:column;align-items:center;gap:10px;transition:opacity .5s var(--ease)}
+.hint .pulse{width:30px;height:30px;border:1px solid var(--line);border-radius:50%;display:grid;place-items:center;position:relative}
+.hint .pulse::after{content:"";position:absolute;inset:-1px;border:1px solid var(--ink-35);border-radius:50%;animation:pulse 2.4s var(--ease) infinite}
+.hint .pulse span{width:5px;height:5px;border-radius:50%;background:var(--ink-soft)}
+@keyframes pulse{0%{transform:scale(.7);opacity:.9}80%,100%{transform:scale(1.7);opacity:0}}
+#intro.opening .folder{transform:rotateX(0deg) scale(1.02)}
+#intro.opening .folder__front{transform:translateZ(22px) rotateX(-158deg);box-shadow:0 -30px 60px -30px rgba(21,20,15,.35)}
+#intro.opening .folder__shadow{opacity:.5;transform:translateZ(-40px) scaleX(1.1)}
+#intro.opening .sheet-peek.s1{transform:translateZ(4px) translateY(-9%) rotate(-2.8deg)}
+#intro.opening .sheet-peek.s2{transform:translateZ(6px) translateY(-11%) rotate(2.4deg)}
+#intro.opening .sheet-peek.s3{transform:translateZ(8px) translateY(-7%)}
+#intro.opening .cover-sheet{transform:translateZ(10px) translateY(-2%) scale(1.03)}
+#intro.opening .hint{opacity:0}
+#intro.zoom .cover-sheet{position:fixed;inset:0;height:100vh;border-radius:0;transform:none;z-index:5;
+  transition:all 1s var(--ease);box-shadow:none;background:var(--paper);padding:0;justify-content:center;align-items:center}
+#intro.zoom .cover-sheet .cs-top,#intro.zoom .cover-sheet .cs-bot{opacity:0}
+#intro.zoom .folder{opacity:0;transition:opacity .6s var(--ease)}
+#intro.zoom .cover-sheet .cs-mid{transform:scale(1.4);transition:transform 1s var(--ease)}
+/* idle: gentle float + periodic lid tease (stops on open / reduced-motion) */
+@keyframes folderFloat{0%,100%{transform:rotateX(6deg) translateY(0)}50%{transform:rotateX(5deg) translateY(-11px)}}
+@keyframes lidTease{0%,68%,100%{transform:translateZ(22px) rotateX(0deg)}80%{transform:translateZ(22px) rotateX(-11deg)}90%{transform:translateZ(22px) rotateX(-3deg)}}
+.folder{animation:folderFloat 4.8s ease-in-out infinite}
+.folder__front{animation:lidTease 5.4s ease-in-out infinite}
+#intro.opening .folder,#intro.opening .folder__front{animation:none}
+@media(prefers-reduced-motion:reduce){.folder,.folder__front{animation:none}}
+
+/* ===== NAV ===== */
+.nav{position:fixed;top:0;left:0;right:0;z-index:800;display:flex;justify-content:space-between;align-items:center;
+  padding:18px var(--pad);transform:translateY(-110%);transition:transform .8s var(--ease) .1s}
+.nav.show{transform:translateY(0)}
+.nav__brand{display:flex;align-items:center;gap:11px}
+.nav__brand .gv{width:34px;aspect-ratio:1.489/1}
+.nav__brand .nm{font-size:12px;letter-spacing:.22em;text-transform:uppercase;font-weight:700}
+.nav__links{display:flex;gap:26px;font-size:11px;letter-spacing:.16em;text-transform:uppercase;font-weight:600;color:var(--ink-70)}
+.nav__links a{position:relative;padding-bottom:2px;transition:color .3s}
+.nav__links a::after{content:"";position:absolute;left:0;bottom:0;width:0;height:1px;background:var(--ink-soft);transition:width .35s var(--ease)}
+.nav__links a:hover{color:var(--ink-soft)}.nav__links a:hover::after{width:100%}
+.nav__links a.active{color:var(--ink-soft)}.nav__links a.active::after{width:100%}
+.nav__status{display:flex;align-items:center;gap:8px;font-size:11px;letter-spacing:.14em;text-transform:uppercase;font-weight:600;color:var(--ink-70)}
+.nav__status .dot{width:7px;height:7px;border-radius:50%;background:var(--ink-soft);position:relative}
+.nav__status .dot::after{content:"";position:absolute;inset:-3px;border-radius:50%;border:1px solid var(--ink-35);animation:pulse 2.4s var(--ease) infinite}
+@media(max-width:880px){.nav__links{display:none}}
+.progress{position:fixed;top:0;left:0;height:2px;width:0;background:var(--ink-soft);z-index:850;transition:width .1s linear}
+.wa{position:fixed;right:clamp(18px,4vw,34px);bottom:clamp(18px,4vw,34px);z-index:820;width:56px;height:56px;border-radius:50%;background:var(--ink-soft);display:flex;align-items:center;justify-content:center;box-shadow:0 16px 34px -12px rgba(21,20,15,.55);transition:transform .4s var(--ease),box-shadow .4s var(--ease)}
+.wa svg{width:28px;height:28px;fill:var(--paper);position:relative;z-index:1}
+.wa::after{content:"";position:absolute;inset:0;border-radius:50%;border:1px solid var(--ink-35);animation:pulse 2.8s var(--ease) infinite;pointer-events:none}
+.wa:hover{transform:translateY(-3px) scale(1.05);box-shadow:0 22px 44px -14px rgba(21,20,15,.6)}
+
+/* ===== PORTFOLIO ===== */
+.portfolio{opacity:0;transition:opacity .6s var(--ease)}
+.portfolio.show{opacity:1}
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 var(--pad)}
+.kicker{display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px;font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:var(--ink-70);font-weight:700}
+.kicker .num{font-family:var(--serif);font-style:italic;font-weight:400;font-size:13px;letter-spacing:0;color:var(--ink-50)}
+.kicker .ln{flex:1;height:1px;background:var(--line);max-width:80px}
+.reveal{opacity:0;transform:translateY(34px);transition:opacity 1s var(--ease),transform 1s var(--ease)}
+.reveal.in{opacity:1;transform:none}
+.reveal.d1{transition-delay:.08s}.reveal.d2{transition-delay:.16s}.reveal.d3{transition-delay:.24s}
+
+/* hero */
+.hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:140px var(--pad) 80px;position:relative}
+.hero__top{position:absolute;top:96px;left:var(--pad);right:var(--pad);display:flex;justify-content:space-between;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-70);font-weight:600}
+.hero__title{max-width:1100px}
+.hero__title .l1{font-family:var(--serif);font-style:italic;font-weight:300;font-size:clamp(46px,12vw,150px);line-height:.9;letter-spacing:-.02em}
+.hero__title .l2{font-family:var(--sans);font-weight:800;text-transform:uppercase;font-size:clamp(46px,12.6vw,162px);line-height:.86;letter-spacing:-.035em;margin-top:-.04em}
+.hero__sub{display:flex;flex-wrap:wrap;gap:30px 60px;margin-top:clamp(34px,6vw,64px);border-top:1px solid var(--line);padding-top:26px;max-width:1100px}
+.hero__sub .lab{font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:var(--ink-50);font-weight:600;margin-bottom:7px}
+#disc-rot{display:inline-block;min-width:15ch;transition:opacity .4s var(--ease),transform .4s var(--ease)}
+#disc-rot.out{opacity:0;transform:translateY(6px)}
+.hero__sub .val{font-size:clamp(15px,2vw,18px);font-weight:500}
+.hero__sub .val.serif{font-family:var(--serif);font-style:italic;font-weight:400}
+.hero__scroll{position:absolute;bottom:34px;left:50%;transform:translateX(-50%);font-size:10px;letter-spacing:.3em;text-transform:uppercase;color:var(--ink-50);font-weight:600;display:flex;flex-direction:column;align-items:center;gap:9px}
+.hero__scroll .bar{width:1px;height:38px;background:var(--line);position:relative;overflow:hidden}
+.hero__scroll .bar::after{content:"";position:absolute;top:-50%;left:0;width:100%;height:50%;background:var(--ink-soft);animation:drop 2s var(--ease) infinite}
+@keyframes drop{0%{top:-50%}60%,100%{top:100%}}
+
+/* about */
+.about{padding-block:clamp(90px,12vw,170px)}
+.about__grid{display:grid;grid-template-columns:1fr 1.25fr;gap:clamp(40px,7vw,100px);align-items:start;margin-top:clamp(40px,6vw,70px)}
+.about__portrait{aspect-ratio:4/5;background:linear-gradient(160deg,#F2EEE3,var(--paper-lo));border:1px solid var(--line);border-radius:3px;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.about__portrait .gv{width:46%;aspect-ratio:1.489/1;opacity:.14}
+.about__portrait .tag{position:absolute;left:16px;bottom:14px;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-50);font-weight:600}
+.about__portrait .frame{position:absolute;inset:12px;border:1px solid rgba(245,242,233,.28);z-index:2}
+.about__photo{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 20%}
+.about__portrait::after{content:"";position:absolute;inset:0;background:linear-gradient(to top,rgba(21,20,15,.55),rgba(21,20,15,0) 42%);z-index:1;pointer-events:none}
+.about__portrait .tag{z-index:2;color:rgba(245,242,233,.92);font-weight:700}
+.about__lead{font-family:var(--serif);font-weight:300;font-size:clamp(24px,3.6vw,40px);line-height:1.18;letter-spacing:-.01em}
+.about__lead em{font-style:italic}
+.about__body{margin-top:26px;font-size:clamp(15px,1.6vw,17px);line-height:1.7;color:var(--ink-70);max-width:56ch}
+.about__body p+p{margin-top:16px}
+.about__meta{display:grid;grid-template-columns:1fr 1fr;gap:22px 30px;margin-top:38px;border-top:1px solid var(--line);padding-top:26px}
+.about__meta .lab{font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--ink-50);font-weight:600;margin-bottom:8px}
+.about__meta ul{list-style:none;font-size:14px;line-height:1.9;font-weight:500}
+
+/* works */
+.works-head{padding-top:clamp(70px,10vw,140px)}
+.works-head .sec__title{font-family:var(--serif);font-weight:300;font-size:clamp(40px,8vw,104px);line-height:.92;letter-spacing:-.02em;margin-top:28px}
+.works-head .sec__title em{font-style:italic}
+.works-head .sub{margin-top:22px;max-width:48ch;font-size:clamp(15px,1.7vw,18px);line-height:1.6;color:var(--ink-70)}
+
+.project{padding:clamp(64px,9vw,120px) 0;border-top:1px solid var(--line)}
+.project__grid{display:grid;grid-template-columns:minmax(0,1.42fr) minmax(0,1fr);gap:clamp(34px,5vw,76px);align-items:center}
+.project.rev .project__media{order:2}
+.project__media{position:relative}
+.time-chip{display:inline-flex;align-items:center;gap:9px;margin-top:26px;font-size:10px;letter-spacing:.2em;text-transform:uppercase;font-weight:700;color:var(--ink-70)}
+.tc-dot{width:7px;height:7px;border-radius:50%;background:#4a8f4f;position:relative}
+.tc-dot::after{content:"";position:absolute;inset:0;border-radius:50%;background:#4a8f4f;animation:pulse 2s infinite}
+.project__media .card{position:relative;aspect-ratio:4/3;border-radius:5px;overflow:hidden;border:1px solid var(--line);
+  background:var(--paper-hi);box-shadow:0 50px 90px -50px rgba(21,20,15,.5);
+  transform:translateZ(0);transition:transform .8s var(--ease),box-shadow .8s var(--ease)}
+.project__media .card img{width:100%;height:100%;object-fit:cover;display:block;transition:filter .45s ease,transform .45s ease}
+.project__media .card img.lqip{filter:blur(18px);transform:scale(1.08)}
+.project__media[data-key="cookiecart"] .card img{object-position:center top}
+@media (hover:hover) and (pointer:fine){.project:hover .project__media .card{transform:translateY(-6px);box-shadow:0 60px 100px -50px rgba(21,20,15,.55)}}
+.project__no{position:absolute;top:-14px;left:-6px;font-family:var(--serif);font-style:italic;font-weight:300;
+  font-size:clamp(60px,11vw,120px);line-height:1;color:var(--ink);opacity:.08;z-index:-1;pointer-events:none}
+.project.rev .project__no{left:auto;right:-6px}
+.project__cat{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-70);font-weight:700;margin-bottom:20px}
+.project__cat .i{font-family:var(--serif);font-style:italic;font-weight:400;letter-spacing:0;color:var(--ink-50);font-size:13px}
+.project__cat .ln{width:34px;height:1px;background:var(--line)}
+.project__name{font-family:var(--serif);font-weight:400;font-size:clamp(32px,5vw,62px);line-height:.98;letter-spacing:-.02em}
+.project__sub{font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-50);font-weight:600;margin-top:12px}
+.project__tags{display:flex;flex-wrap:wrap;gap:7px;margin-top:16px}
+.project__tags span{font-size:9px;letter-spacing:.14em;text-transform:uppercase;font-weight:700;color:var(--ink-70);border:1px solid var(--line);padding:5px 11px;border-radius:100px;white-space:nowrap}
+.project__quote{font-family:var(--serif);font-weight:300;font-style:italic;font-size:clamp(19px,2.6vw,26px);line-height:1.28;letter-spacing:-.01em;color:var(--ink);margin-top:26px;max-width:24ch}
+.project__desc{margin-top:22px;font-size:clamp(14.5px,1.5vw,16px);line-height:1.72;color:var(--ink-70);max-width:50ch}
+.project__think{margin-top:30px;border-top:1px solid var(--line);max-width:56ch}
+.think__row{display:grid;grid-template-columns:96px 1fr;gap:18px;padding:14px 0;border-bottom:1px solid var(--line-soft)}
+.think__row:last-child{border-bottom:none}
+.think__label{font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-50);padding-top:4px}
+.think__row p{margin:0;font-size:13.5px;line-height:1.65;color:var(--ink-70)}
+.pal{display:flex;flex-wrap:wrap;gap:9px 16px;padding-top:3px}
+.pal .chip{display:inline-flex;align-items:center;gap:7px;font-size:10px;letter-spacing:.06em;font-weight:600;color:var(--ink-70)}
+.pal .chip i{width:15px;height:15px;border-radius:50%;display:inline-block;border:1px solid var(--line);flex:0 0 auto}
+@media(max-width:760px){.think__row{grid-template-columns:1fr;gap:5px;padding:12px 0}}
+@media(max-width:880px){
+  .project__grid{grid-template-columns:1fr;gap:28px}
+  .project.rev .project__media{order:0}
+  .project__no{font-size:64px;top:-8px}
+}
+
+/* contact */
+.contact{padding-top:clamp(90px,13vw,180px);border-top:1px solid var(--line)}
+.contact__big{font-family:var(--serif);font-weight:300;font-size:clamp(40px,10vw,128px);line-height:.92;letter-spacing:-.02em}
+.contact__big em{font-style:italic}
+.contact__mail{display:inline-flex;flex-wrap:wrap;max-width:100%;align-items:center;gap:16px;margin-top:34px;font-size:clamp(16px,3.2vw,38px);font-weight:600;letter-spacing:-.01em;border-bottom:2px solid var(--ink-soft);padding-bottom:6px;transition:gap .4s var(--ease)}
+.contact__mail:hover{gap:26px}
+.contact__mail .arr{transition:transform .4s var(--ease)}.contact__mail:hover .arr{transform:translateX(6px)}
+.contact__links{display:flex;flex-wrap:wrap;gap:14px 40px;margin-top:clamp(44px,6vw,70px);border-top:1px solid var(--line);padding-top:30px}
+.contact__links a{display:flex;flex-direction:column;gap:6px;transition:transform .4s var(--ease)}
+.contact__links a:hover{transform:translateY(-4px)}
+.contact__links .lab{font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--ink-50);font-weight:600}
+.contact__links .val{font-size:clamp(16px,2vw,19px);font-weight:600}
+.footer{margin-top:clamp(80px,11vw,150px);border-top:1px solid var(--line)}
+.footer__in{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:20px;padding:30px 0 40px}
+.footer__in .gv{width:30px;aspect-ratio:1.489/1}
+.footer__in .c{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-50);font-weight:600}
+
+@media(max-width:880px){.about__grid{grid-template-columns:1fr}.about__portrait{max-width:360px}}
+@media(max-width:560px){.hero__sub{gap:22px 36px}.about__meta{grid-template-columns:1fr}}
+@media(max-width:600px){.hide-sm{display:none}.hero__top{font-size:10px;letter-spacing:.14em;gap:16px}.kicker{letter-spacing:.16em}.kicker .ln{max-width:40px}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition-duration:.001s!important;scroll-behavior:auto!important}.reveal{opacity:1;transform:none}}
+
+.cursor{position:fixed;top:0;left:0;width:30px;height:30px;border:1.5px solid rgba(21,20,15,.55);border-radius:50%;pointer-events:none;z-index:9998;opacity:0;transform:translate(-50%,-50%);transition:width .3s var(--ease),height .3s var(--ease),background-color .3s var(--ease),opacity .35s}
+.cursor.lg{width:62px;height:62px;background-color:rgba(21,20,15,.06)}
+@media (hover:none),(pointer:coarse){.cursor{display:none}}
+.project__media .card{cursor:zoom-in}
+.lightbox{position:fixed;inset:0;z-index:9000;overscroll-behavior:contain;touch-action:manipulation;background:rgba(21,20,15,.93);display:flex;align-items:center;justify-content:center;padding:24px;opacity:0;visibility:hidden;transition:opacity .4s var(--ease),visibility .4s;cursor:zoom-out}
+.lightbox.open{opacity:1;visibility:visible}
+.lightbox img{max-width:96%;max-height:92%;border-radius:4px;box-shadow:0 40px 80px -30px rgba(0,0,0,.6);transform:scale(.95);transition:transform .45s var(--ease)}
+.lightbox.open img{transform:scale(1)}
+.lightbox .x{position:absolute;top:22px;right:24px;color:var(--paper);font-size:12px;letter-spacing:.2em;text-transform:uppercase;font-weight:600;opacity:.85}
+.lb-nav{position:absolute;top:50%;transform:translateY(-50%);width:52px;height:52px;border-radius:50%;border:1px solid rgba(245,242,233,.4);background:rgba(21,20,15,.25);color:var(--paper);font-size:26px;line-height:1;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:background .3s;z-index:2}
+.lb-nav:hover{background:rgba(245,242,233,.16)}
+.lb-prev{left:18px}.lb-next{right:18px}
+.lb-cap{position:absolute;bottom:46px;left:50%;transform:translateX(-50%);max-width:84vw;text-align:center;color:var(--paper);font-size:10px;letter-spacing:.18em;text-transform:uppercase;font-weight:700;opacity:.95}
+.lb-count{position:absolute;bottom:24px;left:50%;transform:translateX(-50%);color:var(--paper);font-size:12px;letter-spacing:.22em;font-weight:600;opacity:.85}
+.gallery-badge{position:absolute;right:12px;bottom:12px;z-index:3;display:inline-flex;align-items:center;gap:5px;background:var(--ink-soft);color:var(--paper);font-size:9px;letter-spacing:.13em;text-transform:uppercase;font-weight:700;padding:5px 10px;border-radius:100px;pointer-events:none;box-shadow:0 6px 16px -8px rgba(21,20,15,.5);transition:background .35s var(--ease),box-shadow .35s var(--ease),transform .35s var(--ease)}
+.gallery-badge .gb-ico{width:9px;height:9px;flex:0 0 auto}
+@media (hover:hover) and (pointer:fine){.project:hover .gallery-badge{background:var(--ink);box-shadow:0 14px 28px -8px rgba(21,20,15,.62)}}
+@keyframes gbHint{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
+.project__media.in .gallery-badge{animation:gbHint 1.8s ease-in-out infinite}
+@media (max-width:600px){.lb-nav{width:42px;height:42px;font-size:22px}.lb-prev{left:8px}.lb-next{right:8px}}
+</style>
+</head>
+<body class="lock">
+<div class="grain" aria-hidden="true"></div>
+<div class="cursor" id="cursor" aria-hidden="true"></div>
+<div class="lightbox" id="lightbox" aria-hidden="true"><span class="x">Close ×</span><button class="lb-nav lb-prev" aria-label="Previous image">‹</button><img alt="" decoding="async"><button class="lb-nav lb-next" aria-label="Next image">›</button><span class="lb-cap"></span><span class="lb-count"></span></div>
+
+<!-- ===== INTRO / FOLDER ===== -->
+<div id="intro">
+  <div class="intro__bar">
+    <div class="col"><b>G.VIISUALS</b><span>by George Charbel</span></div>
+    <div class="col r"><b>Beirut, LB</b><span>Selected Works · Vol. 01</span></div>
+  </div>
+  <div class="stage">
+    <div class="folder" id="folder" role="button" tabindex="0" aria-label="Open the portfolio folder">
+      <div class="folder__shadow"></div>
+      <div class="folder__inner">
+        <div class="sheet-peek s1"></div>
+        <div class="sheet-peek s2"></div>
+        <div class="sheet-peek s3"></div>
+        <div class="cover-sheet">
+          <div class="cs-top"><span>Creative Portfolio</span><span>01, 10</span></div>
+          <div class="cs-mid"><span class="gv" aria-hidden="true"></span><h3>Creative<b>Portfolio</b></h3></div>
+          <div class="cs-bot"><span>George Charbel</span><span>EST. Beirut</span></div>
+        </div>
+      </div>
+      <div class="folder__back"><div class="folder__tab">G.VIISUALS</div></div>
+      <div class="folder__front">
+        <div class="cover-pad">
+          <div class="cover-row"><span>Creative Archive</span><span>Vol. 01</span></div>
+          <div class="cover-center"><span class="gv" aria-hidden="true"></span></div>
+          <div class="cover-foot"><span class="wm">George Charbel</span><span class="sub">Graphic Design · Beirut</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="hint" id="hint"><span class="pulse"><span></span></span><span>Click the folder to open</span></div>
+</div>
+
+<!-- ===== NAV ===== -->
+<div class="progress" id="progress"></div>
+<nav class="nav" id="nav">
+  <a class="nav__brand" href="#top"><span class="gv" aria-hidden="true"></span></a>
+  <div class="nav__links">
+    <a href="#about">About</a>
+    <a href="#works">Works</a>
+    <a href="#contact">Contact</a>
+  </div>
+  <div class="nav__status"><span class="dot"></span> Available for work</div>
+</nav>
+
+<!-- ===== PORTFOLIO ===== -->
+<main class="portfolio" id="portfolio">
+
+  <!-- COVER -->
+  <section class="hero" id="top">
+    <div class="hero__top"><span>George Charbel<span class="hide-sm"> · Graphic Designer</span></span><span><span class="hide-sm">Selected Works </span>01 / 11</span></div>
+    <div class="hero__title">
+      <div class="l1 reveal">Creative</div>
+      <div class="l2 reveal d1">Portfolio</div>
+    </div>
+    <div class="hero__sub reveal d2">
+      <div><div class="lab">Studio</div><div class="val">G.VIISUALS</div></div>
+      <div><div class="lab">Discipline</div><div class="val"><span id="disc-rot">Brand Identity</span></div></div>
+      <div><div class="lab">Based in</div><div class="val serif">Beirut, Lebanon</div></div>
+      <div><div class="lab">Volume</div><div class="val serif">01, 2026</div></div>
+    </div>
+    <div class="hero__scroll"><span>Scroll</span><span class="bar"></span></div>
+  </section>
+
+  <!-- ABOUT -->
+  <section class="about wrap" id="about">
+    <div class="kicker reveal"><span class="num">01</span> Introduction <span class="ln"></span> <span class="hide-sm">The Designer</span></div>
+    <div class="about__grid">
+      <div class="about__portrait reveal">
+        <img class="about__photo" src="assets/img/about.webp" alt="George Charbel, Founder of G.VIISUALS" loading="lazy" decoding="async">
+        <div class="frame"></div>
+        <span class="tag">George Charbel, Founder</span>
+      </div>
+      <div>
+        <p class="about__lead reveal d1">Hello, I'm George Charbel, a Graphic &amp; Brand Identity Designer creating <em>meaningful visual experiences.</em></p>
+        <div class="about__body reveal d2">
+          <p>I specialize in branding, packaging, and social media design, helping businesses communicate their story through strategic, modern, and impactful design solutions.</p>
+          <p>Working across Arabic and Latin scripts from Beirut, I build brand systems rooted in the MENA region and held to an international standard, clear, considered, and built to last.</p>
+        </div>
+        <div class="about__meta reveal d3">
+          <div><div class="lab">Services</div><ul><li>Brand Identity</li><li>Packaging Design</li><li>Social Media Design</li><li>Logo &amp; Monogram</li></ul></div>
+          <div><div class="lab">Based in</div><ul><li>Beirut, Lebanon</li><li>Available worldwide</li><li>Freelance &amp; Studio</li><li>Vol. 01, 2026</li></ul></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- WORKS -->
+  <section class="works-head wrap" id="works">
+    <div class="kicker reveal"><span class="num">02</span> Selected Works <span class="ln"></span> <span class="hide-sm">Branding &amp; Packaging</span></div>
+    <h2 class="sec__title reveal d1">Eleven brands, <em>built with purpose.</em></h2>
+    <p class="sub reveal d2">A selection of identity, packaging, and campaign work, each project carrying a brand from its core idea through to every touchpoint.</p>
+  </section>
+
+  <div class="wrap" id="project-list"></div>
+
+  <!-- CONTACT -->
+  <section class="contact wrap" id="contact">
+    <div class="kicker reveal"><span class="num">03</span> Contact <span class="ln"></span> <span class="hide-sm">Let's Work</span></div>
+    <div class="time-chip reveal d1"><span class="tc-dot"></span>Beirut · <span id="bk-time">--:--</span> · Available for projects</div>
+    <h2 class="contact__big reveal d1" style="margin-top:34px">Have a brand<br>worth <em>building?</em></h2>
+    <a class="contact__mail reveal d2" href="mailto:georgescharbel6@gmail.com">georgescharbel6@gmail.com <span class="arr">→</span></a>
+    <div class="contact__links reveal d3">
+      <a href="https://instagram.com/g.viisuals" target="_blank" rel="noopener"><span class="lab">Instagram</span><span class="val">@g.viisuals</span></a>
+      <a href="tel:+96179106883"><span class="lab">Phone</span><span class="val">+961 79 106883</span></a>
+      <a href="#top"><span class="lab">Location</span><span class="val">Beirut, Lebanon</span></a>
+    </div>
+    <div class="footer">
+      <div class="footer__in">
+        <span class="gv" aria-hidden="true"></span>
+        <span class="c">© <span id="fy">2026</span> G.VIISUALS, George Charbel</span>
+        <span class="c">End of Volume 01 · Designed with purpose</span>
+      </div>
+    </div>
+  </section>
+</main>
+
+<a class="wa" href="https://wa.me/96179106883?text=Hi%20George%2C%20I%20saw%20your%20portfolio%20and%20I%27d%20love%20to%20talk." rel="noopener" aria-label="Message George on WhatsApp">
+  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.096 3.2 5.077 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
+</a>
+
+<!--SITE-DATA-START-->
+<script type="application/json" id="site-data">
+{
+ "meta": {
+  "title": "G.VIISUALS, George Charbel · Creative Portfolio",
+  "description": "George Charbel, Graphic & Brand Identity Designer. Branding, packaging & social design. Beirut, Lebanon."
+ },
+ "hero": {
+  "topLeft": "George Charbel",
+  "topLeftDetail": " · Graphic Designer",
+  "line1": "Creative",
+  "line2": "Portfolio",
+  "studio": "G.VIISUALS",
+  "disciplines": [
+   "Brand Identity",
+   "Packaging Design",
+   "Social Campaigns",
+   "Logo Design",
+   "Print Design"
+  ],
+  "basedIn": "Beirut, Lebanon",
+  "volume": "01, 2026"
+ },
+ "about": {
+  "lead": "Hello, I'm George Charbel, a Graphic & Brand Identity Designer creating <em>meaningful visual experiences.</em>",
+  "paragraphs": [
+   "I specialize in branding, packaging, and social media design, helping businesses communicate their story through strategic, modern, and impactful design solutions.",
+   "Working across Arabic and Latin scripts from Beirut, I build brand systems rooted in the MENA region and held to an international standard, clear, considered, and built to last."
+  ],
+  "services": [
+   "Brand Identity",
+   "Packaging Design",
+   "Social Media Design",
+   "Logo & Monogram"
+  ],
+  "basedList": [
+   "Beirut, Lebanon",
+   "Available worldwide",
+   "Freelance & Studio",
+   "Vol. 01, 2026"
+  ],
+  "portraitTag": "George Charbel, Founder"
+ },
+ "works": {
+  "title": "Eleven brands, <em>built with purpose.</em>",
+  "sub": "A selection of identity, packaging, and campaign work, each project carrying a brand from its core idea through to every touchpoint."
+ },
+ "contact": {
+  "heading": "Have a brand<br>worth <em>building?</em>",
+  "email": "georgescharbel6@gmail.com",
+  "instagramHandle": "@g.viisuals",
+  "instagramUrl": "https://instagram.com/g.viisuals",
+  "phoneDisplay": "+961 79 106883",
+  "phoneTel": "+96179106883",
+  "location": "Beirut, Lebanon",
+  "timeChip": "Available for projects",
+  "whatsapp": "96179106883",
+  "whatsappText": "Hi George, I saw your portfolio and I'd love to talk.",
+  "footerA": "G.VIISUALS, George Charbel",
+  "footerB": "End of Volume 01 · Designed with purpose"
+ },
+ "projects": [
+  {
+   "key": "root",
+   "name": "Root",
+   "cat": "Brand Identity · Social",
+   "sub": "Café & Matcha Bar",
+   "desc": "Root Café & Matcha Bar is a modern café brand built around calm moments, natural aesthetics, and mindful living. Inspired by organic textures, warm interiors, and the ritual of specialty matcha, the visual identity combines earthy tones, elegant typography, and minimalist design elements to create a welcoming and sophisticated experience. The branding reflects a space where customers can slow down, connect, and enjoy quality beverages in a serene environment, while maintaining a contemporary and premium market presence.",
+   "quote": "A brand built around the ritual of slowing down.",
+   "tags": [
+    "Logo",
+    "Identity System",
+    "Social Templates",
+    "Menu Design"
+   ],
+   "cover": "assets/img/root-cover.webp",
+   "lqip": "data:image/webp;base64,UklGRtAAAABXRUJQVlA4IMQAAACQBQCdASocABIAPt1kqU+opaOiKAqpEBuJYgCxH2iBSBLNTgA3xGtctfVx73ggaTUQMVR6AAD7zHaddQM2PMhIbDCYSWsF0ZajxfYGM9wwQN0uIQGiDXUqID1BrPwgMdTNNWNnw+mXXK1VMbpT9Hrrjc0AaYjDr9sorknWmyFOS6nqH6MZa4ZzMgoPppwsQK9AsUrNQFIyrwV0vm+oYV3jpo0rZBnMxskGFhkwNJ+TbYq8H39jz/qzpmoI0iQRsoSUgAAA",
+   "gallery": [
+    "assets/img/root-01.webp",
+    "assets/img/root-cover.webp",
+    "assets/img/root-02.webp",
+    "assets/img/root-03.webp",
+    "assets/img/root-04.webp",
+    "assets/img/root-05.webp",
+    "assets/img/root-06.webp",
+    "assets/img/root-07.webp",
+    "assets/img/root-08.webp",
+    "assets/img/root-09.webp",
+    "assets/img/root-10.webp",
+    "assets/img/root-11.webp",
+    "assets/img/root-12.webp"
+   ],
+   "caps": [
+    "Illuminated signage",
+    "Café interior",
+    "Counter & pastry display",
+    "Coffee cups & collateral",
+    "Coffee bag lineup",
+    "Matcha tin packaging",
+    "Takeaway set",
+    "Menu design",
+    "Brand flat lay",
+    "Apparel & merch",
+    "Tote bags",
+    "Social media posts",
+    "Instagram feed"
+   ],
+   "think": {
+    "challenge": "Specialty cafes compete on noise. Louder colors, busier walls. Root wanted the opposite: an identity as calm as the ritual it serves.",
+    "idea": "The two o's of the wordmark merge into one continuous loop: a root system, a shared table, a moment of pause. Growth from a still center.",
+    "mark": "A lowercase logotype with letterforms that loop and link into one another like roots under soil. The rounded weight keeps it calm and organic, and the color is pulled straight from the cup, matcha green over coffee brown, so the mark tastes like the menu.",
+    "craft": "A palette drawn from matcha and coffee, green meeting roasted brown in the logo itself. One glowing dimensional sign as the only loud gesture, and unbleached cups, pouches and tins that let texture do the branding.",
+    "type": "A rounded lowercase logotype with a light grotesque doing the quiet work on menus and labels. Nothing shouts, the type drinks slowly.",
+    "pal": [
+     "#ECE3D6",
+     "#BDA080",
+     "#895220",
+     "#4B5E1C",
+     "#584120"
+    ]
+   }
+  },
+  {
+   "key": "byblobel",
+   "name": "Byblobel",
+   "cat": "Brand Identity · Hospitality",
+   "sub": "Boutique Guesthouse · Byblos",
+   "desc": "Byblobel is a boutique guesthouse located in the historic coastal city of Byblos, Lebanon. Inspired by the city's rich heritage, Mediterranean lifestyle, and breathtaking sea views, the brand identity combines elegance, warmth, and authenticity. The visual language uses clean typography, soft coastal tones, and refined imagery to reflect a peaceful retreat where guests can experience the charm of Byblos through comfort, culture, and personalized hospitality. The branding communicates a premium yet welcoming atmosphere, creating a memorable destination for both local and international travelers.",
+   "quote": "Old stone, new warmth.",
+   "tags": [
+    "Logo",
+    "Identity System",
+    "Collateral",
+    "Social Campaign"
+   ],
+   "cover": "assets/img/byblobel-cover.webp",
+   "lqip": "data:image/webp;base64,UklGRuIAAABXRUJQVlA4INYAAABwBQCdASocABIAPt1kqE+opaOiKAqpEBuJYgCdH/cqWQkMeFGcNXdcK9Jz554Odiij+Q9oAPz7xotsyliOJeiGjJgVxBsIX0G+OTAs8zCUZ+VjmqszEjG0RHzW30FdyQkH2iSOP7qoeYRI75EjNnDtnjWZSiv/bHZ5VHBVwCBxIqcuG/oBZgdHkWJnw/RasL+K0PA7k4FZjFPJmW3buq5DE2FeaXlYbS4cwLJv2KnOBLSOToynwjIRF3+2sueJQnduM/y1BU8FFXVAWoDT9jOexoZWzxYA",
+   "gallery": [
+    "assets/img/byblobel-01.webp",
+    "assets/img/byblobel-cover.webp",
+    "assets/img/byblobel-02.webp",
+    "assets/img/byblobel-03.webp",
+    "assets/img/byblobel-04.webp",
+    "assets/img/byblobel-05.webp",
+    "assets/img/byblobel-06.webp",
+    "assets/img/byblobel-07.webp",
+    "assets/img/byblobel-08.webp",
+    "assets/img/byblobel-09.webp",
+    "assets/img/byblobel-10.webp",
+    "assets/img/byblobel-11.webp",
+    "assets/img/byblobel-12.webp",
+    "assets/img/byblobel-13.webp",
+    "assets/img/byblobel-14.webp"
+   ],
+   "caps": [
+    "Brand identity",
+    "Pool deck branding",
+    "Guest room signage",
+    "Restaurant menus",
+    "Guest stationery",
+    "Key cards",
+    "Guest directories",
+    "Door hangers",
+    "Thank you card",
+    "Robe & slippers",
+    "Amenity kit",
+    "Toiletries line",
+    "Hat & towels",
+    "Beach bags",
+    "Social media feed"
+   ],
+   "think": {
+    "challenge": "Byblos is one of the oldest port cities in the world, and this boutique guesthouse needed to read as modern luxury without erasing the heritage that makes the place worth visiting.",
+    "idea": "'Connecting the ancient sea to modern luxury.' The B monogram is drawn as a window with a sail inside it, the view from a Byblos guesthouse distilled into a letterform.",
+    "mark": "The B is drawn as a window with a sail passing through it, the old port of Byblos compressed into a single shape. Set beside a clean geometric wordmark, it connects the ancient harbor to a modern stay, which is the whole promise of the guesthouse.",
+    "craft": "Mediterranean blues on warm coastal neutrals, carried through the full guest journey, from reservation cards and key cards to door hangers, spa amenities, robes and beach totes. The brand is felt from booking to checkout.",
+    "type": "Geometric capitals tracked wide, resort calm with a modern edge. Serif moments appear only on print collateral where the paper can carry them.",
+    "pal": [
+     "#E5E1DD",
+     "#C9A86A",
+     "#5DBDC9",
+     "#1D2C3F"
+    ]
+   }
+  },
+  {
+   "key": "balcony",
+   "name": "Balcony Burgers",
+   "cat": "Brand Identity · Restaurant",
+   "sub": "Burger Restaurant",
+   "desc": "Balcony Burgers is a fast casual burger brand built around an elevated rooftop dining experience. The identity is anchored by a single mark, a letter B drawn as a stacked burger, that carries both words of the name and reads as 'burger' from across the street. A warm system of charcoal, orange and cream runs from glowing neon signage and kraft packaging to staff aprons, storefront and social campaigns, giving a young restaurant the polish of a national chain while keeping the energy of a neighborhood favorite.",
+   "quote": "A single B doing the work of a billboard.",
+   "tags": [
+    "Logo",
+    "Signage",
+    "Packaging",
+    "Menu Boards",
+    "Social"
+   ],
+   "cover": "assets/img/balcony-cover.webp",
+   "lqip": "data:image/webp;base64,UklGRsIAAABXRUJQVlA4ILYAAACwBQCdASoeABQAPu1kqk2ppaQiMAgBMB2JYgCdMt6/UCn7QL6NnDFDb0yrQIqgHVZCIlooL/AA/uzfKKFW1V3UBa9Jm/uinnsJ/RelaoQysp00SOrPC1rh8xzB8moefJjBP4yPqtKuOR8xV3Lbc87Dlm5y30Fm/pVE08gHATaivikIEYy23/Q53vv5VDQCDAbhayxVxWyVGcRYbuE1V/KsYuDovwyVv7aqqT/KOu0C2ofMHQgAAA==",
+   "gallery": [
+    "assets/img/balcony-01.webp",
+    "assets/img/balcony-02.webp",
+    "assets/img/balcony-cover.webp",
+    "assets/img/balcony-03.webp",
+    "assets/img/balcony-04.webp",
+    "assets/img/balcony-05.webp",
+    "assets/img/balcony-06.webp",
+    "assets/img/balcony-07.webp",
+    "assets/img/balcony-08.webp",
+    "assets/img/balcony-09.webp",
+    "assets/img/balcony-10.webp"
+   ],
+   "caps": [
+    "Previous logo",
+    "New identity",
+    "Rooftop terrace",
+    "Counter & menu boards",
+    "Storefront",
+    "Night terrace",
+    "Open kitchen",
+    "Branded serving tray",
+    "Burger box",
+    "Takeaway bag",
+    "Stay Hungry campaign"
+   ],
+   "think": {
+    "challenge": "The fast casual burger space is crowded with look alike branding, flame clip art and heavy wordmarks. Balcony Burgers needed a mark memorable enough to own its rooftop concept and flexible enough to live on everything from neon to a kraft bag.",
+    "idea": "Let one letter do the work. The B is built as a stacked burger, a sesame bun, a drip of cheese and the patty between, and that single shape stands in for the B in both Balcony and Burgers.",
+    "mark": "The B is a stacked burger, sesame bun on top, a drip of cheese and the patty in between, and that one letter stands in for both words of the name. It reads as a burger from across the street before it reads as type, which is exactly the job of fast casual signage.",
+    "craft": "A warm charcoal and orange palette with cream type, carried across illuminated signage, menu boards, kraft packaging, aprons and social. The glowing burger B becomes the centerpiece of the rooftop dining room, turning the logo itself into the interior's hero.",
+    "type": "Bold rounded sans built for distance, the same weight from street sign to menu board. If you can not read it across the road it does not ship.",
+    "pal": [
+     "#F2EBE3",
+     "#D3BDA2",
+     "#EC8B33",
+     "#2B2724"
+    ]
+   }
+  },
+  {
+   "key": "carneo",
+   "name": "Carneo",
+   "cat": "Rebranding · Restaurant",
+   "sub": "Premium Meat Experience",
+   "desc": "Carneo is a premium meat restaurant in Lebanon that had outgrown its first logo. The rebrand replaces clip-art knives and flames with a confident gold serif and a mark drawn from the product itself, building a black and gold world across the menu, the dining room, and everything guests take home.",
+   "quote": "A steakhouse identity cut to premium grade.",
+   "tags": [
+    "Logo",
+    "Identity System",
+    "Menu Design",
+    "Interior Branding"
+   ],
+   "cover": "assets/img/carneo-cover.webp",
+   "lqip": "data:image/webp;base64,UklGRp4AAABXRUJQVlA4IJIAAADwBACdASocABIAPt1gp06opaMiKA1REBuJTB1owsQAIOTqzzW9L9/Ytqaa0zDuEgAA/vCh7EKVk13+ds/ddHpiv8CK9aIFPGEU6COot4hUeMuuyK92eOIviZNUxwWfyYgtJCJhC7wI5Rcm4Yii4aDVb5FLJyxdFkWlZJBVnBGdp7IPrgUBGAWGewdQnh1Oh/wAAA==",
+   "gallery": [
+    "assets/img/carneo-01.webp",
+    "assets/img/carneo-02.webp",
+    "assets/img/carneo-03.webp",
+    "assets/img/carneo-04.webp",
+    "assets/img/carneo-05.webp",
+    "assets/img/carneo-06.webp",
+    "assets/img/carneo-07.webp",
+    "assets/img/carneo-08.webp",
+    "assets/img/carneo-09.webp"
+   ],
+   "caps": [
+    "Previous logo",
+    "New identity, reception",
+    "Exterior signage",
+    "Menu design",
+    "Coasters & napkins",
+    "Staff apron",
+    "Gift bags",
+    "Campaign visual",
+    "Reservation poster"
+   ],
+   "think": {
+    "challenge": "Carneo's original logo said butcher shop: crossed knives, cartoon flames, a heavy wordmark. The restaurant underneath was positioning itself as fine dining, and the brand was holding it back.",
+    "idea": "The o of Carneo becomes the product itself, a marbled cut of beef drawn as a simple seal. One glance says meat, craft and appetite without a single cliche.",
+    "mark": "A refined serif logotype with a meat seal set inside the final o, the only place the deep red appears. Restraint does the talking, black and gold carry the premium experience while the red marks the craft of the cut.",
+    "craft": "A black and gold system with deep red reserved for the mark alone. A refined serif logotype, embossed leather and embroidery, a menu pairing prime cuts with Lebanese specialties, and campaign imagery shot dark and close to the fire.",
+    "type": "A refined high contrast serif carries the name, supported by small tracked capitals for menus and detail lines. Type behaves like table service, present and silent.",
+    "pal": [
+     "#864F26",
+     "#6F2C0A",
+     "#040302"
+    ]
+   }
+  },
+  {
+   "key": "merci",
+   "name": "Merci Market",
+   "cat": "Rebranding · Identity",
+   "sub": "Neighborhood Retail Brand",
+   "desc": "Merci Market was reimagined as a modern neighborhood retail brand that combines convenience, accessibility, and community. The new identity features a distinctive shopping-cart-inspired logo, bold signage, branded packaging, and a cohesive digital presence, creating a fresh and memorable shopping experience while maintaining the market’s local roots.",
+   "quote": "A thank you note to the neighborhood.",
+   "tags": [
+    "Rebrand",
+    "Logo",
+    "Signage",
+    "Packaging",
+    "Social"
+   ],
+   "cover": "assets/img/merci-cover.webp",
+   "lqip": "data:image/webp;base64,UklGRswAAABXRUJQVlA4IMAAAAAwBQCdASocABIAPt1cqU6opKOiMBgIARAbiWYAnTKDN5wZ+uFjob57GmzHq2FVMept4AD+0oVnR8YiplhvpW0t6xErEKEjWrLCqKca3FzRuKyBEVNi87vDZnFJWM1Cfp6wXoeswoWWDK8mCmlTjF+dmUQz3WbZTrZy6WJSqV4dl/w5H7l6UY24tp7FMI/NnLfYRtY9X0b2vmu9M+bhYrVGmCAM7RCzQN6oFslOzDLxSmxIj9TFqZu+74Bik4UY4AA=",
+   "gallery": [
+    "assets/img/merci-01.webp",
+    "assets/img/merci-02.webp",
+    "assets/img/merci-03.webp",
+    "assets/img/merci-04.webp",
+    "assets/img/merci-05.webp",
+    "assets/img/merci-06.webp",
+    "assets/img/merci-07.webp",
+    "assets/img/merci-08.webp",
+    "assets/img/merci-09.webp",
+    "assets/img/merci-10.webp",
+    "assets/img/merci-11.webp",
+    "assets/img/merci-12.webp",
+    "assets/img/merci-13.webp"
+   ],
+   "caps": [
+    "Previous storefront",
+    "New storefront",
+    "Checkout counter",
+    "Stationery",
+    "Shopping basket",
+    "Produce packaging",
+    "Carrier bag",
+    "Staff uniform",
+    "In-store signage",
+    "Instagram profile",
+    "Campaign post",
+    "Campaign post",
+    "Weekly specials"
+   ],
+   "think": {
+    "challenge": "A neighborhood grocery competing with chains needed chain-level polish without losing the local soul that keeps regulars loyal.",
+    "idea": "Gratitude as identity. The e of Merci becomes a shopping cart, building thank you into the act of shopping itself.",
+    "mark": "The E is replaced by a shopping cart caught mid push, turning the name into the act of shopping itself. Bold rounded letters in deep navy keep it friendly but sturdy, a neighborhood market that takes itself seriously.",
+    "craft": "Navy for trust, teal and fruit-bright accents for freshness, bilingual welcome signage, and one system from receipt, loyalty card and envelope to facade, aprons and a social grid alternating produce and message.",
+    "type": "A heavy rounded sans for the wordmark with friendly mid weights for shelf and promo work. Built to be read fast in an aisle.",
+    "pal": [
+     "#E9E9E9",
+     "#E5D3A7",
+     "#2FA7A6",
+     "#1B1C40"
+    ]
+   }
+  },
+  {
+   "key": "rim",
+   "name": "Rim Juice",
+   "cat": "Packaging · Social Campaign",
+   "sub": "Natural Fresh Juice",
+   "desc": "Rim Juice is a product extension developed for Rim, a trusted Lebanese bottled water brand, introducing a vibrant range of natural fruit juices. The concept builds on Rim's reputation for purity and refreshment while expanding the brand into a more energetic, lifestyle-driven category. The visual identity combines bright fruit-inspired colors, fresh imagery, and engaging social media content to communicate natural ingredients, great taste, and everyday refreshment, creating a seamless connection between health, flavor, and trusted quality.",
+   "quote": "Purity from water, energy from fruit.",
+   "tags": [
+    "Packaging",
+    "Label System",
+    "Campaign Visuals",
+    "Social Media"
+   ],
+   "cover": "assets/img/rim-cover.webp",
+   "lqip": "data:image/webp;base64,UklGRhABAABXRUJQVlA4IAQBAADwBQCdASocABIAPt1irU8opaSiKAqpEBuJZACdMyWE8NtQQKZTdlgkZgDS/44ljfH68MBfHdgdAAD+vI6nxlVQlR4RqbENVsrd4xJBcfcvPbxzABlHr3/0cQU+YxQpNveR5lkU2YGI+SdiEVkUEVO+ulwThpKnsfN6XJup/vWmg2fSmQEFhn0TpOuZCBCTgPZC21Eu0VdQ49WeHbvfmpkNhLFxX/dLTiLr0uYIlZJJgETuk44wYr2L6cR5alggwLkSZ3ZZIfSw3R5MxDpw+VBStvZSpbsSTcXxAB49GqEBljjUFF/BIcJ5EIW7+em6Z9lEQY0VC8sk+qU6kDEqRVMp9EAAAA==",
+   "gallery": [
+    "assets/img/rim-cover.webp",
+    "assets/img/rim-01.webp",
+    "assets/img/rim-02.webp",
+    "assets/img/rim-03.webp",
+    "assets/img/rim-04.webp",
+    "assets/img/rim-05.webp",
+    "assets/img/rim-06.webp",
+    "assets/img/rim-07.webp",
+    "assets/img/rim-08.webp",
+    "assets/img/rim-09.webp",
+    "assets/img/rim-10.webp",
+    "assets/img/rim-11.webp",
+    "assets/img/rim-12.webp",
+    "assets/img/rim-13.webp",
+    "assets/img/rim-14.webp",
+    "assets/img/rim-15.webp",
+    "assets/img/rim-16.webp",
+    "assets/img/rim-17.webp",
+    "assets/img/rim-18.webp"
+   ],
+   "caps": [
+    "Lifestyle campaign",
+    "Orange label",
+    "Strawberry label",
+    "Lemon label",
+    "Pineapple label",
+    "Mango label",
+    "Apple label",
+    "Orange can",
+    "Strawberry can",
+    "Lemon can",
+    "Pineapple can",
+    "Mango can",
+    "Apple can",
+    "Orange campaign",
+    "Strawberry campaign",
+    "Lemon campaign",
+    "Pineapple campaign",
+    "Mango campaign",
+    "Apple campaign"
+   ],
+   "think": {
+    "challenge": "A natural juice line entering a shelf of shouting brands needed to look clean enough to claim 'natural' and bold enough to be picked up.",
+    "idea": "Let the fruit do the talking: a clean cream can as the constant, each flavor signed only by its fruit's color and a simple illustrated cue.",
+    "mark": "An outline wordmark that stays open in the middle, light enough to sit on metal, condensation and bright fruit photography without fighting them. Each flavor then borrows its own fruit color for the type, so the system flexes while the mark holds still.",
+    "craft": "A six-flavor system from orange to mango, high-energy splash photography for campaign, and lifestyle imagery that moves the brand from shelf to beach towel.",
+    "type": "A rounded outline display face for the name and a clean geometric sans for flavor and nutrition text. The outline keeps the mark light over photography and metal.",
+    "pal": [
+     "#FAF7C4",
+     "#FAA21E",
+     "#F17481",
+     "#DE404D",
+     "#2C2725"
+    ]
+   }
+  },
+  {
+   "key": "socialclub",
+   "name": "The Social Club",
+   "cat": "Brand Identity · Fashion",
+   "sub": "Luxury Fashion",
+   "desc": "The Social Club is a classic fashion brand that reinterprets timeless elegance for the modern generation. Inspired by refined tailoring, sophisticated lifestyles, and enduring style, the brand combines premium craftsmanship with contemporary confidence. The visual identity features a rich, elegant aesthetic, blending luxury typography, refined color palettes, and editorial-inspired imagery to create a distinguished, aspirational presence for those who value quality, confidence, and sophistication. Style is not just worn, it is lived.",
+   "quote": "Quiet luxury with a social pulse.",
+   "tags": [
+    "Logo",
+    "Identity System",
+    "Art Direction",
+    "Social"
+   ],
+   "cover": "assets/img/socialclub-cover.webp",
+   "lqip": "data:image/webp;base64,UklGRkgBAABXRUJQVlA4IDwBAABQBgCdASocABwAPt1iq0+opSOiKAqpEBuJYgCdMsvCm8JRyedFOxM+UWserwFsoFQ39HYJXqcL2/LPWAD+72mGjnl6bnYGorw+y9PHqYZEjpyQemS7ci2ESklZOUsZkTLXJyF8sS1vrjBGOdbjf5YlbSa2TCrE/A+SDtUaxnLUJ5Na92YFIhdGiMrqcLecNHjPcmbbs4IapueTKu7TI/iqo6gT6stoepX3dfAcPC9OfvqXwc1rVaRq9akyv73F6Nm1MMYHTFSunjtgExDaLk46BFnH/k3WRuebcLuIHlKkKdjMRyZiZcSkQxIDLSCsn/8F9/f0I30HUf/J08LjVJprqpn7NT2id8Yvcm4T8VO29SVZmmCgJsgmOgCy+V20mRrlAcR42U9+zfohfi+sUNsscDIs6bOzWwom1h4A",
+   "gallery": [
+    "assets/img/socialclub-cover.webp",
+    "assets/img/socialclub-01.webp",
+    "assets/img/socialclub-02.webp",
+    "assets/img/socialclub-03.webp",
+    "assets/img/socialclub-04.webp",
+    "assets/img/socialclub-05.webp",
+    "assets/img/socialclub-06.webp",
+    "assets/img/socialclub-07.webp",
+    "assets/img/socialclub-08.webp",
+    "assets/img/socialclub-09.webp",
+    "assets/img/socialclub-10.webp",
+    "assets/img/socialclub-11.webp",
+    "assets/img/socialclub-12.webp",
+    "assets/img/socialclub-13.webp",
+    "assets/img/socialclub-14.webp",
+    "assets/img/socialclub-15.webp",
+    "assets/img/socialclub-16.webp"
+   ],
+   "caps": [
+    "Brand mark on knitwear",
+    "Embroidery detail",
+    "Hang tag",
+    "Hoodie & tag",
+    "Apparel collection",
+    "Woven label",
+    "Cap",
+    "Tee on mannequin",
+    "Gift box",
+    "Shopping bag",
+    "In-store rail",
+    "Retail interior",
+    "Storefront",
+    "Lookbook",
+    "Lookbook",
+    "Campaign",
+    "Street style"
+   ],
+   "think": {
+    "challenge": "Premium apparel either whispers into anonymity or shouts streetwear-loud. The Social Club needed to feel like membership: warm, exclusive, worth belonging to.",
+    "idea": "The tension is in the type. An editorial serif for THE and CLUB, a flowing script for Social. Formality and intimacy in one lockup, like a club crest rewritten for fashion.",
+    "mark": "Three words, two voices. Engraved capitals hold THE and CLUB while Social swings through the middle in script, the formal and the familiar in one lockup, which is the brand in a sentence.",
+    "craft": "A strict cream-and-burgundy code across embroidery, woven labels, velvet hangers and letterpress hangtags, with golden-hour campaign photography that sells the feeling of being inside.",
+    "type": "Engraved serif capitals against a flowing script, the formal and the familiar sharing one lockup. The tension is the brand.",
+    "pal": [
+     "#DBC7B3",
+     "#886A64",
+     "#751D1B"
+    ]
+   }
+  },
+  {
+   "key": "bijou",
+   "name": "Bijou",
+   "cat": "Brand Identity · Luxury",
+   "sub": "Luxury Jewelry",
+   "desc": "Bijou is a luxury jewelry brand crafted to celebrate elegance, individuality, and timeless beauty. The visual identity combines refined typography, rich premium tones, and sophisticated brand elements to create an exclusive, memorable experience. Inspired by fine craftsmanship and modern luxury, the brand positions jewelry as more than an accessory, a statement of confidence, style, and personal expression. Every touchpoint, from packaging to digital presence, is designed to reflect quality, prestige, and enduring sophistication.",
+   "quote": "An identity set like a stone.",
+   "tags": [
+    "Logo",
+    "Identity System",
+    "Packaging",
+    "Social"
+   ],
+   "cover": "assets/img/bijou-cover.webp",
+   "lqip": "data:image/webp;base64,UklGRrAAAABXRUJQVlA4IKQAAAAwBQCdASocABUAPt1co00opSMiMBgMARAbiUAEeAAKUbeSoimtCeZIumjvDuTJxttMAAD+8qUdOm1ofhgnRwQGraCpQ+tz+gV9M7Bte6vkST7ZO/vbo9M9xXQFScaiR2y2mRhhRqBcZzcXnY5ZsXX/kFHPK5UnE8sn8dkueWh6LLJLFfSXkLJmChXj4dDIEzmqMcKYrKqPNKYnimWpRQpIYuWCAA==",
+   "gallery": [
+    "assets/img/bijou-cover.webp",
+    "assets/img/bijou-01.webp",
+    "assets/img/bijou-02.webp",
+    "assets/img/bijou-03.webp",
+    "assets/img/bijou-04.webp",
+    "assets/img/bijou-05.webp",
+    "assets/img/bijou-06.webp",
+    "assets/img/bijou-07.webp",
+    "assets/img/bijou-08.webp",
+    "assets/img/bijou-09.webp",
+    "assets/img/bijou-10.webp",
+    "assets/img/bijou-11.webp",
+    "assets/img/bijou-12.webp",
+    "assets/img/bijou-13.webp",
+    "assets/img/bijou-14.webp"
+   ],
+   "caps": [
+    "Lumière collection",
+    "Embossed wall mark",
+    "Packaging suite",
+    "Shopping bag",
+    "Gift box",
+    "Velvet pouch",
+    "Business cards",
+    "Display case",
+    "Necklace display",
+    "Ring collection",
+    "Jewelry styling",
+    "Boutique interior",
+    "Instagram profile",
+    "Web banner",
+    "Campaign visual"
+   ],
+   "think": {
+    "challenge": "A jewelry house entering a category owned by century-old maisons needed an identity precious enough to sit beside them and distinctive enough not to disappear.",
+    "idea": "The jewel lives in the name. A custom ligature at the heart of the logotype carries a four-point star, like light caught in a letterform.",
+    "mark": "A serif logotype with a star set above the i like a stone in a prong. The sparkle is the only ornament, everything else is weight and spacing, jewelry logic applied to type.",
+    "craft": "Deep burgundy and champagne gold, serif letterforms with jewelry-like detailing, and packaging treated as ritual, from velvet pouch to ribboned box. The Lumiere campaign is built around light escaping a closed box.",
+    "type": "A high contrast fashion serif tracked wide on packaging, with small capitals for cards and detail. Type set the way stones are set, sparingly.",
+    "pal": [
+     "#E3DBD0",
+     "#7A624A",
+     "#4E2734",
+     "#1A0C0D"
+    ]
+   }
+  },
+  {
+   "key": "cookiecart",
+   "name": "The Cookie Cart",
+   "cat": "Branding · Packaging",
+   "sub": "Premium Cookies",
+   "desc": "The Cookie Cart is a playful premium cookie brand inspired by the joy of freshly baked treats and nostalgic moments shared with family and friends. The brand identity combines warm visuals, soft pastel tones, and inviting typography to create a charming, memorable experience that feels both modern and comforting. Designed to celebrate indulgence, quality ingredients, and handcrafted baking, the branding extends seamlessly across packaging, social media, and in-store applications, a delightful customer journey from first impression to last bite.",
+   "quote": "Nostalgia, served as a system.",
+   "tags": [
+    "Logo",
+    "Packaging",
+    "Identity System",
+    "Social"
+   ],
+   "cover": "assets/img/cookiecart-cover.webp",
+   "lqip": "data:image/webp;base64,UklGRgwBAABXRUJQVlA4IAABAADwBQCdASoVABwAPt1eqU6opKOiMBgIARAbiWYAnTODDgHGgDyOrnQYlApRkHBwKKkoKdngPEhRUAD+TxTlbtUXsbZJJcZj6oKTkGHcINzl36DfJsbqSIFtneIPGUZ0JVD+VaSPt8K27u3BE3wVJE2e85JTdpEqS/Gn1f2LVR6W3yir2lXOIHI6eBmDfPhjwherqbbxFGfZGHtDMcpqEXot6LJrDCaZHI5iqy6KiXSFMe70LOC7AsR8RL3WukmsDhQnoefpuSMARdB9/KWYi8By6uQH7YqMuhe+95Rge6UKq1n0fKWUqxVsMS9AjUT9wl/ye30bUNRRGA3L7lKVMAAA",
+   "gallery": [
+    "assets/img/cookiecart-cover.webp",
+    "assets/img/cookiecart-01.webp",
+    "assets/img/cookiecart-02.webp",
+    "assets/img/cookiecart-03.webp",
+    "assets/img/cookiecart-04.webp",
+    "assets/img/cookiecart-05.webp",
+    "assets/img/cookiecart-06.webp",
+    "assets/img/cookiecart-07.webp",
+    "assets/img/cookiecart-08.webp",
+    "assets/img/cookiecart-09.webp",
+    "assets/img/cookiecart-10.webp",
+    "assets/img/cookiecart-11.webp",
+    "assets/img/cookiecart-12.webp",
+    "assets/img/cookiecart-13.webp",
+    "assets/img/cookiecart-14.webp"
+   ],
+   "caps": [
+    "Storefront",
+    "Logo",
+    "Packaging suite",
+    "Brand flat lay",
+    "Box & fresh cookies",
+    "Ribboned gift boxes",
+    "Cookie tins",
+    "Box window detail",
+    "Carrier bags",
+    "Loyalty cards",
+    "Coasters & stickers",
+    "New flavor post",
+    "Counter & interior",
+    "Staff uniform",
+    "Lifestyle campaign"
+   ],
+   "think": {
+    "challenge": "A homemade-cookie business stepping up to a real storefront needed to scale its warmth, with packaging and a space that feel handmade rather than mass-produced.",
+    "idea": "Nostalgia as a system. A plump retro script that sits on the page like piped frosting, living in a world of icing pinks and star sprinkles.",
+    "mark": "A plump retro script that sits on the page like piped frosting, with sprinkle stars scattered around the lockup. Every curve is softened the way dough rounds in the oven, nostalgia you can read before you taste.",
+    "craft": "A two-pink palette with cream and gold accents rolled across loyalty cards, stickers, tins, ribboned gift boxes, aprons and the storefront itself. Every piece tastes like the brand.",
+    "type": "A plump retro script headline over simple sans support. Dessert first, details second.",
+    "pal": [
+     "#ECE8E5",
+     "#F8DCDB",
+     "#D8A4A4",
+     "#B97678",
+     "#853E32"
+    ]
+   }
+  },
+  {
+   "key": "loqmet",
+   "name": "Loqmet Setti",
+   "cat": "Branding · Packaging",
+   "sub": "Lebanese Mouneh",
+   "desc": "Loqmet Setti is a Lebanese mouneh brand that celebrates the rich culinary heritage of traditional homemade preserves and pantry essentials. Inspired by recipes passed down through generations, the brand combines authenticity, quality, and craftsmanship to bring the flavors of the Lebanese countryside to modern households. The visual identity reflects warmth, nature, and tradition through earthy tones, handcrafted details, and premium packaging, a brand experience that honors heritage while appealing to contemporary consumers.",
+   "quote": "Setti's kitchen, on every shelf.",
+   "tags": [
+    "Logo",
+    "Packaging",
+    "Label System"
+   ],
+   "cover": "assets/img/loqmet-cover.webp",
+   "lqip": "data:image/webp;base64,UklGRugAAABXRUJQVlA4INwAAABwBQCdASocABIAPt1irU8opaSiKAqpEBuJaACxHtB+4kgAtr0iiBYcUKgY4xSk/mmdarYKAPwvIgo5X2f/Yhy/i+1qy5/iyaHDvp1m5sntrFVaMtFJv24z2fiy+nutzfQaqKv0qj9ZRxS/NzCpxju+VGVeTG9zvXREe9axBzpEMkp7AcbyXBeCGFlgq+TZqbT2iPGnZAreZv6mgcJ59So8W3TXSItLn+wiyutHB0n/OnLvJkqjI3zO6NgQyWuSWel+livwyymAY/wHAjzFNufp9rxmUaYSAG9MAAAA",
+   "gallery": [
+    "assets/img/loqmet-01.webp",
+    "assets/img/loqmet-cover.webp",
+    "assets/img/loqmet-02.webp",
+    "assets/img/loqmet-03.webp",
+    "assets/img/loqmet-04.webp",
+    "assets/img/loqmet-05.webp",
+    "assets/img/loqmet-06.webp",
+    "assets/img/loqmet-07.webp"
+   ],
+   "caps": [
+    "Logo",
+    "Jar collection",
+    "Olive jars",
+    "Olive label",
+    "Apricot jars",
+    "Apricot label",
+    "Makdous jars",
+    "Makdous label"
+   ],
+   "think": {
+    "challenge": "Lebanese mouneh is rich with story but usually sold in anonymous jars. Loqmet Setti, 'my grandmother's bite', needed packaging that honors the recipe without looking homemade.",
+    "idea": "A hand-drawn Arabic logotype crowned with an olive sprout puts the grandmother's voice on the label, and each preserve takes the color of what's inside the jar.",
+    "mark": "Arabic lettering drawn with a hand made warmth, a fresh sprout growing out of the word the way mouneh grows out of the garden. Two greens, olive and young leaf, place it between the pantry and the field, a grandmother's handwriting turned into a brand.",
+    "craft": "Tone-on-tone botanical line patterns, a disciplined Arabic-first label grid, and a product-coded palette of olive green, apricot amber and aubergine that turns the range into a pantry collection.",
+    "type": "Hand drawn Arabic lettering as the hero, with bilingual labels set in a humble grounded sans. The hierarchy belongs to the handwriting.",
+    "pal": [
+     "#E9E9CB",
+     "#9AA87A",
+     "#E8A74F",
+     "#8C4F86",
+     "#50284A"
+    ]
+   }
+  },
+  {
+   "key": "tanmia",
+   "name": "Tanmia",
+   "cat": "Rebrand · Packaging",
+   "sub": "Poultry Brand",
+   "desc": "Tanmia is a leading Lebanese poultry brand dedicated to delivering fresh, high-quality chicken products to families across the country. This rebranding introduces a modern logo and packaging system designed to strengthen brand recognition while reflecting Tanmia's commitment to freshness, trust, and quality. Inspired by natural farming, responsible production, and everyday family meals, the new identity combines clean design, vibrant packaging, and approachable branding for a stronger presence across retail shelves and digital platforms, products families can trust from farm to table.",
+   "quote": "From Lebanese farms, with a fresher face.",
+   "tags": [
+    "Rebrand",
+    "Packaging",
+    "Fleet Branding",
+    "Uniforms",
+    "Social"
+   ],
+   "cover": "assets/img/tanmia-cover.webp",
+   "lqip": "data:image/webp;base64,UklGRrQAAABXRUJQVlA4IKgAAAAwBACdASocABIAPt1apUyopSOiMAgBEBuJY0wAUI8SVzoOEqRanQLSwwAA/u6WETqtlcuzxEQkf/ozbCVmW9JT1nm56LQ6AB30Ahv7AKS0Nd45Fq3kT4w1fy0FGEeOKsXXPb+kZqxHlKI0xT8wqq4x1neyjgIUKXQDrIdNwnvzdhB438sunjxNlZpvnFN8H4+6W1KsHB1ticH3jtAIzyAMeMU0Y/PAAAA=",
+   "gallery": [
+    "assets/img/tanmia-01.webp",
+    "assets/img/tanmia-02.webp",
+    "assets/img/tanmia-cover.webp",
+    "assets/img/tanmia-03.webp",
+    "assets/img/tanmia-04.webp",
+    "assets/img/tanmia-05.webp",
+    "assets/img/tanmia-06.webp",
+    "assets/img/tanmia-07.webp",
+    "assets/img/tanmia-08.webp",
+    "assets/img/tanmia-09.webp",
+    "assets/img/tanmia-10.webp"
+   ],
+   "caps": [
+    "Previous logo",
+    "New identity",
+    "Packaging range",
+    "Family pack trays",
+    "Retail display",
+    "Delivery fleet",
+    "Staff uniforms",
+    "Production facility",
+    "Instagram profile",
+    "Social media posts",
+    "Recipe book"
+   ],
+   "think": {
+    "challenge": "Poultry packaging defaults to the clinical or the industrial. Tanmia, which means 'growth' in Arabic, needed shoppers to see Lebanese farms, not factories, in a refrigerated aisle.",
+    "idea": "A sprout grows out of the logotype itself. Freshness made literal, with 'From Lebanese farms to your table' as the promise organizing every touchpoint.",
+    "mark": "A lowercase wordmark where the final letter turns into a hen, comb and all, and a fresh sprout grows from the first. Farm and food in one continuous line, drawn in the green of the fields it comes from.",
+    "craft": "Clean white trays with a green-and-harvest palette, brand pillars of freshness, quality, trust and farming built into the system, and a chain that stays branded from crate to truck to shelf to recipe book.",
+    "type": "A continuous lowercase logotype with clean bilingual sans support across packaging and fleet. Friendly at shelf distance, legible on a moving truck.",
+    "pal": [
+     "#FEFEFE",
+     "#EDCE57",
+     "#BAC18E",
+     "#508846",
+     "#AF3433"
+    ]
+   }
+  }
+ ]
+}
+</script>
+<!--SITE-DATA-END-->
+<script>
+/* ================= DATA-DRIVEN RUNTIME =================
+   All content lives in the #site-data JSON block above.
+   Edit it through admin.html — this script only renders. */
+var SITE=JSON.parse(document.getElementById('site-data').textContent);
+window.__SITE=SITE;
+var IMG={},GAL={},LQIP={},CAPS={};
+SITE.projects.forEach(function(p){IMG[p.key]=p.cover;GAL[p.key]=p.gallery;LQIP[p.key]=p.lqip;CAPS[p.key]=p.caps;});
+window.ensureGal=function(key){return GAL[key]&&GAL[key].length?GAL[key]:null;};
+
+/* ---- hydrate editable texts ---- */
+(function(){
+  function T(sel,val){var el=document.querySelector(sel);if(el&&val!=null)el.textContent=val;}
+  function H(sel,val){var el=document.querySelector(sel);if(el&&val!=null)el.innerHTML=val;}
+  var h=SITE.hero,a=SITE.about,w=SITE.works,c=SITE.contact;
+  var pad=function(n){return String(n).padStart(2,'0');};
+  H('.hero__top span:first-child', esc(h.topLeft)+'<span class="hide-sm">'+esc(h.topLeftDetail)+'</span>');
+  H('.hero__top span:last-child', '<span class="hide-sm">Selected Works </span>01 / '+pad(SITE.projects.length));
+  T('.hero__title .l1',h.line1); T('.hero__title .l2',h.line2);
+  var subs=document.querySelectorAll('.hero__sub > div .val');
+  if(subs[0])subs[0].textContent=h.studio;
+  if(subs[2])subs[2].textContent=h.basedIn;
+  if(subs[3])subs[3].textContent=h.volume;
+  H('.about__lead',a.lead);
+  var body=document.querySelector('.about__body');
+  if(body)body.innerHTML=a.paragraphs.map(function(p){return '<p>'+p+'</p>';}).join('');
+  var metas=document.querySelectorAll('.about__meta > div ul');
+  if(metas[0])metas[0].innerHTML=a.services.map(function(s){return '<li>'+s+'</li>';}).join('');
+  if(metas[1])metas[1].innerHTML=a.basedList.map(function(s){return '<li>'+s+'</li>';}).join('');
+  T('.about__portrait .tag',a.portraitTag);
+  H('.sec__title',w.title); T('.works-head .sub',w.sub);
+  H('.contact__big',c.heading);
+  var mail=document.querySelector('.contact__mail');
+  if(mail){mail.href='mailto:'+c.email;mail.innerHTML=esc(c.email)+' <span class="arr">\u2192</span>';}
+  var links=document.querySelectorAll('.contact__links a');
+  if(links[0]){links[0].href=c.instagramUrl;links[0].querySelector('.val').textContent=c.instagramHandle;}
+  if(links[1]){links[1].href='tel:'+c.phoneTel;links[1].querySelector('.val').textContent=c.phoneDisplay;}
+  if(links[2]){links[2].querySelector('.val').textContent=c.location;}
+  var tc=document.querySelector('.time-chip');
+  if(tc)tc.innerHTML='<span class="tc-dot"></span>'+esc(c.location.split(',')[0])+' \u00b7 <span id="bk-time">--:--</span> \u00b7 '+esc(c.timeChip);
+  var wa=document.querySelector('.wa');
+  if(wa)wa.href='https://wa.me/'+c.whatsapp+'?text='+encodeURIComponent(c.whatsappText);
+  var foot=document.querySelectorAll('.footer__in .c');
+  if(foot[0])foot[0].innerHTML='\u00a9 <span id="fy">'+new Date().getFullYear()+'</span> '+esc(c.footerA);
+  if(foot[1])foot[1].textContent=c.footerB;
+  if(SITE.meta&&SITE.meta.title)document.title=SITE.meta.title;
+  function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+})();
+function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+
+/* ---- render project list ---- */
+document.getElementById('project-list').innerHTML = SITE.projects.map(function(p,i){
+  var n=String(i+1).padStart(2,'0');
+  var rev = i%2===1 ? ' rev' : '';
+  var t=p.think||{};
+  var shots=p.gallery?p.gallery.length:0;
+  return '\n  <section class="project'+rev+'" id="proj-'+p.key+'">\n    <div class="project__grid">\n      <div class="project__media reveal" data-key="'+p.key+'">\n        <span class="project__no">'+n+'</span>\n        <div class="card"><img class="lqip" src="'+(p.lqip||p.cover||'')+'" alt="'+esc(p.name)+', '+esc(p.sub)+'" decoding="async"></div>\n        '+(shots?'<span class="gallery-badge"><svg class="gb-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3M16 3h3a2 2 0 0 1 2 2v3M21 16v3a2 2 0 0 1-2 2h-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>Gallery \u00b7 '+shots+'</span>':'')+'\n      </div>\n      <div class="project__txt">\n        <div class="project__cat reveal d1"><span class="i">'+n+'</span><span class="ln"></span>'+esc(p.cat)+'</div>\n        <h3 class="project__name reveal d1">'+esc(p.name)+'</h3>\n        <div class="project__sub reveal d2">'+esc(p.sub)+'</div>\n        '+(p.tags&&p.tags.length?'<div class="project__tags reveal d2">'+p.tags.map(function(tg){return '<span>'+esc(tg)+'</span>';}).join('')+'</div>':'')+'\n        <p class="project__desc reveal d2">'+esc(p.desc)+'</p>\n        '+(p.quote?'<p class="project__quote reveal d2">'+esc(p.quote)+'</p>':'')+'\n        '+((t.challenge||t.idea||t.craft)?('<div class="project__think reveal d3">'
+    +(t.challenge?'<div class="think__row"><span class="think__label">Challenge</span><p>'+esc(t.challenge)+'</p></div>':'')
+    +(t.idea?'<div class="think__row"><span class="think__label">Idea</span><p>'+esc(t.idea)+'</p></div>':'')
+    +(t.mark?'<div class="think__row"><span class="think__label">The Mark</span><p>'+esc(t.mark)+'</p></div>':'')
+    +(t.craft?'<div class="think__row"><span class="think__label">Craft</span><p>'+esc(t.craft)+'</p></div>':'')
+    +(t.pal&&t.pal.length?'<div class="think__row"><span class="think__label">Palette</span><div class="pal">'+t.pal.map(function(cch){return '<span class="chip"><i style="background:'+esc(cch)+'"></i>'+esc(cch)+'</span>';}).join('')+'</div></div>':'')
+    +(t.type?'<div class="think__row"><span class="think__label">Typography</span><p>'+esc(t.type)+'</p></div>':'')
+    +'</div>'):'')+'\n      </div>\n    </div>\n  </section>';
+}).join('');
+
+/* ---- progressive covers: lqip first, real cover streams in ---- */
+SITE.projects.forEach(function(p){
+  if(!p.cover)return;
+  var img=document.querySelector('.project__media[data-key="'+p.key+'"] .card img');
+  if(!img)return;
+  var pre=new Image();
+  pre.onload=function(){img.src=p.cover;img.classList.remove('lqip');};
+  pre.src=p.cover;
+});
+
+/* ---- folder open ---- */
+const intro=document.getElementById('intro'), folder=document.getElementById('folder'),
+      portfolio=document.getElementById('portfolio'), nav=document.getElementById('nav'), body=document.body;
+let opened=false;
+function openFolder(){
+  if(opened) return; opened=true;
+  const reduce=window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+  intro.classList.add('opening'); portfolio.classList.add('show');
+  setTimeout(()=>intro.classList.add('zoom'), reduce?10:760);
+  setTimeout(()=>{intro.classList.add('gone');body.classList.remove('lock');nav.classList.add('show');revealInView();}, reduce?20:1750);
+}
+folder.addEventListener('click',openFolder);
+folder.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();openFolder();}});
+
+/* ---- scroll reveals ---- */
+const io=new IntersectionObserver(es=>{es.forEach(en=>{if(en.isIntersecting){en.target.classList.add('in');io.unobserve(en.target);}});},{threshold:.14,rootMargin:"0px 0px -8% 0px"});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+function revealInView(){document.querySelectorAll('.reveal').forEach(el=>{if(el.getBoundingClientRect().top<window.innerHeight*0.92)el.classList.add('in');});}
+
+/* ---- progress ---- */
+const progress=document.getElementById('progress');let ticking=false;
+window.addEventListener('scroll',()=>{if(ticking)return;ticking=true;requestAnimationFrame(()=>{const h=document.documentElement;progress.style.width=(h.scrollTop/(h.scrollHeight-h.clientHeight)*100)+'%';ticking=false;});},{passive:true});
+
+/* ---- smooth in-page nav ---- */
+document.querySelectorAll('a[href^="#"]').forEach(a=>{a.addEventListener('click',e=>{const id=a.getAttribute('href');if(id.length>1){const el=document.querySelector(id);if(el){e.preventDefault();el.scrollIntoView({behavior:'smooth',block:'start'});}}});});
+
+/* ---- interactive: cursor follower + image parallax ---- */
+(function(){
+  var reduceMotion=window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+  var cursor=document.getElementById('cursor');
+  if(cursor && window.matchMedia('(hover:hover) and (pointer:fine)').matches && !reduceMotion){
+    var mx=innerWidth/2,my=innerHeight/2,cx=mx,cy=my,shown=false;
+    addEventListener('mousemove',function(e){mx=e.clientX;my=e.clientY;if(!shown){shown=true;cursor.style.opacity='1';}});
+    (function loop(){cx+=(mx-cx)*0.2;cy+=(my-cy)*0.2;cursor.style.transform='translate('+cx+'px,'+cy+'px) translate(-50%,-50%)';requestAnimationFrame(loop);})();
+    document.querySelectorAll('a,button,.folder,.project__media,.wa,.contact__mail').forEach(function(el){
+      el.addEventListener('mouseenter',function(){cursor.classList.add('lg');});
+      el.addEventListener('mouseleave',function(){cursor.classList.remove('lg');});
+    });
+  }
+  var lb=document.getElementById('lightbox');
+  if(lb){
+    var lbImg=lb.querySelector('img'),lbPrev=lb.querySelector('.lb-prev'),lbNext=lb.querySelector('.lb-next'),lbCount=lb.querySelector('.lb-count');var lbCap=lb.querySelector('.lb-cap');var caps=[];
+    var gal=[],gi=0;
+    function preload(){if(gal.length>1){[gi+1,gi-1].forEach(function(j){var im=new Image();im.src=gal[(j+gal.length)%gal.length];});}}
+    function lbShow(){lbImg.src=gal[gi];var multi=gal.length>1;lbCap.textContent=(caps&&caps[gi])||'';lbCount.textContent=multi?((gi+1)+' / '+gal.length):'';lbPrev.style.display=lbNext.style.display=multi?'flex':'none';preload();}
+    var lockY=0;function lbOpen(arr,i,c){gal=arr;gi=i||0;caps=c||[];lbShow();lb.classList.add('open');lockY=window.scrollY||window.pageYOffset||0;document.body.style.position='fixed';document.body.style.top=(-lockY)+'px';document.body.style.left='0';document.body.style.right='0';document.body.style.width='100%';document.body.style.overflow='hidden';}
+    function lbClose(){lb.classList.remove('open');document.body.style.position='';document.body.style.top='';document.body.style.left='';document.body.style.right='';document.body.style.width='';document.body.style.overflow='';var se=document.documentElement,sb=se.style.scrollBehavior;se.style.scrollBehavior='auto';window.scrollTo(0,lockY);se.style.scrollBehavior=sb;}
+    function lbStep(dd){if(!gal.length)return;gi=(gi+dd+gal.length)%gal.length;lbShow();}
+    var sx=0,sy=0,lastT=0;
+    lbPrev.addEventListener('click',function(e){e.stopPropagation();if(Date.now()-lastT<600)return;lbStep(-1);});
+    lbNext.addEventListener('click',function(e){e.stopPropagation();if(Date.now()-lastT<600)return;lbStep(1);});
+    lbImg.addEventListener('click',function(e){e.stopPropagation();if(Date.now()-lastT<600)return;if(gal.length>1)lbStep(1);});
+    lb.addEventListener('click',function(){if(Date.now()-lastT<600)return;lbClose();});
+    function tapOn(el,fn){el.addEventListener('touchend',function(e){var t=e.changedTouches[0];if(Math.abs(t.clientX-sx)>10||Math.abs(t.clientY-sy)>10)return;e.preventDefault();e.stopPropagation();lastT=Date.now();fn();},{passive:false});}
+    tapOn(lbPrev,function(){lbStep(-1);});
+    tapOn(lbNext,function(){lbStep(1);});
+    tapOn(lbImg,function(){if(gal.length>1)lbStep(1);});
+    addEventListener('keydown',function(e){if(!lb.classList.contains('open'))return;if(e.key==='Escape')lbClose();else if(e.key==='ArrowRight')lbStep(1);else if(e.key==='ArrowLeft')lbStep(-1);});
+    lb.addEventListener('touchstart',function(e){sx=e.touches[0].clientX;sy=e.touches[0].clientY;},{passive:true});
+    lb.addEventListener('touchend',function(e){var t=e.changedTouches[0],dx=t.clientX-sx;if(Math.abs(dx)>45){lastT=Date.now();lbStep(dx<0?1:-1);}else if(e.target===lb&&Math.abs(dx)<10&&Math.abs(t.clientY-sy)<10){e.preventDefault();lastT=Date.now();lbClose();}},{passive:false});
+    document.querySelectorAll('.project__media').forEach(function(m){
+      m.addEventListener('click',function(){var key=m.getAttribute('data-key');var g=key?ensureGal(key):null;if(g&&g.length){lbOpen(g,0,(typeof CAPS!=='undefined'&&CAPS[key])||[]);}else if(IMG[key]){lbOpen([IMG[key]],0);}else{var im=m.querySelector('img');if(im)lbOpen([im.src],0);}});
+    });
+  }
+})();
+/* ---- scroll-spy: active nav link ---- */
+(function(){
+  var spy=[].slice.call(document.querySelectorAll('.nav__links a')).filter(function(a){var h=a.getAttribute('href');return h&&h.charAt(0)==='#'&&h!=='#top';});
+  var targets=spy.map(function(a){return {a:a, el:document.querySelector(a.getAttribute('href'))};}).filter(function(t){return t.el;});
+  if(!targets.length) return;
+  var tick=false;
+  function spyScroll(){var line=scrollY+innerHeight*0.32,cur=null;targets.forEach(function(t){var top=t.el.getBoundingClientRect().top+scrollY;if(top<=line)cur=t;});spy.forEach(function(a){a.classList.remove('active');});if(cur)cur.a.classList.add('active');tick=false;}
+  addEventListener('scroll',function(){if(!tick){tick=true;requestAnimationFrame(spyScroll);}},{passive:true});
+  addEventListener('resize',spyScroll,{passive:true});
+  spyScroll();
+})();
+</script>
+<script>(function(){var el=document.getElementById("bk-time");if(!el)return;function t(){try{el.textContent=new Intl.DateTimeFormat("en-GB",{hour:"2-digit",minute:"2-digit",timeZone:"Asia/Beirut"}).format(new Date());}catch(e){el.textContent=new Date().toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"});}}t();setInterval(t,30000);})();</script>
+<script>(function(){var y=document.getElementById("fy");if(y)y.textContent=new Date().getFullYear();})();</script>
+<script>(function(){var el=document.getElementById("disc-rot");if(!el)return;var rm=window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches;var w=(window.__SITE&&window.__SITE.hero.disciplines&&window.__SITE.hero.disciplines.length?window.__SITE.hero.disciplines:["Brand Identity"]),i=0;el.textContent=w[0];if(w.length<2)return;setInterval(function(){if(rm){i=(i+1)%w.length;el.textContent=w[i];return;}el.classList.add("out");setTimeout(function(){i=(i+1)%w.length;el.textContent=w[i];el.classList.remove("out");},400);},3000);})();</script>
+</body>
+</html>

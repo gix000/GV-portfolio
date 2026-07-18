@@ -1,0 +1,1160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+<meta name="robots" content="noindex, nofollow"/>
+<title>G.VIISUALS · Admin</title>
+<link rel="icon" type="image/png" href="assets/img/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=Hanken+Grotesk:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#EFEBDF; --paper-hi:#F5F2E9; --paper-lo:#E5E0D1; --paper-edge:#DCD6C5;
+  --ink:#000; --ink-soft:#15140F;
+  --ink-70:rgba(21,20,15,.70); --ink-50:rgba(21,20,15,.50); --ink-35:rgba(21,20,15,.35);
+  --line:rgba(21,20,15,.16); --line-soft:rgba(21,20,15,.09);
+  --ok:#4B5E1C; --warn:#8C3B22;
+  --serif:"Fraunces",Georgia,serif;
+  --sans:"Hanken Grotesk",-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif;
+  --ease:cubic-bezier(.22,1,.36,1);
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{-webkit-text-size-adjust:100%}
+body{font-family:var(--sans);background:var(--paper);color:var(--ink-soft);line-height:1.5;
+  -webkit-font-smoothing:antialiased;min-height:100vh}
+img{display:block;max-width:100%}
+button{font:inherit;cursor:pointer;background:none;border:none;color:inherit}
+input,textarea,select{font:inherit;color:inherit}
+::selection{background:var(--ink);color:var(--paper)}
+.grain{position:fixed;inset:0;z-index:99;pointer-events:none;opacity:.05;mix-blend-mode:multiply;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+
+.kick{font-size:10px;letter-spacing:.24em;text-transform:uppercase;font-weight:700;color:var(--ink-50)}
+
+/* ===== gate ===== */
+#gate{position:fixed;inset:0;z-index:1000;display:flex;align-items:center;justify-content:center;
+  background:radial-gradient(120% 90% at 50% 28%, var(--paper-hi) 0%, var(--paper) 46%, var(--paper-lo) 100%)}
+.gate__card{width:min(380px,88vw);background:linear-gradient(180deg,var(--paper-hi),#F1ECE1);border-radius:4px;
+  box-shadow:0 1px 0 #fff6 inset, 0 30px 60px -30px rgba(21,20,15,.5);padding:34px 30px;text-align:center}
+.gate__card h1{font-family:var(--serif);font-weight:300;font-style:italic;font-size:26px;margin:14px 0 4px}
+.gate__card h1 b{display:block;font-style:normal;font-weight:700;letter-spacing:-.02em;text-transform:uppercase;font-size:22px}
+.gate__card p{font-size:12.5px;color:var(--ink-50);margin-bottom:20px}
+.gate__card input{width:100%;background:transparent;border:1px solid var(--line);border-radius:3px;
+  padding:11px 13px;text-align:center;letter-spacing:.14em;outline:none}
+.gate__card input:focus{border-color:var(--ink-soft)}
+.gate__err{color:var(--warn);font-size:12px;height:16px;margin-top:8px}
+
+/* ===== shell ===== */
+#app{display:none}
+.topbar{position:sticky;top:0;z-index:50;display:flex;align-items:center;gap:14px;
+  padding:12px clamp(16px,3vw,30px);background:rgba(239,235,223,.92);backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--line)}
+.topbar .brand{font-size:11px;letter-spacing:.24em;text-transform:uppercase;font-weight:800;white-space:nowrap}
+.topbar .brand em{font-family:var(--serif);font-weight:300;text-transform:none;letter-spacing:0;font-size:13px;margin-left:6px}
+.status{display:flex;align-items:center;gap:7px;font-size:11px;letter-spacing:.1em;text-transform:uppercase;
+  font-weight:600;color:var(--ink-50);margin-right:auto;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.status .dot{width:7px;height:7px;border-radius:50%;background:var(--ink-35);flex:none}
+.status.ok .dot{background:var(--ok)}
+.status.dirty .dot{background:var(--warn);animation:pulse 1.6s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+.btn{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--ink-soft);border-radius:99px;
+  padding:8px 18px;font-size:11px;letter-spacing:.16em;text-transform:uppercase;font-weight:700;
+  transition:background .25s var(--ease),color .25s var(--ease);white-space:nowrap}
+.btn:hover{background:var(--ink-soft);color:var(--paper)}
+.btn.solid{background:var(--ink-soft);color:var(--paper)}
+.btn.solid:hover{background:var(--ink)}
+.btn.ghost{border-color:var(--line)}
+.btn.sm{padding:5px 12px;font-size:10px}
+.btn.danger{border-color:var(--warn);color:var(--warn)}
+.btn.danger:hover{background:var(--warn);color:var(--paper)}
+.btn:disabled{opacity:.4;pointer-events:none}
+
+.shell{display:grid;grid-template-columns:290px 1fr;min-height:calc(100vh - 54px)}
+.rail{border-right:1px solid var(--line);padding:22px 0 40px;background:linear-gradient(180deg,rgba(245,242,233,.6),transparent 200px)}
+.rail .kick{display:block;padding:0 22px;margin:22px 0 10px}
+.rail .kick:first-child{margin-top:0}
+.pitem{display:flex;align-items:center;gap:10px;width:100%;text-align:left;padding:9px 22px;cursor:pointer;
+  font-size:13.5px;font-weight:500;border-left:2px solid transparent;transition:background .2s;user-select:none}
+.pitem:hover{background:rgba(21,20,15,.045)}
+.pitem.active{border-left-color:var(--ink-soft);background:rgba(21,20,15,.06);font-weight:700}
+.pitem .no{font-size:10px;letter-spacing:.1em;color:var(--ink-35);width:20px;flex:none;font-weight:700}
+.pitem .thumb{width:34px;height:26px;flex:none;border-radius:2px;object-fit:cover;background:var(--paper-lo);
+  box-shadow:0 1px 0 var(--paper-edge)}
+.pitem .nm{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1}
+.pitem .mv{display:none;flex:none;gap:2px}
+.pitem:hover .mv,.pitem.active .mv{display:flex}
+.mv button{padding:2px 5px;color:var(--ink-50);border-radius:3px;font-size:12px;line-height:1}
+.mv button:hover{background:var(--ink-soft);color:var(--paper)}
+.rail .add{margin:10px 22px 0}
+.navitem{display:block;width:100%;text-align:left;padding:9px 22px;font-size:13.5px;font-weight:500;
+  border-left:2px solid transparent}
+.navitem:hover{background:rgba(21,20,15,.045)}
+.navitem.active{border-left-color:var(--ink-soft);background:rgba(21,20,15,.06);font-weight:700}
+
+.main{padding:clamp(20px,4vw,44px);max-width:1060px}
+.sheet{background:linear-gradient(180deg,var(--paper-hi),#F1ECE1);border-radius:4px;
+  box-shadow:0 1px 0 #fff6 inset, 0 24px 50px -30px rgba(21,20,15,.4);padding:clamp(20px,3.4vw,36px);margin-bottom:26px}
+.sheet__head{display:flex;align-items:baseline;justify-content:space-between;gap:14px;flex-wrap:wrap;
+  border-bottom:1px solid var(--line);padding-bottom:14px;margin-bottom:22px}
+.sheet__head h2{font-family:var(--serif);font-weight:300;font-style:italic;font-size:clamp(21px,3vw,27px);letter-spacing:-.01em}
+.sheet__head h2 b{font-style:normal;font-weight:700}
+.sheet__head .kick{align-self:center}
+
+.f{margin-bottom:18px}
+.f label{display:block;font-size:10px;letter-spacing:.2em;text-transform:uppercase;font-weight:700;
+  color:var(--ink-50);margin-bottom:7px}
+.f label i{font-style:normal;text-transform:none;letter-spacing:.02em;font-weight:500;color:var(--ink-35)}
+.f input[type=text],.f input[type=email],.f input[type=password],.f textarea,.f select{width:100%;background:rgba(255,255,255,.35);
+  border:1px solid var(--line);border-radius:3px;padding:10px 12px;outline:none;transition:border-color .2s}
+.f input:focus,.f textarea:focus{border-color:var(--ink-soft);background:rgba(255,255,255,.55)}
+.f textarea{resize:vertical;min-height:76px;line-height:1.55}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:0 20px}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0 20px}
+.hint{font-size:11.5px;color:var(--ink-35);margin-top:5px;line-height:1.45}
+
+/* chips (tags / disciplines / lists) */
+.chips{display:flex;flex-wrap:wrap;gap:7px}
+.chip{display:inline-flex;align-items:center;gap:7px;border:1px solid var(--line);border-radius:99px;
+  padding:5px 6px 5px 12px;font-size:12px;font-weight:600;background:rgba(255,255,255,.3)}
+.chip button{color:var(--ink-35);font-size:13px;line-height:1;padding:1px 5px;border-radius:50%}
+.chip button:hover{color:var(--warn)}
+.chips input{border:1px dashed var(--line);border-radius:99px;padding:5px 12px;font-size:12px;
+  background:transparent;outline:none;width:130px}
+.chips input:focus{border-color:var(--ink-soft)}
+
+/* palette */
+.palrow{display:flex;flex-wrap:wrap;gap:9px;align-items:center}
+.swatch{display:flex;align-items:center;gap:8px;border:1px solid var(--line);border-radius:99px;
+  padding:4px 8px 4px 4px;background:rgba(255,255,255,.3)}
+.swatch input[type=color]{width:26px;height:26px;border:none;border-radius:50%;padding:0;background:none;cursor:pointer}
+.swatch input[type=color]::-webkit-color-swatch-wrapper{padding:0}
+.swatch input[type=color]::-webkit-color-swatch{border:1px solid var(--line);border-radius:50%}
+.swatch input[type=text]{width:74px;border:none;background:transparent;font-size:12px;font-weight:600;
+  letter-spacing:.04em;outline:none;text-transform:uppercase}
+.swatch button{color:var(--ink-35);padding:1px 5px}
+.swatch button:hover{color:var(--warn)}
+
+/* list editor */
+.lrows{display:flex;flex-direction:column;gap:8px}
+.lrow{display:flex;gap:8px;align-items:center}
+.lrow input,.lrow textarea{flex:1;background:rgba(255,255,255,.35);border:1px solid var(--line);
+  border-radius:3px;padding:9px 12px;outline:none}
+.lrow input:focus,.lrow textarea:focus{border-color:var(--ink-soft)}
+.lrow .x{color:var(--ink-35);padding:4px 8px}
+.lrow .x:hover{color:var(--warn)}
+
+/* gallery */
+.gal{display:grid;grid-template-columns:repeat(auto-fill,minmax(168px,1fr));gap:14px}
+.gitem{background:rgba(255,255,255,.35);border:1px solid var(--line);border-radius:4px;overflow:hidden;
+  display:flex;flex-direction:column}
+.gitem.cover{border-color:var(--ink-soft);box-shadow:0 0 0 1px var(--ink-soft)}
+.gitem .im{aspect-ratio:4/3;background:var(--paper-lo);position:relative}
+.gitem .im img{width:100%;height:100%;object-fit:cover}
+.gitem .im .cb{position:absolute;top:6px;left:6px;font-size:9px;letter-spacing:.16em;text-transform:uppercase;
+  font-weight:800;background:var(--ink-soft);color:var(--paper);border-radius:99px;padding:3px 9px}
+.gitem .im .miss{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--warn);font-weight:700;text-align:center;padding:8px}
+.gitem input{border:none;border-top:1px solid var(--line-soft);background:transparent;padding:8px 10px;
+  font-size:12px;outline:none;width:100%}
+.gitem input:focus{background:rgba(255,255,255,.5)}
+.gitem .ops{display:flex;border-top:1px solid var(--line-soft)}
+.gitem .ops button{flex:1;padding:7px 0;font-size:10px;letter-spacing:.08em;text-transform:uppercase;
+  font-weight:700;color:var(--ink-50)}
+.gitem .ops button:hover{background:var(--ink-soft);color:var(--paper)}
+.gitem .ops button.del:hover{background:var(--warn)}
+.gitem .path{font-size:9.5px;color:var(--ink-35);padding:5px 10px 7px;letter-spacing:.02em;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dropzone{border:1.5px dashed var(--line);border-radius:4px;padding:26px;text-align:center;
+  color:var(--ink-50);font-size:12.5px;transition:border-color .2s,background .2s;cursor:pointer;margin-top:16px}
+.dropzone.over,.dropzone:hover{border-color:var(--ink-soft);background:rgba(255,255,255,.35)}
+.dropzone b{display:block;font-size:11px;letter-spacing:.18em;text-transform:uppercase;margin-bottom:4px;color:var(--ink-soft)}
+
+.rowbtns{display:flex;gap:10px;flex-wrap:wrap;margin-top:6px}
+
+/* publish */
+.pubcard{border:1px solid var(--line);border-radius:4px;padding:20px 22px;background:rgba(255,255,255,.28);margin-bottom:16px}
+.pubcard h3{font-family:var(--serif);font-style:italic;font-weight:400;font-size:18px;margin-bottom:6px}
+.pubcard p{font-size:13px;color:var(--ink-70);margin-bottom:14px;max-width:56ch}
+.prog{height:3px;background:var(--line-soft);border-radius:99px;overflow:hidden;margin-top:14px;display:none}
+.prog i{display:block;height:100%;width:0;background:var(--ink-soft);transition:width .2s}
+.publog{font-size:12px;color:var(--ink-50);margin-top:10px;white-space:pre-line;max-height:130px;overflow:auto}
+.ghgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
+@media(max-width:700px){.ghgrid{grid-template-columns:1fr}}
+.pubcard.live{border-color:var(--ink-soft);box-shadow:0 1px 0 var(--ink-soft) inset}
+
+/* toast */
+#toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(20px);opacity:0;
+  background:var(--ink-soft);color:var(--paper);border-radius:99px;padding:10px 22px;font-size:12px;
+  letter-spacing:.08em;font-weight:600;z-index:2000;transition:all .35s var(--ease);pointer-events:none;
+  max-width:90vw;text-align:center}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* preview overlay */
+#pv{position:fixed;inset:0;z-index:900;background:rgba(21,20,15,.5);display:none;padding:clamp(8px,2.5vw,28px)}
+#pv.open{display:block}
+#pv .frame{width:100%;height:100%;background:var(--paper);border-radius:6px;overflow:hidden;
+  box-shadow:0 40px 80px -30px rgba(0,0,0,.6);position:relative}
+#pv iframe{width:100%;height:100%;border:none}
+#pv .x{position:absolute;top:10px;right:10px;background:var(--ink-soft);color:var(--paper);
+  border-radius:99px;padding:7px 16px;font-size:11px;letter-spacing:.14em;text-transform:uppercase;font-weight:700}
+
+/* loader screen */
+#loadscreen{display:none;min-height:calc(100vh - 54px);align-items:center;justify-content:center;padding:30px}
+#loadscreen .sheet{max-width:520px;text-align:center}
+#loadscreen h2{font-family:var(--serif);font-weight:300;font-style:italic;font-size:24px;margin-bottom:8px}
+#loadscreen p{font-size:13px;color:var(--ink-70);margin-bottom:18px}
+
+@media (max-width:860px){
+  .shell{grid-template-columns:1fr}
+  .rail{border-right:none;border-bottom:1px solid var(--line);padding-bottom:14px}
+  .grid2,.grid3{grid-template-columns:1fr}
+  .topbar{flex-wrap:wrap}
+}
+</style>
+</head>
+<body>
+<div class="grain" aria-hidden="true"></div>
+
+<!-- ============ PASSCODE GATE ============ -->
+<div id="gate">
+  <div class="gate__card">
+    <span class="kick">Production Desk · Vol. 01</span>
+    <h1>The Archive<b>G.VIISUALS Admin</b></h1>
+    <p>Enter the passcode to open the editor.</p>
+    <input id="gate-pass" type="password" autocomplete="current-password" placeholder="Passcode" />
+    <div class="gate__err" id="gate-err"></div>
+    <button class="btn solid" id="gate-go" style="margin-top:6px">Unlock</button>
+  </div>
+</div>
+
+<!-- ============ APP ============ -->
+<div id="app">
+  <div class="topbar">
+    <span class="brand">G.VIISUALS<em>admin</em></span>
+    <span class="status" id="status"><span class="dot"></span><span id="status-t">Loading…</span></span>
+    <button class="btn ghost" id="btn-revert" title="Discard all edits and reload the published data">Revert</button>
+    <button class="btn" id="btn-preview">Preview</button>
+    <button class="btn solid" id="btn-publish-top">Publish</button>
+  </div>
+
+  <div id="loadscreen">
+    <div class="sheet">
+      <span class="kick">Setup</span>
+      <h2>Load the site data</h2>
+      <p>The admin couldn't fetch <b>index.html</b> automatically (this happens when the file is opened directly from disk). Load it manually — the full site .zip is best, since it also loads every image for publishing.</p>
+      <div class="rowbtns" style="justify-content:center">
+        <button class="btn solid" id="btn-load-zip">Load site .zip</button>
+        <button class="btn" id="btn-load-html">Load index.html</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="shell" id="shell" style="display:none">
+    <aside class="rail">
+      <span class="kick">Projects</span>
+      <div id="plist"></div>
+      <div class="add"><button class="btn sm" id="btn-add">+ New project</button></div>
+      <span class="kick">Site</span>
+      <button class="navitem" data-view="texts">Texts &amp; contact</button>
+      <span class="kick">Deploy</span>
+      <button class="navitem" data-view="publish">Publish / export</button>
+    </aside>
+    <main class="main" id="main"></main>
+  </div>
+</div>
+
+<div id="toast"></div>
+<div id="pv"><div class="frame"><iframe id="pv-frame" title="Site preview"></iframe><button class="x" id="pv-close">Close ×</button></div></div>
+<input type="file" id="file-html" accept=".html,text/html" hidden />
+<input type="file" id="file-zip" accept=".zip,application/zip" hidden />
+<input type="file" id="file-imgs" accept="image/*" multiple hidden />
+
+<script>
+'use strict';
+/* =====================================================================
+   G.VIISUALS ADMIN
+   - Loads site data from the SITE-DATA JSON block inside index.html
+   - Full editing: projects, galleries, palettes, texts, contact
+   - Publishes a regenerated index.html or a complete site .zip
+   ===================================================================== */
+
+/* ---------- passcode ----------
+   Default passcode: volume01
+   To change it: run in the browser console →
+     crypto.subtle.digest('SHA-256', new TextEncoder().encode('your-new-pass'))
+       .then(b=>console.log([...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('')))
+   …then paste the printed hash below.
+   NOTE: on a static host this is a light lock, not real security —
+   keep admin.html at a non-obvious URL or out of the public deploy. */
+var PASS_HASH = '3f6e4bd9c1e6f1a0d5df1c5c7b1b0b2a1111111111111111111111111111111'; // placeholder, replaced below
+PASS_HASH = '8177f2a3181d66846efa4d7ae2caa5fd401723eb516595c1049316f4af140eee'; /* sha256("volume01") */
+
+async function sha256(s){
+  var b = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(s));
+  return [...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('');
+}
+(function gate(){
+  var g=document.getElementById('gate'), inp=document.getElementById('gate-pass'),
+      err=document.getElementById('gate-err'), go=document.getElementById('gate-go');
+  if(sessionStorage.getItem('gv-admin')==='1'){ g.style.display='none'; boot(); return; }
+  async function tryIt(){
+    if(!crypto.subtle){ unlock(); return; } // non-secure context fallback
+    var h=await sha256(inp.value);
+    if(h===PASS_HASH){ unlock(); } else { err.textContent='Wrong passcode.'; inp.select(); }
+  }
+  function unlock(){ sessionStorage.setItem('gv-admin','1'); g.style.display='none'; boot(); }
+  go.addEventListener('click',tryIt);
+  inp.addEventListener('keydown',e=>{ if(e.key==='Enter') tryIt(); });
+  setTimeout(()=>inp.focus(),100);
+})();
+
+/* ---------- state ---------- */
+var SITE=null;          // the editable data
+var TEMPLATE='';        // full index.html text (kept as the publish template)
+var ASSETS=new Map();   // path -> Blob  (new / replaced files, or everything when loaded from zip)
+var NEW_ASSETS=new Set(); // paths added this session -> need committing on live publish
+var URLS=new Map();     // path -> objectURL cache
+var view={type:'project', key:null};
+var dirty=false;
+var sourceLabel='';
+
+function $(s,el){ return (el||document).querySelector(s); }
+function $$(s,el){ return [...(el||document).querySelectorAll(s)]; }
+function toast(msg){ var t=$('#toast'); t.textContent=msg; t.classList.add('show');
+  clearTimeout(t._h); t._h=setTimeout(()=>t.classList.remove('show'),2600); }
+function esc(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function setDirty(d){
+  dirty=d;
+  var st=$('#status');
+  st.className='status '+(d?'dirty':'ok');
+  $('#status-t').textContent = d ? 'Unsaved changes — publish to make them live' : sourceLabel;
+  if(d) saveDraft();
+}
+window.addEventListener('beforeunload',e=>{ if(dirty){ e.preventDefault(); e.returnValue=''; } });
+
+function assetURL(path){
+  if(!path) return '';
+  if(/^(data:|blob:|https?:)/.test(path)) return path;
+  if(ASSETS.has(path)){
+    if(!URLS.has(path)) URLS.set(path, URL.createObjectURL(ASSETS.get(path)));
+    return URLS.get(path);
+  }
+  return '/'+path; // root-absolute — resolves when admin runs anywhere on the live site
+}
+
+/* ---------- drafts (localStorage safety net) ---------- */
+function saveDraft(){
+  try{ localStorage.setItem('gv-admin-draft', JSON.stringify({t:Date.now(), site:SITE})); }catch(e){}
+}
+function loadDraft(){
+  try{ return JSON.parse(localStorage.getItem('gv-admin-draft')||'null'); }catch(e){ return null; }
+}
+function clearDraft(){ try{ localStorage.removeItem('gv-admin-draft'); }catch(e){} }
+
+/* ---------- boot & data loading ---------- */
+var DATA_RE=/<!--SITE-DATA-START-->[\s\S]*?<!--SITE-DATA-END-->/;
+function extractSite(html){
+  var m=html.match(/<script type="application\/json" id="site-data">([\s\S]*?)<\/script>/);
+  if(!m) return null;
+  try{ return JSON.parse(m[1]); }catch(e){ return null; }
+}
+async function boot(){
+  document.getElementById('app').style.display='block';
+  try{
+    var r=await fetch('/index.html?nocache='+Date.now(),{cache:'no-store'});
+    if(!r.ok) throw 0;
+    var html=await r.text();
+    var site=extractSite(html);
+    if(!site) throw 0;
+    TEMPLATE=html; SITE=site;
+    sourceLabel='Loaded from live index.html';
+    start();
+  }catch(e){
+    $('#loadscreen').style.display='flex';
+    $('#btn-load-zip').onclick=()=>$('#file-zip').click();
+    $('#btn-load-html').onclick=()=>$('#file-html').click();
+  }
+}
+$('#file-html').addEventListener('change',async function(){
+  var f=this.files[0]; if(!f) return;
+  var html=await f.text(); var site=extractSite(html);
+  if(!site){ toast('No site data found in that file — use the new data-driven index.html'); return; }
+  TEMPLATE=html; SITE=site; sourceLabel='Loaded from file: '+f.name;
+  $('#loadscreen').style.display='none'; start(); this.value='';
+});
+$('#file-zip').addEventListener('change',async function(){
+  var f=this.files[0]; if(!f) return;
+  try{
+    var entries=await zipRead(f);
+    var idx=entries.find(e=>e.name==='index.html'||e.name.endsWith('/index.html'));
+    if(!idx){ toast('index.html not found in the zip'); return; }
+    var prefix=idx.name.slice(0, idx.name.length-'index.html'.length);
+    var html=new TextDecoder().decode(await idx.data());
+    var site=extractSite(html);
+    if(!site){ toast('No site data block in that index.html — use the data-driven version'); return; }
+    TEMPLATE=html; SITE=site;
+    for(var en of entries){
+      if(en.dir||en.name===idx.name) continue;
+      var rel=en.name.startsWith(prefix)?en.name.slice(prefix.length):en.name;
+      ASSETS.set(rel, new Blob([await en.data()]));
+    }
+    sourceLabel='Loaded from zip: '+f.name+' ('+ASSETS.size+' assets)';
+    $('#loadscreen').style.display='none'; start();
+  }catch(e){ console.error(e); toast('Could not read that zip'); }
+  this.value='';
+});
+function start(){
+  var d=loadDraft();
+  if(d && d.site && confirm('An unpublished draft from a previous session was found.\nRestore it? (Cancel keeps the published version)')){
+    SITE=d.site; setTimeout(()=>setDirty(true),0);
+  } else clearDraft();
+  $('#shell').style.display='grid';
+  setDirty(false);
+  view={type:'project', key:(SITE.projects[0]||{}).key||null};
+  renderAll();
+}
+
+/* ---------- mutation helper ---------- */
+function mut(fn){ fn(); setDirty(true); }
+
+/* ---------- rail / project list ---------- */
+function renderAll(){ renderRail(); renderMain(); }
+function renderRail(){
+  var el=$('#plist');
+  el.innerHTML=SITE.projects.map(function(p,i){
+    var active = view.type==='project' && view.key===p.key;
+    return '<div class="pitem'+(active?' active':'')+'" role="button" tabindex="0" data-key="'+esc(p.key)+'">'
+      +'<span class="no">'+String(i+1).padStart(2,'0')+'</span>'
+      +'<img class="thumb" src="'+esc(assetURL(p.lqip||p.cover))+'" alt="">'
+      +'<span class="nm">'+esc(p.name||'Untitled')+'</span>'
+      +'<span class="mv"><button data-mv="-1" title="Move up">↑</button><button data-mv="1" title="Move down">↓</button></span>'
+      +'</div>';
+  }).join('');
+  $$('.pitem',el).forEach(function(b){
+    b.addEventListener('click',function(e){
+      var mv=e.target.getAttribute&&e.target.getAttribute('data-mv');
+      var key=b.getAttribute('data-key');
+      var i=SITE.projects.findIndex(p=>p.key===key);
+      if(mv){ e.stopPropagation();
+        var j=i+parseInt(mv,10);
+        if(j<0||j>=SITE.projects.length) return;
+        mut(()=>{ var t=SITE.projects[i]; SITE.projects[i]=SITE.projects[j]; SITE.projects[j]=t; });
+        renderRail(); if(view.type==='project') renderMain();
+        return;
+      }
+      view={type:'project',key:key}; renderAll();
+    });
+    b.addEventListener('keydown',function(e){ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); b.click(); } });
+  });
+  $$('.navitem').forEach(function(n){
+    n.classList.toggle('active', view.type===n.getAttribute('data-view'));
+    n.onclick=function(){ view={type:n.getAttribute('data-view')}; renderAll(); };
+  });
+}
+$('#btn-add').addEventListener('click',function(){
+  var name=prompt('Name of the new project:','New Project');
+  if(name===null) return;
+  var key=slug(name)||'project';
+  var base=key,n=2; while(SITE.projects.some(p=>p.key===key)) key=base+'-'+(n++);
+  mut(()=>SITE.projects.push({key:key,name:name,cat:'Brand Identity',sub:'',desc:'',quote:'',tags:[],
+    cover:'',lqip:'',gallery:[],caps:[],
+    think:{challenge:'',idea:'',mark:'',craft:'',type:'',pal:[]}}));
+  view={type:'project',key:key}; renderAll();
+  toast('Project added — it will appear on the site once published');
+});
+function slug(s){ return String(s).toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'').slice(0,40); }
+
+/* ---------- main views ---------- */
+function renderMain(){
+  var m=$('#main');
+  if(view.type==='project'){ renderProject(m); }
+  else if(view.type==='texts'){ renderTexts(m); }
+  else if(view.type==='publish'){ renderPublish(m); }
+}
+
+/* ===== field builders ===== */
+function field(label,val,attrs,hint){
+  return '<div class="f"><label>'+label+'</label>'
+    +'<input type="text" '+(attrs||'')+' value="'+esc(val)+'">'
+    +(hint?'<div class="hint">'+hint+'</div>':'')+'</div>';
+}
+function area(label,val,attrs,hint){
+  return '<div class="f"><label>'+label+'</label>'
+    +'<textarea '+(attrs||'')+'>'+esc(val)+'</textarea>'
+    +(hint?'<div class="hint">'+hint+'</div>':'')+'</div>';
+}
+function bindInputs(root,obj,after){
+  $$('[data-bind]',root).forEach(function(inp){
+    inp.addEventListener('input',function(){
+      var path=inp.getAttribute('data-bind').split('.');
+      var o=obj; while(path.length>1) o=o[path.shift()];
+      mut(()=>o[path[0]]=inp.value);
+      if(after) after(inp);
+    });
+  });
+}
+/* chip list editor (tags, disciplines) */
+function chipsHTML(id,arr,placeholder){
+  return '<div class="chips" id="'+id+'">'
+    + arr.map((t,i)=>'<span class="chip">'+esc(t)+'<button data-i="'+i+'" title="Remove">×</button></span>').join('')
+    + '<input type="text" placeholder="'+esc(placeholder||'Add + Enter')+'"></div>';
+}
+function bindChips(root,id,arr,rerender){
+  var box=$('#'+id,root);
+  $$('.chip button',box).forEach(b=>b.addEventListener('click',function(){
+    mut(()=>arr.splice(parseInt(b.getAttribute('data-i'),10),1)); rerender();
+  }));
+  var inp=$('input',box);
+  inp.addEventListener('keydown',function(e){
+    if(e.key==='Enter'&&inp.value.trim()){ e.preventDefault();
+      mut(()=>arr.push(inp.value.trim())); rerender();
+      setTimeout(()=>{ var ni=$('#'+id+' input',root); if(ni) ni.focus(); },0);
+    }
+  });
+}
+/* plain rows list editor (paragraphs, services…) */
+function rowsHTML(id,arr,useArea){
+  var tag=useArea?'textarea':'input type="text"';
+  return '<div class="lrows" id="'+id+'">'
+    + arr.map((v,i)=>'<div class="lrow">'+(useArea
+        ? '<textarea data-i="'+i+'">'+esc(v)+'</textarea>'
+        : '<input type="text" data-i="'+i+'" value="'+esc(v)+'">')
+      +'<button class="x" data-del="'+i+'" title="Remove">×</button></div>').join('')
+    +'</div><div class="rowbtns"><button class="btn sm ghost" data-addrow="'+id+'">+ Add line</button></div>';
+}
+function bindRows(root,id,arr,rerender){
+  var box=$('#'+id,root);
+  $$('[data-i]',box).forEach(inp=>inp.addEventListener('input',function(){
+    mut(()=>arr[parseInt(inp.getAttribute('data-i'),10)]=inp.value);
+  }));
+  $$('[data-del]',box).forEach(b=>b.addEventListener('click',function(){
+    mut(()=>arr.splice(parseInt(b.getAttribute('data-del'),10),1)); rerender();
+  }));
+  $('[data-addrow="'+id+'"]',root).addEventListener('click',function(){
+    mut(()=>arr.push('')); rerender();
+  });
+}
+
+/* ===== PROJECT EDITOR ===== */
+function renderProject(m){
+  var p=SITE.projects.find(x=>x.key===view.key);
+  if(!p){ m.innerHTML='<div class="sheet"><p>Select or add a project on the left.</p></div>'; return; }
+  var idx=SITE.projects.indexOf(p);
+  m.innerHTML=
+  '<div class="sheet">'
+    +'<div class="sheet__head"><h2><b>'+String(idx+1).padStart(2,'0')+'</b> · <span id="ph-name">'+esc(p.name||'Untitled')+'</span></h2>'
+    +'<span class="kick">'+p.gallery.length+' images</span></div>'
+    +'<div class="grid2">'
+      +field('Project name',p.name,'data-bind="name"')
+      +field('Key <i>(short id — used for image filenames)</i>',p.key,'data-key-input pattern="[a-z0-9-]+"','Lowercase letters, numbers, dashes. Changing it doesn\u2019t break existing images.')
+    +'</div>'
+    +'<div class="grid2">'
+      +field('Category line <i>(e.g. Brand Identity · Social)</i>',p.cat,'data-bind="cat"')
+      +field('Subtitle <i>(e.g. Caf\u00e9 &amp; Matcha Bar)</i>',p.sub,'data-bind="sub"')
+    +'</div>'
+    +area('Description',p.desc,'data-bind="desc" style="min-height:110px"')
+    +field('Pull quote <i>(the short italic line — leave empty to hide)</i>',p.quote,'data-bind="quote"')
+    +'<div class="f"><label>Tags</label>'+chipsHTML('tags',p.tags,'Add tag + Enter')+'</div>'
+    +'<div class="rowbtns">'
+      +'<button class="btn sm ghost" id="btn-dup">Duplicate project</button>'
+      +'<button class="btn sm danger" id="btn-del">Delete project</button>'
+    +'</div>'
+  +'</div>'
+
+  +'<div class="sheet">'
+    +'<div class="sheet__head"><h2>Case study <b>thinking</b></h2><span class="kick">Challenge / Idea / Mark / Craft</span></div>'
+    +area('Challenge',p.think.challenge,'data-bind="think.challenge"')
+    +area('Idea',p.think.idea,'data-bind="think.idea"')
+    +area('The mark <i>(optional)</i>',p.think.mark,'data-bind="think.mark"')
+    +area('Craft',p.think.craft,'data-bind="think.craft"')
+    +area('Typography <i>(optional)</i>',p.think.type,'data-bind="think.type"')
+    +'<div class="f"><label>Color palette</label><div class="palrow" id="pal"></div>'
+    +'<div class="hint">Click a swatch to pick, or type the hex. Order = order shown on the site.</div></div>'
+  +'</div>'
+
+  +'<div class="sheet">'
+    +'<div class="sheet__head"><h2>Gallery &amp; <b>cover</b></h2><span class="kick">Click \u201cCover\u201d on the image that fronts the project</span></div>'
+    +'<div class="gal" id="gal"></div>'
+    +'<div class="dropzone" id="drop"><b>Add images</b>Drop files here or click to browse · converted to WebP &amp; named '+esc(p.key)+'-nn automatically</div>'
+  +'</div>';
+
+  bindInputs(m,p,function(inp){
+    if(inp.getAttribute('data-bind')==='name'){ $('#ph-name').textContent=p.name||'Untitled'; renderRail(); }
+  });
+
+  // key editing (validated)
+  $('[data-key-input]',m).addEventListener('change',function(){
+    var v=slug(this.value);
+    if(!v){ this.value=p.key; return; }
+    if(SITE.projects.some(x=>x!==p&&x.key===v)){ toast('That key is already used'); this.value=p.key; return; }
+    mut(()=>p.key=v); this.value=v; view.key=v; renderRail();
+  });
+
+  bindChips(m,'tags',p.tags,()=>renderProject(m));
+
+  $('#btn-dup').addEventListener('click',function(){
+    var copy=JSON.parse(JSON.stringify(p));
+    var base=p.key+'-copy',k=base,n=2;
+    while(SITE.projects.some(x=>x.key===k)) k=base+'-'+(n++);
+    copy.key=k; copy.name=p.name+' (copy)';
+    mut(()=>SITE.projects.splice(idx+1,0,copy));
+    view.key=k; renderAll();
+  });
+  $('#btn-del').addEventListener('click',function(){
+    if(!confirm('Delete \u201c'+p.name+'\u201d from the site?\nImage files stay in the zip until you remove them, so this is reversible before publishing.')) return;
+    mut(()=>SITE.projects.splice(idx,1));
+    view.key=(SITE.projects[Math.min(idx,SITE.projects.length-1)]||{}).key||null;
+    renderAll();
+  });
+
+  renderPal(m,p);
+  renderGallery(m,p);
+
+  // uploads
+  var drop=$('#drop',m), fi=$('#file-imgs');
+  drop.addEventListener('click',()=>{ fi.onchange=()=>{ addImages(p,[...fi.files]); fi.value=''; }; fi.click(); });
+  ;['dragover','dragenter'].forEach(ev=>drop.addEventListener(ev,e=>{e.preventDefault();drop.classList.add('over');}));
+  ;['dragleave','drop'].forEach(ev=>drop.addEventListener(ev,e=>{e.preventDefault();drop.classList.remove('over');}));
+  drop.addEventListener('drop',e=>{ addImages(p,[...e.dataTransfer.files].filter(f=>/^image\//.test(f.type))); });
+}
+
+function renderPal(m,p){
+  var box=$('#pal',m);
+  box.innerHTML=p.think.pal.map(function(c,i){
+    var safe=/^#[0-9a-fA-F]{6}$/.test(c)?c:'#888888';
+    return '<span class="swatch"><input type="color" value="'+safe+'" data-i="'+i+'">'
+      +'<input type="text" value="'+esc(c)+'" data-hex="'+i+'" maxlength="7">'
+      +'<button data-delp="'+i+'" title="Remove">×</button></span>';
+  }).join('')+'<button class="btn sm ghost" id="addpal">+ Color</button>';
+  $$('input[type=color]',box).forEach(c=>c.addEventListener('input',function(){
+    var i=+c.getAttribute('data-i');
+    mut(()=>p.think.pal[i]=c.value.toUpperCase());
+    $('[data-hex="'+i+'"]',box).value=c.value.toUpperCase();
+  }));
+  $$('[data-hex]',box).forEach(h=>h.addEventListener('change',function(){
+    var i=+h.getAttribute('data-hex'); var v=h.value.trim();
+    if(!v.startsWith('#')) v='#'+v;
+    if(/^#[0-9a-fA-F]{6}$/.test(v)){ mut(()=>p.think.pal[i]=v.toUpperCase()); renderPal(m,p); }
+    else { toast('Hex should look like #4B5E1C'); h.value=p.think.pal[i]; }
+  }));
+  $$('[data-delp]',box).forEach(b=>b.addEventListener('click',function(){
+    mut(()=>p.think.pal.splice(+b.getAttribute('data-delp'),1)); renderPal(m,p);
+  }));
+  $('#addpal',box).addEventListener('click',function(){
+    mut(()=>p.think.pal.push('#4B5E1C')); renderPal(m,p);
+  });
+}
+
+function renderGallery(m,p){
+  var g=$('#gal',m);
+  if(!g) return;
+  if(!p.gallery.length){ g.innerHTML='<div class="hint">No images yet — add some below. The first one becomes the cover automatically.</div>'; return; }
+  g.innerHTML=p.gallery.map(function(path,i){
+    var isCover=path===p.cover;
+    var url=assetURL(path);
+    return '<div class="gitem'+(isCover?' cover':'')+'">'
+      +'<div class="im"><img src="'+esc(url)+'" loading="lazy" onerror="this.style.display=\'none\';this.parentNode.insertAdjacentHTML(\'beforeend\',\'<span class=miss>file not loaded<br>(publish from the live site or load the zip)</span>\')">'
+      +(isCover?'<span class="cb">Cover</span>':'')+'</div>'
+      +'<input type="text" placeholder="Caption in the lightbox" value="'+esc(p.caps[i]||'')+'" data-cap="'+i+'">'
+      +'<div class="ops">'
+        +'<button data-gmv="-1" data-i="'+i+'" title="Move left">◀</button>'
+        +'<button data-cov="'+i+'" title="Use as cover">Cover</button>'
+        +'<button data-gmv="1" data-i="'+i+'" title="Move right">▶</button>'
+        +'<button class="del" data-gdel="'+i+'" title="Remove from gallery">✕</button>'
+      +'</div>'
+      +'<div class="path">'+esc(path)+'</div>'
+    +'</div>';
+  }).join('');
+  $$('[data-cap]',g).forEach(inp=>inp.addEventListener('input',function(){
+    mut(()=>p.caps[+inp.getAttribute('data-cap')]=inp.value);
+  }));
+  $$('[data-gmv]',g).forEach(b=>b.addEventListener('click',function(){
+    var i=+b.getAttribute('data-i'), j=i+parseInt(b.getAttribute('data-gmv'),10);
+    if(j<0||j>=p.gallery.length) return;
+    mut(()=>{
+      var t=p.gallery[i]; p.gallery[i]=p.gallery[j]; p.gallery[j]=t;
+      var c=p.caps[i]; p.caps[i]=p.caps[j]; p.caps[j]=c;
+    });
+    renderGallery(m,p);
+  }));
+  $$('[data-cov]',g).forEach(b=>b.addEventListener('click',async function(){
+    var path=p.gallery[+b.getAttribute('data-cov')];
+    mut(()=>p.cover=path);
+    renderGallery(m,p);
+    var lq=await makeLqip(path);
+    if(lq){ mut(()=>p.lqip=lq); renderRail(); }
+  }));
+  $$('[data-gdel]',g).forEach(b=>b.addEventListener('click',function(){
+    var i=+b.getAttribute('data-gdel');
+    var path=p.gallery[i];
+    mut(()=>{
+      p.gallery.splice(i,1); p.caps.splice(i,1);
+      ASSETS.delete(path); NEW_ASSETS.delete(path);
+      if(p.cover===path){ p.cover=p.gallery[0]||''; }
+    });
+    if(p.cover) makeLqip(p.cover).then(lq=>{ if(lq){ mut(()=>p.lqip=lq); renderRail(); } });
+    renderGallery(m,p); renderRail();
+  }));
+}
+
+/* ---------- image pipeline: convert → webp, auto-name, lqip ---------- */
+function loadBitmap(src){
+  return new Promise(function(res,rej){
+    var im=new Image();
+    im.onload=()=>res(im); im.onerror=rej;
+    im.src=src;
+  });
+}
+function canvasBlob(cv,type,q){
+  return new Promise(res=>cv.toBlob(res,type,q));
+}
+async function fileToWebp(file,maxEdge){
+  var url=URL.createObjectURL(file);
+  try{
+    var im=await loadBitmap(url);
+    var w=im.naturalWidth,h=im.naturalHeight;
+    var s=Math.min(1,(maxEdge||1600)/Math.max(w,h));
+    var cv=document.createElement('canvas');
+    cv.width=Math.round(w*s); cv.height=Math.round(h*s);
+    cv.getContext('2d').drawImage(im,0,0,cv.width,cv.height);
+    var blob=await canvasBlob(cv,'image/webp',.85);
+    if(blob&&blob.type==='image/webp') return {blob:blob,ext:'webp'};
+    blob=await canvasBlob(cv,'image/jpeg',.86);
+    return {blob:blob,ext:'jpg'};
+  } finally { URL.revokeObjectURL(url); }
+}
+function nextImageName(p,ext){
+  var n=1,name;
+  do{ name='assets/img/'+p.key+'-'+String(n).padStart(2,'0')+'.'+ext; n++; }
+  while(p.gallery.includes(name)||ASSETS.has(name));
+  return name;
+}
+async function addImages(p,files){
+  if(!files.length) return;
+  toast('Processing '+files.length+' image'+(files.length>1?'s':'')+'…');
+  for(var f of files){
+    try{
+      var out=await fileToWebp(f,1600);
+      var name=nextImageName(p,out.ext);
+      ASSETS.set(name,out.blob); NEW_ASSETS.add(name);
+      mut(()=>{ p.gallery.push(name); p.caps.push(''); });
+      if(!p.cover){
+        mut(()=>p.cover=name);
+        var lq=await makeLqip(name);
+        if(lq) mut(()=>p.lqip=lq);
+      }
+    }catch(e){ console.error(e); toast('Could not process '+f.name); }
+  }
+  var m=$('#main'); renderGallery(m,p); renderRail();
+  toast('Added — remember to publish');
+}
+async function makeLqip(path){
+  try{
+    var im=await loadBitmap(assetURL(path));
+    var w=28,h=Math.max(1,Math.round(im.naturalHeight/im.naturalWidth*28));
+    var cv=document.createElement('canvas'); cv.width=w; cv.height=h;
+    cv.getContext('2d').drawImage(im,0,0,w,h);
+    var d=cv.toDataURL('image/webp',.55);
+    if(!d.startsWith('data:image/webp')) d=cv.toDataURL('image/jpeg',.5);
+    return d;
+  }catch(e){ return ''; }
+}
+
+/* ===== SITE TEXTS EDITOR ===== */
+function renderTexts(m){
+  var h=SITE.hero,a=SITE.about,w=SITE.works,c=SITE.contact,me=SITE.meta;
+  m.innerHTML=
+  '<div class="sheet">'
+    +'<div class="sheet__head"><h2>Page <b>meta</b></h2><span class="kick">Browser tab &amp; search</span></div>'
+    +field('Site title',me.title,'data-bind="meta.title"')
+    +area('Meta description',me.description,'data-bind="meta.description"','Also used for the social share preview.')
+  +'</div>'
+  +'<div class="sheet">'
+    +'<div class="sheet__head"><h2>Hero <b>cover</b></h2><span class="kick">First screen after the folder opens</span></div>'
+    +'<div class="grid2">'
+      +field('Top-left name',h.topLeft,'data-bind="hero.topLeft"')
+      +field('Top-left detail <i>(hidden on small screens)</i>',h.topLeftDetail,'data-bind="hero.topLeftDetail"')
+    +'</div>'
+    +'<div class="grid2">'
+      +field('Title line 1',h.line1,'data-bind="hero.line1"')
+      +field('Title line 2',h.line2,'data-bind="hero.line2"')
+    +'</div>'
+    +'<div class="grid3">'
+      +field('Studio',h.studio,'data-bind="hero.studio"')
+      +field('Based in',h.basedIn,'data-bind="hero.basedIn"')
+      +field('Volume',h.volume,'data-bind="hero.volume"')
+    +'</div>'
+    +'<div class="f"><label>Rotating disciplines</label>'+chipsHTML('disc',h.disciplines,'Add + Enter')
+    +'<div class="hint">These rotate under \u201cDiscipline\u201d on the hero. The \u201c01 / '+String(SITE.projects.length).padStart(2,'0')+'\u201d counter updates automatically.</div></div>'
+  +'</div>'
+  +'<div class="sheet">'
+    +'<div class="sheet__head"><h2>About <b>the designer</b></h2><span class="kick">Section 01</span></div>'
+    +area('Lead sentence <i>(HTML allowed — wrap the italic part in &lt;em&gt;\u2026&lt;/em&gt;)</i>',a.lead,'data-bind="about.lead" style="min-height:88px"')
+    +'<div class="f"><label>Body paragraphs</label>'+rowsHTML('paras',a.paragraphs,true)+'</div>'
+    +'<div class="grid2">'
+      +'<div class="f"><label>Services list</label>'+rowsHTML('svcs',a.services)+'</div>'
+      +'<div class="f"><label>Based-in list</label>'+rowsHTML('based',a.basedList)+'</div>'
+    +'</div>'
+    +field('Portrait tag',a.portraitTag,'data-bind="about.portraitTag"','To change the photo itself, replace assets/img/about.webp in the zip.')
+  +'</div>'
+  +'<div class="sheet">'
+    +'<div class="sheet__head"><h2>Works <b>intro</b></h2><span class="kick">Section 02</span></div>'
+    +field('Section title <i>(HTML allowed)</i>',w.title,'data-bind="works.title"','If you add or remove projects, update the number word here (e.g. \u201cTwelve brands\u201d).')
+    +area('Section subtitle',w.sub,'data-bind="works.sub"')
+  +'</div>'
+  +'<div class="sheet">'
+    +'<div class="sheet__head"><h2>Contact <b>&amp; footer</b></h2><span class="kick">Section 03</span></div>'
+    +field('Big heading <i>(HTML allowed — &lt;br&gt; and &lt;em&gt;)</i>',c.heading,'data-bind="contact.heading"')
+    +'<div class="grid2">'
+      +field('Email',c.email,'data-bind="contact.email"')
+      +field('Location',c.location,'data-bind="contact.location"')
+    +'</div>'
+    +'<div class="grid2">'
+      +field('Instagram handle',c.instagramHandle,'data-bind="contact.instagramHandle"')
+      +field('Instagram URL',c.instagramUrl,'data-bind="contact.instagramUrl"')
+    +'</div>'
+    +'<div class="grid2">'
+      +field('Phone (shown)',c.phoneDisplay,'data-bind="contact.phoneDisplay"')
+      +field('Phone (tel: link, digits only)',c.phoneTel,'data-bind="contact.phoneTel"')
+    +'</div>'
+    +'<div class="grid2">'
+      +field('WhatsApp number <i>(country code, no +)</i>',c.whatsapp,'data-bind="contact.whatsapp"')
+      +field('WhatsApp pre-filled message',c.whatsappText,'data-bind="contact.whatsappText"')
+    +'</div>'
+    +field('Availability chip text',c.timeChip,'data-bind="contact.timeChip"','Shown next to the live Beirut clock.')
+    +'<div class="grid2">'
+      +field('Footer · copyright line',c.footerA,'data-bind="contact.footerA"')
+      +field('Footer · closing line',c.footerB,'data-bind="contact.footerB"')
+    +'</div>'
+  +'</div>';
+  bindInputs(m,SITE);
+  bindChips(m,'disc',h.disciplines,()=>renderTexts(m));
+  bindRows(m,'paras',a.paragraphs,()=>renderTexts(m));
+  bindRows(m,'svcs',a.services,()=>renderTexts(m));
+  bindRows(m,'based',a.basedList,()=>renderTexts(m));
+}
+
+/* ===== PUBLISH ===== */
+function renderPublish(m){
+  m.innerHTML=
+  '<div class="sheet">'
+    +'<div class="sheet__head"><h2>Publish <b>your changes</b></h2><span class="kick">'+(dirty?'Unpublished edits':'Everything published')+'</span></div>'
+    +'<div class="pubcard live">'
+      +'<h3>Publish live — straight to GitHub</h3>'
+      +'<p>Commits the updated index.html (plus any new images) directly to your repository. Your host redeploys on its own — nothing to download or drag.</p>'
+      +'<div class="ghgrid">'
+        +'<div class="f"><label>GitHub username</label><input type="text" id="gh-owner" placeholder="your-username"></div>'
+        +'<div class="f"><label>Repository name</label><input type="text" id="gh-repo" placeholder="gviisuals-site"></div>'
+        +'<div class="f"><label>Branch</label><input type="text" id="gh-branch" placeholder="main"></div>'
+        +'<div class="f"><label>Access token</label><input type="password" id="gh-token" placeholder="github_pat_\u2026" autocomplete="off"></div>'
+      +'</div>'
+      +'<div class="rowbtns"><button class="btn solid" id="gh-pub">Publish live</button>'
+      +'<button class="btn ghost" id="gh-forget">Forget token</button></div>'
+      +'<div class="publog" id="ghlog"></div>'
+      +'<p class="hint" style="max-width:64ch">Token: github.com \u2192 Settings \u2192 Developer settings \u2192 Fine-grained tokens \u2192 Generate. Select <b>only this repository</b>, permission <b>Contents: Read and write</b>, and give it an expiry. It is stored only in this browser \u2014 never paste it anywhere else, and if it ever leaks, revoke it on that same page.</p>'
+    +'</div>'
+    +'<div class="pubcard">'
+      +'<h3>Full site (.zip)</h3>'
+      +'<p>Fallback for hosts without GitHub: builds the complete site as a download \u2014 the updated index.html plus every image.</p>'
+      +'<button class="btn solid" id="pub-zip">Download site .zip</button>'
+      +'<div class="prog" id="prog"><i></i></div>'
+      +'<div class="publog" id="publog"></div>'
+    +'</div>'
+    +'<div class="pubcard">'
+      +'<h3>index.html only</h3>'
+      +'<p>Just the updated page file. Use this when you only changed texts, palettes, order or captions — no new images. Upload it over the existing index.html.</p>'
+      +'<button class="btn" id="pub-html">Download index.html</button>'
+    +'</div>'
+    +'<div class="pubcard">'
+      +'<h3>Backup the data</h3>'
+      +'<p>A small JSON file with every text, palette and gallery list — handy as a restore point before big edits.</p>'
+      +'<div class="rowbtns"><button class="btn" id="pub-json">Download data.json</button>'
+      +'<button class="btn ghost" id="pub-import">Import data.json</button></div>'
+    +'</div>'
+    +'<p class="hint" style="max-width:64ch">A note on security: the passcode on this page keeps casual visitors out, but on a static host it is not real authentication — anyone determined can read the page source. For extra privacy, rename the admin folder to something hard to guess (e.g. /desk-8k2f/) \u2014 the page works from any folder \u2014 or leave it out of the deployed site and use it locally with the zip loader.</p>'
+  +'</div>';
+  $('#pub-html').addEventListener('click',function(){
+    downloadBlob(new Blob([buildIndexHtml()],{type:'text/html'}),'index.html');
+    setDirty(false); clearDraft(); toast('index.html downloaded — upload it to your host');
+  });
+  $('#pub-zip').addEventListener('click',publishZip);
+  $('#pub-json').addEventListener('click',function(){
+    downloadBlob(new Blob([JSON.stringify(SITE,null,1)],{type:'application/json'}),'gviisuals-data.json');
+  });
+  var gh=ghLoad();
+  $('#gh-owner').value=gh.owner||''; $('#gh-repo').value=gh.repo||'';
+  $('#gh-branch').value=gh.branch||''; $('#gh-token').value=gh.token||'';
+  $('#gh-pub').addEventListener('click',publishLive);
+  $('#gh-forget').addEventListener('click',function(){
+    localStorage.removeItem(GH_KEY); $('#gh-token').value='';
+    toast('Token removed from this browser');
+  });
+  $('#pub-import').addEventListener('click',function(){
+    var fi=document.createElement('input'); fi.type='file'; fi.accept='.json,application/json';
+    fi.onchange=async function(){
+      try{
+        var d=JSON.parse(await fi.files[0].text());
+        if(!d.projects||!d.hero) throw 0;
+        mut(()=>SITE=d); renderAll(); toast('Data imported — publish to make it live');
+      }catch(e){ toast('That file is not a valid data backup'); }
+    };
+    fi.click();
+  });
+}
+$('#btn-publish-top').addEventListener('click',function(){ view={type:'publish'}; renderAll(); });
+$('#btn-revert').addEventListener('click',function(){
+  if(!dirty||confirm('Discard all unpublished edits and reload the last published data?')){
+    clearDraft(); location.reload();
+  }
+});
+
+function buildIndexHtml(){
+  var block='<!--SITE-DATA-START-->\n<script type="application/json" id="site-data">\n'
+    +JSON.stringify(SITE,null,1).replace(/<\//g,'<\\/')
+    +'\n<\/script>\n<!--SITE-DATA-END-->';
+  var html=TEMPLATE.replace(DATA_RE,block);
+  var t=SITE.meta.title, d=SITE.meta.description;
+  html=html.replace(/<title>[\s\S]*?<\/title>/,'<title>'+esc(t)+'</title>');
+  html=html.replace(/(<meta name="description" content=")[^"]*(")/,'$1'+esc(d)+'$2');
+  ;['og:title','twitter:title'].forEach(k=>{
+    html=html.replace(new RegExp('(<meta (?:property|name)="'+k+'" content=")[^"]*(")'),'$1'+esc(t)+'$2');
+  });
+  ;['og:description','twitter:description'].forEach(k=>{
+    html=html.replace(new RegExp('(<meta (?:property|name)="'+k+'" content=")[^"]*(")'),'$1'+esc(d)+'$2');
+  });
+  return html;
+}
+function collectAssetPaths(){
+  var set=new Set(['assets/img/about.webp','assets/img/mask.png','assets/img/favicon.png','og-image.jpg','_headers']);
+  SITE.projects.forEach(function(p){
+    if(p.cover&&!p.cover.startsWith('data:')) set.add(p.cover);
+    p.gallery.forEach(g=>{ if(g&&!g.startsWith('data:')) set.add(g); });
+  });
+  return [...set];
+}
+async function publishZip(){
+  var log=$('#publog'), prog=$('#prog'), bar=$('#prog i'), btn=$('#pub-zip');
+  btn.disabled=true; prog.style.display='block'; log.textContent='';
+  function say(s){ log.textContent+=s+'\n'; log.scrollTop=log.scrollHeight; }
+  try{
+    var paths=collectAssetPaths();
+    var files=[{name:'index.html',data:new TextEncoder().encode(buildIndexHtml())}];
+    var selfHtml=await fetchSelf();
+    if(selfHtml) files.push({name:'admin/index.html',data:new TextEncoder().encode(selfHtml)});
+    else say('\u26a0 admin.html not included (couldn\u2019t read itself) \u2014 keep your own copy.');
+    var missing=[];
+    for(var i=0;i<paths.length;i++){
+      var pth=paths[i];
+      bar.style.width=Math.round(i/paths.length*95)+'%';
+      var buf=null;
+      if(ASSETS.has(pth)) buf=new Uint8Array(await ASSETS.get(pth).arrayBuffer());
+      else{
+        try{
+          var r=await fetch('/'+pth,{cache:'no-store'});
+          if(r.ok) buf=new Uint8Array(await r.arrayBuffer());
+        }catch(e){}
+      }
+      if(buf) files.push({name:pth,data:buf});
+      else missing.push(pth);
+    }
+    if(missing.length){
+      say('\u26a0 '+missing.length+' file(s) could not be loaded:');
+      missing.forEach(x=>say('   '+x));
+      if(missing.includes('_headers')||missing.includes('og-image.jpg'))
+        say('   (_headers / og-image.jpg are optional — safe to ignore if the rest is fine)');
+      var realMiss=missing.filter(x=>x!=='_headers'&&x!=='og-image.jpg');
+      if(realMiss.length) say('   Tip: run the admin from the live site, or use \u201cLoad site .zip\u201d first so every image is in memory.');
+    }
+    say('Packing '+files.length+' files\u2026');
+    var zip=zipWrite(files);
+    bar.style.width='100%';
+    downloadBlob(zip,'gviisuals-site.zip');
+    say('\u2713 Done — gviisuals-site.zip downloaded.');
+    setDirty(false); clearDraft();
+    toast('Site zip ready — deploy it to go live');
+  }catch(e){ console.error(e); say('Something went wrong: '+e.message); }
+  btn.disabled=false;
+  setTimeout(()=>{ prog.style.display='none'; bar.style.width='0'; },1200);
+}
+/* ---------- live publish: commit straight to GitHub ---------- */
+var GH_KEY='gv_gh';
+function ghLoad(){ try{ return JSON.parse(localStorage.getItem(GH_KEY))||{}; }catch(e){ return {}; } }
+function ghSave(c){ try{ localStorage.setItem(GH_KEY,JSON.stringify(c)); }catch(e){} }
+function bytesB64(u8){
+  var s='';
+  for(var i=0;i<u8.length;i+=0x8000) s+=String.fromCharCode.apply(null,u8.subarray(i,i+0x8000));
+  return btoa(s);
+}
+async function publishLive(){
+  var log=$('#ghlog'), btn=$('#gh-pub');
+  function say(t){ log.textContent+=t+'\n'; log.scrollTop=log.scrollHeight; }
+  var cfg={
+    owner:$('#gh-owner').value.trim(),
+    repo:$('#gh-repo').value.trim(),
+    branch:$('#gh-branch').value.trim()||'main',
+    token:$('#gh-token').value.trim()
+  };
+  if(!cfg.owner||!cfg.repo||!cfg.token){ toast('Fill in username, repository and token first'); return; }
+  ghSave(cfg);
+  btn.disabled=true; log.textContent='';
+  var api='https://api.github.com/repos/'+encodeURIComponent(cfg.owner)+'/'+encodeURIComponent(cfg.repo);
+  async function gh(path,method,body){
+    var r=await fetch(api+path,{
+      method:method||'GET',
+      headers:{'Authorization':'Bearer '+cfg.token,'Accept':'application/vnd.github+json','Content-Type':'application/json'},
+      body:body?JSON.stringify(body):undefined
+    });
+    if(!r.ok){
+      var msg='';
+      try{ msg=(await r.json()).message||''; }catch(e){}
+      if(r.status===401) throw new Error('GitHub rejected the token (401). Check it was copied fully and has not expired.');
+      if(r.status===403) throw new Error('Not allowed (403). The token needs Contents: Read and write on this repository. '+msg);
+      if(r.status===404) throw new Error('Not found (404). Check the username, repository name and branch \u2014 and that the token is scoped to this repo.');
+      throw new Error('GitHub error '+r.status+(msg?': '+msg:''));
+    }
+    return r.json();
+  }
+  try{
+    say('Connecting to '+cfg.owner+'/'+cfg.repo+' ('+cfg.branch+')\u2026');
+    var br=await gh('/branches/'+encodeURIComponent(cfg.branch));
+    var headSha=br.commit.sha, baseTree=br.commit.commit.tree.sha;
+    var entries=[];
+    say('Uploading index.html\u2026');
+    var idxBlob=await gh('/git/blobs','POST',{content:bytesB64(new TextEncoder().encode(buildIndexHtml())),encoding:'base64'});
+    entries.push({path:'index.html',mode:'100644',type:'blob',sha:idxBlob.sha});
+    var newPaths=[...NEW_ASSETS].filter(p=>ASSETS.has(p));
+    for(var i=0;i<newPaths.length;i++){
+      var pth=newPaths[i];
+      say('Uploading '+pth+' ('+(i+1)+'/'+newPaths.length+')\u2026');
+      var u8=new Uint8Array(await ASSETS.get(pth).arrayBuffer());
+      var bl=await gh('/git/blobs','POST',{content:bytesB64(u8),encoding:'base64'});
+      entries.push({path:pth,mode:'100644',type:'blob',sha:bl.sha});
+    }
+    say('Committing\u2026');
+    var tree=await gh('/git/trees','POST',{base_tree:baseTree,tree:entries});
+    var msg='Site update from admin \u2014 '+new Date().toLocaleString();
+    var commit=await gh('/git/commits','POST',{message:msg,tree:tree.sha,parents:[headSha]});
+    await gh('/git/refs/heads/'+encodeURIComponent(cfg.branch),'PATCH',{sha:commit.sha});
+    say('\u2713 Committed '+entries.length+' file(s). Your host is rebuilding \u2014 the site updates in about a minute.');
+    NEW_ASSETS.clear();
+    setDirty(false); clearDraft();
+    toast('Published \u2014 live in about a minute');
+  }catch(e){
+    console.error(e);
+    say('\u2717 '+e.message);
+    toast('Publish failed \u2014 see the log');
+  }
+  btn.disabled=false;
+}
+async function fetchSelf(){
+  try{ var r=await fetch(location.href.split('#')[0].split('?')[0],{cache:'no-store'}); if(r.ok) return await r.text(); }catch(e){}
+  if(ASSETS.has('admin/index.html')) return await ASSETS.get('admin/index.html').text();
+  if(ASSETS.has('admin.html')) return await ASSETS.get('admin.html').text();
+  return null;
+}
+function downloadBlob(blob,name){
+  var a=document.createElement('a');
+  a.href=URL.createObjectURL(blob); a.download=name;
+  document.body.appendChild(a); a.click();
+  setTimeout(()=>{ URL.revokeObjectURL(a.href); a.remove(); },400);
+}
+
+/* ===== PREVIEW ===== */
+$('#btn-preview').addEventListener('click',function(){
+  var html=buildIndexHtml();
+  // ground relative paths on the current origin
+  var base='<base href="'+location.origin+location.pathname.replace(/[^/]*$/,'')+'">';
+  html=html.replace(/<head>/,'<head>'+base);
+  // swap in-session images (not yet on the server) for object URLs
+  for(var [pth] of ASSETS){ html=html.split(pth).join(assetURL(pth)); }
+  var url=URL.createObjectURL(new Blob([html],{type:'text/html'}));
+  $('#pv-frame').src=url;
+  $('#pv').classList.add('open');
+});
+$('#pv-close').addEventListener('click',function(){
+  $('#pv').classList.remove('open'); $('#pv-frame').src='about:blank';
+});
+
+/* =====================================================================
+   Minimal ZIP write / read (no dependencies)
+   write: STORE method — images are already compressed
+   read : STORE + DEFLATE via DecompressionStream('deflate-raw')
+   ===================================================================== */
+var CRC_T=(function(){ var t=new Uint32Array(256);
+  for(var n=0;n<256;n++){ var c=n; for(var k=0;k<8;k++) c=(c&1)?(0xEDB88320^(c>>>1)):(c>>>1); t[n]=c>>>0; }
+  return t; })();
+function crc32(u8){ var c=0xFFFFFFFF;
+  for(var i=0;i<u8.length;i++) c=CRC_T[(c^u8[i])&0xFF]^(c>>>8);
+  return (c^0xFFFFFFFF)>>>0; }
+function zipWrite(files){
+  var enc=new TextEncoder(), parts=[], central=[], offset=0;
+  var now=new Date();
+  var dt=((now.getHours()<<11)|(now.getMinutes()<<5)|(now.getSeconds()>>1))&0xFFFF;
+  var dd=(((now.getFullYear()-1980)<<9)|((now.getMonth()+1)<<5)|now.getDate())&0xFFFF;
+  function u16(v){ return [v&255,(v>>>8)&255]; }
+  function u32(v){ return [v&255,(v>>>8)&255,(v>>>16)&255,(v>>>24)&255]; }
+  for(var f of files){
+    var name=enc.encode(f.name), data=f.data, crc=crc32(data);
+    var lh=new Uint8Array([0x50,0x4B,0x03,0x04, ...u16(20), ...u16(0x0800), ...u16(0),
+      ...u16(dt), ...u16(dd), ...u32(crc), ...u32(data.length), ...u32(data.length),
+      ...u16(name.length), ...u16(0)]);
+    parts.push(lh,name,data);
+    central.push({name:name,crc:crc,size:data.length,offset:offset});
+    offset+=lh.length+name.length+data.length;
+  }
+  var cdStart=offset, cdLen=0;
+  for(var c of central){
+    var ch=new Uint8Array([0x50,0x4B,0x01,0x02, ...u16(20), ...u16(20), ...u16(0x0800), ...u16(0),
+      ...u16(dt), ...u16(dd), ...u32(c.crc), ...u32(c.size), ...u32(c.size),
+      ...u16(c.name.length), ...u16(0), ...u16(0), ...u16(0), ...u16(0),
+      ...u32(0), ...u32(c.offset)]);
+    parts.push(ch,c.name); cdLen+=ch.length+c.name.length;
+  }
+  parts.push(new Uint8Array([0x50,0x4B,0x05,0x06, 0,0, 0,0,
+    ...u16(central.length), ...u16(central.length), ...u32(cdLen), ...u32(cdStart), 0,0]));
+  return new Blob(parts,{type:'application/zip'});
+}
+async function zipRead(file){
+  var buf=new Uint8Array(await file.arrayBuffer());
+  var dv=new DataView(buf.buffer);
+  // find EOCD
+  var e=-1;
+  for(var i=buf.length-22;i>=Math.max(0,buf.length-70000);i--){
+    if(dv.getUint32(i,true)===0x06054B50){ e=i; break; }
+  }
+  if(e<0) throw new Error('Not a zip file');
+  var count=dv.getUint16(e+10,true), cdOff=dv.getUint32(e+16,true);
+  var entries=[], p=cdOff, dec=new TextDecoder();
+  for(var n=0;n<count;n++){
+    if(dv.getUint32(p,true)!==0x02014B50) throw new Error('Bad central directory');
+    var method=dv.getUint16(p+10,true),
+        csize=dv.getUint32(p+20,true),
+        nlen=dv.getUint16(p+28,true), elen=dv.getUint16(p+30,true), clen=dv.getUint16(p+32,true),
+        lho=dv.getUint32(p+42,true),
+        name=dec.decode(buf.subarray(p+46,p+46+nlen));
+    (function(method,csize,lho,name){
+      entries.push({
+        name:name, dir:name.endsWith('/'),
+        data:async function(){
+          var lnlen=dv.getUint16(lho+26,true), lelen=dv.getUint16(lho+28,true);
+          var start=lho+30+lnlen+lelen;
+          var raw=buf.subarray(start,start+csize);
+          if(method===0) return raw;
+          if(method===8){
+            var ds=new DecompressionStream('deflate-raw');
+            var out=await new Response(new Blob([raw]).stream().pipeThrough(ds)).arrayBuffer();
+            return new Uint8Array(out);
+          }
+          throw new Error('Unsupported compression in zip: '+name);
+        }
+      });
+    })(method,csize,lho,name);
+    p+=46+nlen+elen+clen;
+  }
+  return entries;
+}
+</script>
+</body>
+</html>
