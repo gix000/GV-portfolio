@@ -55,7 +55,6 @@ export function FolderProjects() {
   return (
     <section id="folder-works" className="py-32 px-[clamp(28px,6vw,72px)]">
       <div className="max-w-[900px] mx-auto">
-
         {/* Section header */}
         <div ref={headerRef} className="mb-16">
           <motion.div
