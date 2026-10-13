@@ -3,6 +3,7 @@ import { Fraunces, Hanken_Grotesk } from "next/font/google";
 import "./globals.css";
 import { SmoothScroll } from "@/components/SmoothScroll";
 import { CustomCursor } from "@/components/CustomCursor";
+import { LoadingScreen } from "@/components/LoadingScreen";
 import { siteData } from "@/lib/data";
 
 const fraunces = Fraunces({
@@ -82,6 +83,7 @@ export default function RootLayout({
         />
       </head>
       <body>
+        <LoadingScreen />
         <SmoothScroll>
           <CustomCursor />
           <div className="grain" aria-hidden="true" />

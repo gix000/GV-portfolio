@@ -1,7 +1,7 @@
 "use client";
-
 import { motion, useScroll, useTransform } from "framer-motion";
 import Link from "next/link";
+import Image from "next/image";
 
 export function Nav() {
   const { scrollY } = useScroll();
@@ -18,32 +18,23 @@ export function Nav() {
     >
       <Link
         href="#top"
-        className="font-serif text-lg font-bold tracking-tight"
+        className="flex items-center"
         data-cursor-hover
+        aria-label="G.VIISUALS Home"
       >
-        G.VIISUALS
+        <Image
+          src="/assets/img/logo.svg"
+          alt="GV Logo"
+          width={48}
+          height={38}
+          className="h-9 w-auto text-ink"
+          priority
+        />
       </Link>
 
-      <div className="hidden md:flex items-center gap-8 text-[11px] tracking-[0.18em] uppercase font-semibold">
-        {[
-          { label: "About", href: "#about" },
-          { label: "Works", href: "#works" },
-          { label: "Contact", href: "#contact" },
-        ].map((link) => (
-          <Link
-            key={link.label}
-            href={link.href}
-            className="hover:text-accent transition-colors duration-300"
-            data-cursor-hover
-          >
-            {link.label}
-          </Link>
-        ))}
-      </div>
-
       <div className="flex items-center gap-2 text-[10px] tracking-[0.15em] uppercase font-semibold text-ink-70">
+        <span className="hidden sm:inline">Beirut, LB</span>
         <span className="w-1.5 h-1.5 rounded-full bg-green-600 animate-pulse" />
-        Available
       </div>
     </motion.nav>
   );
