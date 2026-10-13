@@ -41,37 +41,21 @@ const FOLDERS = [
   },
 ];
 
-const TAB_H = 52; // height of the tab that sticks up
-const BODY_H = 130; // visible body strip of each back folder
-const FRONT_H = 320; // green PROJETOS folder height
+const TAB_H = 52;
+const BODY_H = 130;
+const FRONT_H = 320;
 
 export function FolderProjects() {
   const headerRef = useRef<HTMLDivElement>(null);
   const headerInView = useInView(headerRef, { once: true, margin: "-80px" });
-
-  // Total stack height
   const totalH = FOLDERS.length * (TAB_H + BODY_H) + FRONT_H;
 
   return (
-    <section id="folder-works" className="py-32 px-[clamp(28px,6vw,72px)]">
+    <section id="folder-works" className="py-32 px-[clamp(28px,6vw,72px)] w-full">
       <div className="max-w-[900px] mx-auto">
-        {/* Section header */}
-        <div ref={headerRef} className="mb-16">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={headerInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
-            className="flex items-center gap-4 text-[11px] tracking-[0.2em] uppercase text-ink-50 font-semibold mb-8"
-          >
-            <span className="text-accent">02</span>
-            <span>Project Archive</span>
-            <span className="flex-1 h-px bg-line" />
-            <span className="hidden sm:inline">2026 Collection</span>
-          </motion.div>
-        </div>
-
         {/* Folder stack */}
         <motion.div
+          ref={headerRef}
           initial={{ opacity: 0, y: 60 }}
           animate={headerInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 1, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
@@ -81,10 +65,8 @@ export function FolderProjects() {
           {/* ── Back folders: purple → pink → blue → yellow ── */}
           {FOLDERS.map((folder, i) => {
             const project = siteData.projects.find((p) => p.key === folder.key);
-            // Each folder sits lower than the one behind it
             const top = i * (TAB_H + BODY_H);
-            const zIndex = FOLDERS.length - i; // back folders have lower z
-
+            const zIndex = FOLDERS.length - i;
             return (
               <Link
                 key={folder.key}
@@ -107,7 +89,6 @@ export function FolderProjects() {
                 >
                   {folder.label}
                 </div>
-
                 {/* Body strip */}
                 <div
                   className="absolute left-0 right-0 rounded-b-sm overflow-hidden shadow-lg transition-shadow duration-300 group-hover:shadow-2xl"
@@ -133,7 +114,6 @@ export function FolderProjects() {
                       sizes="128px"
                     />
                   </div>
-
                   {/* Hover darken */}
                   <div className="absolute inset-0 bg-black/0 group-hover:bg-black/[0.06] transition-colors duration-300" />
                 </div>
@@ -153,7 +133,6 @@ export function FolderProjects() {
           >
             {/* Darker top edge */}
             <div className="h-1 w-full" style={{ backgroundColor: "#9AB870" }} />
-
             {/* Pen + binder clip + 2026 tab row */}
             <div className="relative px-8 pt-7 flex items-end justify-between">
               {/* Pen */}
@@ -170,7 +149,6 @@ export function FolderProjects() {
                 <circle cx="7" cy="7" r="2" fill="#aaa" />
                 <rect x="14" y="5.5" width="7" height="3" fill="#444" />
               </svg>
-
               {/* Binder clip — centred */}
               <div className="absolute left-1/2 -translate-x-1/2 -top-1">
                 <svg width="48" height="44" viewBox="0 0 48 44" fill="none" aria-hidden="true">
@@ -185,7 +163,6 @@ export function FolderProjects() {
                   <rect x="11" y="23" width="26" height="2" fill="#333" />
                 </svg>
               </div>
-
               {/* 2026 tab */}
               <div
                 className="px-6 py-2 rounded-t-xl font-serif text-base md:text-lg tracking-wide text-ink shadow-sm"
@@ -194,7 +171,6 @@ export function FolderProjects() {
                 2026
               </div>
             </div>
-
             {/* PROJETOS title */}
             <div className="flex items-center justify-center pt-5 pb-8">
               <h2
