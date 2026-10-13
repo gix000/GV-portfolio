@@ -6,10 +6,10 @@ import Image from "next/image";
 import { siteData } from "@/lib/data";
 
 const FOLDERS = [
-  { key: "capas", label: "04 CAPAS LIVROS", tabColor: "#C9A3E8", bodyColor: "#D4B8E8", previewImg: "/assets/img/socialclub-01.webp" },
-  { key: "bijou", label: "03 SCINTILLA", tabColor: "#E8A3C9", bodyColor: "#F0B8D4", previewImg: "/assets/img/bijou-cover.webp" },
-  { key: "rim", label: "02 BINGO", tabColor: "#7BA3C9", bodyColor: "#9BB8D4", previewImg: "/assets/img/rim-cover.webp" },
-  { key: "socialclub", label: "01 CLUBE P.A.", tabColor: "#E8D44D", bodyColor: "#F0E068", previewImg: "/assets/img/socialclub-cover.webp" },
+  { key: "capas", label: "04 CAPAS LIVROS", tabColor: "#C9A3E8", bodyColor: "#D4B8E8", previewImg: "/assets/img/socialclub-01.webp", previewSide: "left" as const },
+  { key: "bijou", label: "03 SCINTILLA", tabColor: "#E8A3C9", bodyColor: "#F0B8D4", previewImg: "/assets/img/bijou-cover.webp", previewSide: "right" as const },
+  { key: "rim", label: "02 BINGO", tabColor: "#7BA3C9", bodyColor: "#9BB8D4", previewImg: "/assets/img/rim-cover.webp", previewSide: "left" as const },
+  { key: "socialclub", label: "01 CLUBE P.A.", tabColor: "#E8D44D", bodyColor: "#F0E068", previewImg: "/assets/img/socialclub-cover.webp", previewSide: "right" as const },
 ];
 
 export function FolderProjects() {
@@ -34,7 +34,7 @@ export function FolderProjects() {
           </motion.div>
         </div>
 
-        {/* Vertical folder stack matching reference image */}
+        {/* Vertical folder stack matching reference image exactly */}
         <motion.div
           initial={{ opacity: 0, y: 60 }}
           animate={headerInView ? { opacity: 1, y: 0 } : {}}
@@ -50,29 +50,34 @@ export function FolderProjects() {
                 href={`/projects/${folder.key}`}
                 data-cursor-hover
                 className="block relative group"
-                style={{ marginBottom: i < FOLDERS.length - 1 ? "-20px" : "0", zIndex: FOLDERS.length - i }}
+                style={{
+                  marginBottom: i < FOLDERS.length - 1 ? "-8px" : "0",
+                  zIndex: FOLDERS.length - i
+                }}
               >
                 {/* Folder body */}
                 <div
-                  className="relative rounded-2xl overflow-hidden shadow-lg transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:shadow-2xl group-hover:-translate-y-2"
-                  style={{ backgroundColor: folder.bodyColor, minHeight: 180 }}
+                  className="relative rounded-2xl overflow-hidden shadow-lg transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:shadow-2xl group-hover:-translate-y-1"
+                  style={{ backgroundColor: folder.bodyColor, minHeight: 160 }}
                 >
-                  {/* Tab label */}
+                  {/* Tab label at TOP of folder */}
                   <div
-                    className="absolute top-0 left-[15%] px-8 py-3 rounded-b-xl font-serif text-lg md:text-xl tracking-wide text-ink shadow-md"
+                    className="absolute top-0 left-[20%] px-8 py-3 rounded-b-xl font-serif text-lg md:text-xl tracking-wide text-ink shadow-md"
                     style={{ backgroundColor: folder.tabColor }}
                   >
                     {folder.label}
                   </div>
 
-                  {/* Preview image peeking out */}
-                  <div className="absolute top-4 right-8 w-32 h-40 md:w-40 md:h-48 rotate-6 shadow-xl border-4 border-white/80 overflow-hidden rounded-sm">
+                  {/* Preview image peeking out from the side */}
+                  <div
+                    className={`absolute top-6 ${folder.previewSide === "left" ? "left-8" : "right-8"} w-28 h-36 md:w-36 md:h-44 ${folder.previewSide === "left" ? "-rotate-6" : "rotate-6"} shadow-xl border-4 border-white/80 overflow-hidden rounded-sm`}
+                  >
                     <Image
                       src={folder.previewImg}
                       alt={`${project?.name || folder.label} preview`}
                       fill
                       className="object-cover"
-                      sizes="160px"
+                      sizes="144px"
                     />
                   </div>
 
@@ -85,7 +90,7 @@ export function FolderProjects() {
 
           {/* Front folder - green PROJETOS cover */}
           <div
-            className="relative rounded-2xl overflow-hidden shadow-2xl mt-[-20px]"
+            className="relative rounded-2xl overflow-hidden shadow-2xl mt-[-8px]"
             style={{ backgroundColor: "#C5D8A4", minHeight: 280, zIndex: FOLDERS.length + 1 }}
           >
             {/* Top edge */}
