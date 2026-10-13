@@ -8,7 +8,6 @@ export function LoadingScreen() {
   const [progress, setProgress] = useState(0);
 
   useEffect(() => {
-    // Simulate loading progress
     const interval = setInterval(() => {
       setProgress((prev) => {
         if (prev >= 100) {
@@ -19,7 +18,6 @@ export function LoadingScreen() {
         return prev + Math.random() * 15 + 5;
       });
     }, 120);
-
     return () => clearInterval(interval);
   }, []);
 
@@ -70,11 +68,11 @@ export function LoadingScreen() {
             className="relative mb-12"
           >
             <Image
-              src="/assets/img/logo.svg"
+              src="/assets/img/logo.png"
               alt="GV Logo"
-              width={120}
-              height={96}
-              className="h-24 w-auto text-ink"
+              width={140}
+              height={100}
+              className="h-28 w-auto"
               priority
             />
           </motion.div>

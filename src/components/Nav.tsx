@@ -5,12 +5,12 @@ import Image from "next/image";
 
 export function Nav() {
   const { scrollY } = useScroll();
-  const bgOpacity = useTransform(scrollY, [0, 120], [0, 1]);
+  const bgOpacity = useTransform(scrollY, [0, 120], [0, 0.85]);
   const blur = useTransform(scrollY, [0, 120], [0, 12]);
 
   return (
     <motion.nav
-      className="fixed top-0 left-0 right-0 z-50 px-[clamp(28px,6vw,72px)] py-5 flex items-center justify-between"
+      className="fixed top-0 left-0 right-0 z-50 px-[clamp(28px,6vw,72px)] py-4 flex items-center justify-between"
       style={{
         backgroundColor: `rgba(242, 237, 228, ${bgOpacity.get()})`,
         backdropFilter: `blur(${blur.get()}px)`,
@@ -23,16 +23,15 @@ export function Nav() {
         aria-label="G.VIISUALS Home"
       >
         <Image
-          src="/assets/img/logo.svg"
+          src="/assets/img/logo.png"
           alt="GV Logo"
-          width={48}
-          height={38}
-          className="h-9 w-auto text-ink"
+          width={56}
+          height={40}
+          className="h-9 w-auto"
           priority
         />
       </Link>
-
-      <div className="flex items-center gap-2 text-[10px] tracking-[0.15em] uppercase font-semibold text-ink-70">
+      <div className="flex items-center gap-2 text-[10px] tracking-[0.18em] uppercase font-semibold text-ink-70">
         <span className="hidden sm:inline">Beirut, LB</span>
         <span className="w-1.5 h-1.5 rounded-full bg-green-600 animate-pulse" />
       </div>
