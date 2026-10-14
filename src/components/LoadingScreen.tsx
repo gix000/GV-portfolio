@@ -129,17 +129,6 @@ export function LoadingScreen() {
                   />
                 </motion.div>
 
-                {/* G.VIISUALS · Vol. 01 text */}
-                <motion.p
-                  className="font-serif text-base md:text-lg tracking-[0.15em] mt-3"
-                  style={{ color: "#6B5A48" }}
-                  initial={{ opacity: 0, y: 6 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.8, delay: 0.6, ease: [0.22, 1, 0.36, 1] }}
-                >
-                  G.VIISUALS &middot; Vol. 01
-                </motion.p>
-
                 {/* Tap to reveal text */}
                 <motion.p
                   className="text-[10px] md:text-[11px] tracking-[0.24em] uppercase font-semibold mt-4"
