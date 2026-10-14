@@ -4,7 +4,7 @@ import { motion, useInView, useReducedMotion } from "framer-motion";
 import { useRef, useMemo } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { siteData } from "@/lib/data";
+import { useSiteData } from "@/lib/useSiteData";
 
 /* ─────────────────────────────────────────────
    FOLDER CONFIGURATION
@@ -43,10 +43,10 @@ const FOLDER_CONFIGS: FolderConfig[] = [
   { key: "socialclub", num: "01", tabColor: "#E8D060", bodyColor: "#F0DC78", tabPos: "right",  previewSide: "right", previewRotate: -3 },
 ];
 
-/* Resolve config → project data */
-function resolveFolders() {
+/* Resolve config → project data (takes live projects array as arg) */
+function resolveFolders(projects: import("@/lib/data").Project[]) {
   return FOLDER_CONFIGS.map((cfg) => {
-    const project = siteData.projects.find((p) => p.key === cfg.key);
+    const project = projects.find((p) => p.key === cfg.key);
     return { ...cfg, project };
   }).filter((f) => f.project !== undefined);
 }
@@ -70,11 +70,12 @@ const FRONT_H = 340;
 const GAP = 4; // gap between folders
 
 export function FolderProjects() {
+  const { data: siteData } = useSiteData();
   const prefersReduced = useReducedMotion();
   const containerRef = useRef<HTMLDivElement>(null);
   const inView = useInView(containerRef, { once: true, margin: "-60px" });
 
-  const folders = useMemo(() => resolveFolders(), []);
+  const folders = useMemo(() => resolveFolders(siteData.projects), [siteData.projects]);
   const totalH = folders.length * (TAB_H + BODY_VISIBLE + GAP) + FRONT_H;
 
   /* Animation variants */

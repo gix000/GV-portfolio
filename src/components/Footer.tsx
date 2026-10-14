@@ -1,6 +1,9 @@
-import { siteData } from "@/lib/data";
+"use client";
+
+import { useSiteData } from "@/lib/useSiteData";
 
 export function Footer() {
+  const { data: siteData } = useSiteData();
   const year = new Date().getFullYear();
 
   return (

@@ -2,7 +2,7 @@
 
 import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
-import { siteData } from "@/lib/data";
+import { useSiteData } from "@/lib/useSiteData";
 
 function Reveal({
   children,
@@ -30,6 +30,7 @@ function Reveal({
 }
 
 export function Contact() {
+  const { data: siteData } = useSiteData();
   return (
     <section
       id="contact"

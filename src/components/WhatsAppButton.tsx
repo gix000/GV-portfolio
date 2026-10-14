@@ -1,9 +1,10 @@
 "use client";
 
 import { motion, useScroll, useTransform } from "framer-motion";
-import { siteData } from "@/lib/data";
+import { useSiteData } from "@/lib/useSiteData";
 
 export function WhatsAppButton() {
+  const { data: siteData } = useSiteData();
   const { scrollY } = useScroll();
   const opacity = useTransform(scrollY, [300, 500], [0, 1]);
   const scale = useTransform(scrollY, [300, 500], [0.8, 1]);

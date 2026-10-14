@@ -2,9 +2,10 @@
 
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
-import { siteData } from "@/lib/data";
+import { useSiteData } from "@/lib/useSiteData";
 
 export function Hero() {
+  const { data: siteData } = useSiteData();
   const ref = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({
     target: ref,

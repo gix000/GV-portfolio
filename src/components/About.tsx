@@ -3,7 +3,7 @@
 import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
 import Image from "next/image";
-import { siteData } from "@/lib/data";
+import { useSiteData } from "@/lib/useSiteData";
 
 function Reveal({
   children,
@@ -31,6 +31,7 @@ function Reveal({
 }
 
 export function About() {
+  const { data: siteData } = useSiteData();
   return (
     <section
       id="about"

@@ -4,13 +4,13 @@ import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { siteData } from "@/lib/data";
+import { useSiteData, type Project } from "@/lib/useSiteData";
 
 function ProjectCard({
   project,
   index,
 }: {
-  project: (typeof siteData.projects)[number];
+  project: Project;
   index: number;
 }) {
   const ref = useRef<HTMLDivElement>(null);
@@ -89,6 +89,7 @@ function ProjectCard({
 }
 
 export function ProjectGrid() {
+  const { data } = useSiteData();
   const headerRef = useRef<HTMLDivElement>(null);
   const headerInView = useInView(headerRef, { once: true, margin: "-80px" });
 
@@ -118,7 +119,7 @@ export function ProjectGrid() {
               ease: [0.22, 1, 0.36, 1],
             }}
             className="font-serif text-3xl md:text-5xl tracking-tight text-ink leading-[1.1]"
-            dangerouslySetInnerHTML={{ __html: siteData.works.title }}
+            dangerouslySetInnerHTML={{ __html: data.works.title }}
           />
 
           <motion.p
@@ -131,13 +132,13 @@ export function ProjectGrid() {
             }}
             className="mt-4 text-ink-70 max-w-xl leading-relaxed"
           >
-            {siteData.works.sub}
+            {data.works.sub}
           </motion.p>
         </div>
 
         {/* Grid */}
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-16">
-          {siteData.projects.map((project, i) => (
+          {data.projects.map((project, i) => (
             <ProjectCard key={project.key} project={project} index={i} />
           ))}
         </div>
