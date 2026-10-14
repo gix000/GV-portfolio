@@ -3,6 +3,7 @@ import "./globals.css";
 import { SmoothScroll } from "@/components/SmoothScroll";
 import { CustomCursor } from "@/components/CustomCursor";
 import { LoadingScreen } from "@/components/LoadingScreen";
+import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { siteData } from "@/lib/data";
 
 export const metadata: Metadata = {
@@ -81,12 +82,14 @@ export default function RootLayout({
           ["--font-sans" as string]: "'Hanken Grotesk', sans-serif",
         }}
       >
-        <LoadingScreen />
-        <SmoothScroll>
-          <CustomCursor />
-          <div className="grain" aria-hidden="true" />
-          {children}
-        </SmoothScroll>
+        <ErrorBoundary>
+          <LoadingScreen />
+          <SmoothScroll>
+            <CustomCursor />
+            <div className="grain" aria-hidden="true" />
+            {children}
+          </SmoothScroll>
+        </ErrorBoundary>
       </body>
     </html>
   );
