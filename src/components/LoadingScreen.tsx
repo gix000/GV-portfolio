@@ -39,9 +39,6 @@ export function LoadingScreen() {
             {/* BACK OF FOLDER (Static) */}
             <div className="absolute bottom-0 left-0 right-0 h-[65%] rounded-b-xl rounded-t-sm bg-[#D4C5B0] shadow-inner z-10" />
 
-            {/* TAB (Static, attached to back) */}
-            <div className="absolute -top-5 left-6 w-24 h-7 bg-[#C4A57B] rounded-t-lg shadow-sm z-0" />
-
             {/* PAPERS INSIDE (Reveal on open) */}
             <motion.div
               className="absolute bottom-[12%] left-[6%] right-[6%] h-[75%] bg-white rounded-sm shadow-md z-20 overflow-hidden"
