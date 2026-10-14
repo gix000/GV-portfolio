@@ -650,6 +650,143 @@ function ProjectForm({
         />
       </div>
 
+      {/* Gallery Images */}
+      <div>
+        <label className="block text-sm font-semibold text-ink mb-2">Gallery Images</label>
+        <div className="space-y-2 mb-2">
+          {formData.gallery.map((img, i) => (
+            <div key={i} className="flex gap-2 items-center">
+              <input
+                type="text"
+                value={img}
+                onChange={(e) => {
+                  const next = [...formData.gallery];
+                  next[i] = e.target.value;
+                  setFormData({ ...formData, gallery: next });
+                }}
+                className="flex-1 px-4 py-2 border border-line rounded-lg focus:outline-none focus:ring-2 focus:ring-accent text-sm"
+                placeholder="/assets/img/project-gallery-1.webp"
+              />
+              <button
+                type="button"
+                onClick={() => {
+                  const next = formData.gallery.filter((_, idx) => idx !== i);
+                  setFormData({ ...formData, gallery: next });
+                }}
+                className="px-3 py-2 text-red-600 border border-red-300 rounded-lg hover:bg-red-50 transition-colors text-sm"
+              >
+                Remove
+              </button>
+            </div>
+          ))}
+        </div>
+        <button
+          type="button"
+          onClick={() => setFormData({ ...formData, gallery: [...formData.gallery, ""] })}
+          className="px-4 py-2 text-sm border border-line rounded-lg hover:bg-paper-lo transition-colors"
+        >
+          + Add Gallery Image
+        </button>
+      </div>
+
+      {/* Color Palette */}
+      <div>
+        <label className="block text-sm font-semibold text-ink mb-2">Color Palette (think.pal)</label>
+        <div className="space-y-2 mb-2">
+          {(formData.think?.pal || []).map((color, i) => (
+            <div key={i} className="flex gap-2 items-center">
+              <div
+                className="w-8 h-8 rounded border border-line flex-shrink-0"
+                style={{ backgroundColor: color }}
+              />
+              <input
+                type="text"
+                value={color}
+                onChange={(e) => {
+                  const nextPal = [...(formData.think?.pal || [])];
+                  nextPal[i] = e.target.value;
+                  setFormData({ ...formData, think: { ...formData.think, pal: nextPal } });
+                }}
+                className="flex-1 px-4 py-2 border border-line rounded-lg focus:outline-none focus:ring-2 focus:ring-accent text-sm font-mono"
+                placeholder="#HEX or color name"
+              />
+              <button
+                type="button"
+                onClick={() => {
+                  const nextPal = (formData.think?.pal || []).filter((_, idx) => idx !== i);
+                  setFormData({ ...formData, think: { ...formData.think, pal: nextPal } });
+                }}
+                className="px-3 py-2 text-red-600 border border-red-300 rounded-lg hover:bg-red-50 transition-colors text-sm"
+              >
+                Remove
+              </button>
+            </div>
+          ))}
+        </div>
+        <button
+          type="button"
+          onClick={() => {
+            const currentPal = formData.think?.pal || [];
+            setFormData({ ...formData, think: { ...formData.think, pal: [...currentPal, "#"] } });
+          }}
+          className="px-4 py-2 text-sm border border-line rounded-lg hover:bg-paper-lo transition-colors"
+        >
+          + Add Color
+        </button>
+      </div>
+
+      {/* Think Section Fields */}
+      <div className="border-t border-line pt-4 mt-4">
+        <h4 className="font-serif text-lg text-ink mb-4">Design Thinking</h4>
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <label className="block text-sm font-semibold text-ink mb-2">Challenge</label>
+            <textarea
+              value={formData.think?.challenge || ""}
+              onChange={(e) => setFormData({ ...formData, think: { ...formData.think, challenge: e.target.value } })}
+              rows={2}
+              className="w-full px-4 py-2 border border-line rounded-lg focus:outline-none focus:ring-2 focus:ring-accent text-sm"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-semibold text-ink mb-2">Idea</label>
+            <textarea
+              value={formData.think?.idea || ""}
+              onChange={(e) => setFormData({ ...formData, think: { ...formData.think, idea: e.target.value } })}
+              rows={2}
+              className="w-full px-4 py-2 border border-line rounded-lg focus:outline-none focus:ring-2 focus:ring-accent text-sm"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-semibold text-ink mb-2">Mark</label>
+            <input
+              type="text"
+              value={formData.think?.mark || ""}
+              onChange={(e) => setFormData({ ...formData, think: { ...formData.think, mark: e.target.value } })}
+              className="w-full px-4 py-2 border border-line rounded-lg focus:outline-none focus:ring-2 focus:ring-accent text-sm"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-semibold text-ink mb-2">Craft</label>
+            <input
+              type="text"
+              value={formData.think?.craft || ""}
+              onChange={(e) => setFormData({ ...formData, think: { ...formData.think, craft: e.target.value } })}
+              className="w-full px-4 py-2 border border-line rounded-lg focus:outline-none focus:ring-2 focus:ring-accent text-sm"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-semibold text-ink mb-2">Type</label>
+            <input
+              type="text"
+              value={formData.think?.type || ""}
+              onChange={(e) => setFormData({ ...formData, think: { ...formData.think, type: e.target.value } })}
+              className="w-full px-4 py-2 border border-line rounded-lg focus:outline-none focus:ring-2 focus:ring-accent text-sm"
+            />
+          </div>
+        </div>
+      </div>
+
       <div className="flex gap-3 pt-4">
         <button
           type="submit"
