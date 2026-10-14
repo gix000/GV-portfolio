@@ -1,22 +1,12 @@
 "use client";
-import { motion, useScroll, useTransform } from "framer-motion";
-import { useRef } from "react";
+import { motion } from "framer-motion";
 import { useSiteData } from "@/lib/useSiteData";
 
 export function Hero() {
   const { data: siteData } = useSiteData();
-  const ref = useRef<HTMLElement>(null);
-  const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ["start start", "end start"],
-  });
-  const titleY = useTransform(scrollYProgress, [0, 1], [0, 200]);
-  const subOpacity = useTransform(scrollYProgress, [0, 0.6], [1, 0]);
-  const scale = useTransform(scrollYProgress, [0, 1], [1, 0.92]);
 
   return (
     <section
-      ref={ref}
       id="top"
       className="relative flex flex-col justify-start pt-24 md:pt-28 pb-16 px-[clamp(28px,6vw,72px)] overflow-hidden"
     >
@@ -34,12 +24,9 @@ export function Hero() {
         </div>
       </motion.div>
 
-      {/* Main title block — forced to top to remove empty gap */}
-      <motion.div
-        style={{ y: titleY, scale }}
-        className="relative z-10 w-full max-w-[1280px]"
-      >
-        {/* "Ideas Into Reality" — Big, animated entrance (no fragile typing logic) */}
+      {/* Main title block — no parallax transforms (kills scroll lag) */}
+      <div className="relative z-10 w-full max-w-[1280px]">
+        {/* "Ideas Into Reality" — big serif italic, fade-and-rise entrance */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -69,16 +56,18 @@ export function Hero() {
             <span className="block">{siteData.hero.line2}</span>
           </motion.span>
         </h1>
-      </motion.div>
+      </div>
 
       {/* Sub info grid */}
       <motion.div
-        style={{ opacity: subOpacity }}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.8, delay: 0.8 }}
         className="grid grid-cols-2 md:grid-cols-4 gap-x-8 gap-y-6 mt-8 md:mt-12 max-w-[1280px]"
       >
         {[
           { label: "Studio", value: siteData.hero.studio },
-          { label: "Discipline", value: "Brand Identity", rotate: true },
+          { label: "Discipline", value: "Brand Identity" },
           { label: "Based in", value: siteData.hero.basedIn, serif: true },
           { label: "Volume", value: siteData.hero.volume, serif: true },
         ].map((item, i) => (
@@ -104,20 +93,30 @@ export function Hero() {
         ))}
       </motion.div>
 
-      {/* Scroll indicator */}
+      {/* Scroll indicator — animated chevron that bounces */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 1.5, duration: 1 }}
-        className="absolute bottom-8 left-[clamp(28px,6vw,72px)] flex items-center gap-3 text-[10px] tracking-[0.2em] uppercase text-ink-50 font-semibold"
+        className="mt-12 md:mt-16 flex items-center gap-3 text-[10px] tracking-[0.2em] uppercase text-ink-50 font-semibold"
       >
         <span>Scroll</span>
-        <motion.div
-          animate={{ height: [24, 40, 24] }}
-          transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-          className="w-px bg-ink-30"
-          style={{ height: 24 }}
-        />
+        <motion.svg
+          width="12"
+          height="18"
+          viewBox="0 0 12 18"
+          fill="none"
+          animate={{ y: [0, 6, 0] }}
+          transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
+        >
+          <path
+            d="M6 0 L6 14 M1 9 L6 14 L11 9"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </motion.svg>
       </motion.div>
     </section>
   );
