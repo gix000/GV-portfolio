@@ -30,8 +30,8 @@ function ProjectCard({
       data-cursor-hover
     >
       <Link href={`/projects/${project.key}`} className="block">
-        {/* Image container */}
-        <div className="relative aspect-[4/5] overflow-hidden rounded-sm bg-paper-lo">
+        {/* Image container — LANDSCAPE 16/10 */}
+        <div className="relative aspect-[16/10] overflow-hidden rounded-sm bg-paper-lo">
           <Image
             src={project.cover}
             alt={`${project.name} — ${project.sub}`}
