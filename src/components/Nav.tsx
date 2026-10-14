@@ -33,7 +33,6 @@ export function Nav() {
       </Link>
       <div className="flex items-center gap-2 text-[10px] tracking-[0.18em] uppercase font-semibold text-ink-70">
         <span className="hidden sm:inline">Beirut, LB</span>
-        <span className="w-1.5 h-1.5 rounded-full bg-green-600 animate-pulse" />
       </div>
     </motion.nav>
   );

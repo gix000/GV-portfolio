@@ -64,23 +64,46 @@ export function CaseStudy({ project }: { project: Project }) {
       {/* Main content */}
       <div className="pt-24 pb-16 px-[clamp(28px,6vw,72px)]">
         <div className="max-w-[1280px] mx-auto">
-          {/* Cover image — stays at top, landscape */}
+          {/* Cover image with tap-to-reveal overlay */}
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
-            className="relative aspect-[16/10] overflow-hidden rounded-sm bg-paper-lo mb-12"
+            className="relative aspect-[16/10] overflow-hidden rounded-sm bg-paper-lo mb-12 group cursor-pointer"
+            onClick={() => !revealed && setRevealed(true)}
           >
             <Image
               src={project.cover}
               alt={`${project.name} cover`}
               fill
-              className="object-cover"
+              className="object-cover transition-transform duration-700 group-hover:scale-[1.02]"
               sizes="(max-width: 1280px) 100vw, 1280px"
               priority
               placeholder="blur"
               blurDataURL={project.lqip}
             />
+            {/* Animated tap-for-more overlay */}
+            {!revealed && (
+              <div className="absolute inset-0 flex items-center justify-center bg-ink/20 group-hover:bg-ink/40 transition-colors duration-500">
+                <motion.div
+                  animate={prefersReduced ? {} : { scale: [1, 1.05, 1], opacity: [0.85, 1, 0.85] }}
+                  transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+                  className="flex flex-col items-center gap-3 px-8 py-5 rounded-full bg-paper/90 backdrop-blur-sm border border-paper shadow-xl"
+                >
+                  <span className="text-[11px] tracking-[0.24em] uppercase font-bold text-ink">
+                    Tap for more
+                  </span>
+                  <motion.div
+                    animate={prefersReduced ? {} : { y: [0, 4, 0] }}
+                    transition={{ duration: 1.4, repeat: Infinity, ease: "easeInOut" }}
+                  >
+                    <svg width="16" height="16" viewBox="0 0 20 20" fill="none" className="text-ink">
+                      <path d="M4 8 L10 14 L16 8" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                  </motion.div>
+                </motion.div>
+              </div>
+            )}
           </motion.div>
 
           {/* Project info */}
@@ -140,29 +163,8 @@ export function CaseStudy({ project }: { project: Project }) {
             </div>
           </motion.div>
 
-          {/* Tap to reveal gallery */}
-          {!revealed ? (
-            <motion.button
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
-              onClick={() => setRevealed(true)}
-              className="w-full py-16 border-2 border-dashed border-line rounded-lg flex flex-col items-center justify-center gap-4 hover:border-accent hover:bg-paper-lo/50 transition-all duration-500 group"
-              data-cursor-hover
-            >
-              <span className="text-[11px] tracking-[0.24em] uppercase font-bold text-ink-50 group-hover:text-accent transition-colors">
-                Tap to reveal {project.gallery.length} project image{project.gallery.length > 1 ? "s" : ""}
-              </span>
-              <motion.div
-                animate={prefersReduced ? {} : { y: [0, 6, 0] }}
-                transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
-              >
-                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" className="text-ink-50 group-hover:text-accent transition-colors">
-                  <path d="M4 8 L10 14 L16 8" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-              </motion.div>
-            </motion.button>
-          ) : (
+          {/* Gallery view — horizontal swipeable (revealed by tapping the cover overlay above) */}
+          {revealed && (
             /* Gallery view — horizontal swipeable */
             <motion.div
               initial={{ opacity: 0, y: 20 }}
