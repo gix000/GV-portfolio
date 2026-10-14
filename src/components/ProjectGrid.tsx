@@ -143,7 +143,7 @@ export function ProjectGrid() {
         </div>
 
         {/* Grid */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-10">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-16 md:gap-y-20">
           {data.projects.map((project, i) => (
             <ProjectCard key={project.key} project={project} index={i} />
           ))}
