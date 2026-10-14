@@ -56,7 +56,6 @@ export function About() {
               sizes="(max-width: 768px) 100vw, 360px"
             />
           </div>
-          <div className="absolute -bottom-4 -right-4 w-full h-full max-w-[360px] border border-line rounded-sm pointer-events-none" />
           <span className="mt-4 block text-[10px] tracking-[0.18em] uppercase text-ink-50 font-semibold text-center w-full">
             {siteData.about.portraitTag}
           </span>

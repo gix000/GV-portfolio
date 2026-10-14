@@ -19,6 +19,7 @@ function ProjectCard({
   return (
     <motion.article
       ref={ref}
+      id={`project-${project.key}`}
       initial={{ opacity: 0, y: 60 }}
       animate={inView ? { opacity: 1, y: 0 } : {}}
       transition={{
@@ -26,7 +27,7 @@ function ProjectCard({
         delay: (index % 3) * 0.12,
         ease: [0.22, 1, 0.36, 1],
       }}
-      className="group relative"
+      className="group relative scroll-mt-24"
       data-cursor-hover
     >
       <Link href={`/projects/${project.key}`} className="block">

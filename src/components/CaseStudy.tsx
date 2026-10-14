@@ -1,56 +1,20 @@
 "use client";
-import { useState, useRef, useEffect, useCallback } from "react";
-import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
+import { useState } from "react";
+import { motion, useReducedMotion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 import type { Project } from "@/lib/data";
 
 export function CaseStudy({ project }: { project: Project }) {
   const [revealed, setRevealed] = useState(false);
-  const [currentIndex, setCurrentIndex] = useState(0);
   const prefersReduced = useReducedMotion();
-
-  const nextImage = useCallback(() => {
-    setCurrentIndex((prev) => (prev + 1) % project.gallery.length);
-  }, [project.gallery.length]);
-
-  const prevImage = useCallback(() => {
-    setCurrentIndex(
-      (prev) => (prev - 1 + project.gallery.length) % project.gallery.length
-    );
-  }, [project.gallery.length]);
-
-  // Keyboard navigation
-  useEffect(() => {
-    if (!revealed) return;
-    const handleKey = (e: KeyboardEvent) => {
-      if (e.key === "ArrowRight") nextImage();
-      if (e.key === "ArrowLeft") prevImage();
-      if (e.key === "Escape") setRevealed(false);
-    };
-    document.addEventListener("keydown", handleKey);
-    return () => document.removeEventListener("keydown", handleKey);
-  }, [revealed, nextImage, prevImage]);
-
-  // Touch/swipe support
-  const touchStartX = useRef(0);
-  const handleTouchStart = (e: React.TouchEvent) => {
-    touchStartX.current = e.touches[0].clientX;
-  };
-  const handleTouchEnd = (e: React.TouchEvent) => {
-    const diff = touchStartX.current - e.changedTouches[0].clientX;
-    if (Math.abs(diff) > 50) {
-      if (diff > 0) nextImage();
-      else prevImage();
-    }
-  };
 
   return (
     <div className="min-h-screen bg-paper">
-      {/* Back link */}
+      {/* Back link — returns to the exact project card on the homepage */}
       <div className="fixed top-0 left-0 right-0 z-50 px-[clamp(28px,6vw,72px)] py-5 flex items-center justify-between bg-paper/80 backdrop-blur-sm">
         <Link
-          href="/#works"
+          href={`/#project-${project.key}`}
           className="text-[11px] tracking-[0.18em] uppercase font-semibold hover:text-accent transition-colors duration-300 text-ink"
           data-cursor-hover
         >
@@ -82,26 +46,30 @@ export function CaseStudy({ project }: { project: Project }) {
               placeholder="blur"
               blurDataURL={project.lqip}
             />
-            {/* Animated tap-for-more overlay */}
+            {/* Sleek view-gallery cue — minimal bottom-right pill, no full scrim */}
             {!revealed && (
-              <div className="absolute inset-0 flex items-center justify-center bg-ink/20 group-hover:bg-ink/40 transition-colors duration-500">
+              <div className="absolute inset-0 pointer-events-none">
                 <motion.div
-                  animate={prefersReduced ? {} : { scale: [1, 1.05, 1], opacity: [0.85, 1, 0.85] }}
-                  transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-                  className="flex flex-col items-center gap-3 px-8 py-5 rounded-full bg-paper/90 backdrop-blur-sm border border-paper shadow-xl"
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: 0.5, ease: [0.22, 1, 0.36, 1] }}
+                  className="absolute bottom-5 right-5 flex items-center gap-2 px-4 py-2 rounded-full bg-ink/55 backdrop-blur-md border border-white/10"
                 >
-                  <span className="text-[11px] tracking-[0.24em] uppercase font-bold text-ink">
-                    Tap for more
+                  <span className="text-[10px] tracking-[0.2em] uppercase font-semibold text-white/90">
+                    View gallery
                   </span>
-                  <motion.div
-                    animate={prefersReduced ? {} : { y: [0, 4, 0] }}
+                  <motion.svg
+                    width="12"
+                    height="12"
+                    viewBox="0 0 20 20"
+                    fill="none"
+                    animate={prefersReduced ? {} : { y: [0, 3, 0] }}
                     transition={{ duration: 1.4, repeat: Infinity, ease: "easeInOut" }}
                   >
-                    <svg width="16" height="16" viewBox="0 0 20 20" fill="none" className="text-ink">
-                      <path d="M4 8 L10 14 L16 8" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                    </svg>
-                  </motion.div>
+                    <path d="M4 8 L10 14 L16 8" stroke="rgba(255,255,255,0.9)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                  </motion.svg>
                 </motion.div>
+                <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-ink/25 to-transparent" />
               </div>
             )}
           </motion.div>
@@ -163,99 +131,51 @@ export function CaseStudy({ project }: { project: Project }) {
             </div>
           </motion.div>
 
-          {/* Gallery view — horizontal swipeable (revealed by tapping the cover overlay above) */}
+          {/* Gallery — clean vertical stack directly under cover, no black background */}
           {revealed && (
-            /* Gallery view — horizontal swipeable */
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 24 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-              className="relative"
+              transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+              className="mt-8 flex flex-col gap-5"
             >
               {/* Close button */}
-              <button
-                onClick={() => setRevealed(false)}
-                className="absolute -top-12 right-0 text-[11px] tracking-[0.18em] uppercase font-semibold text-ink-50 hover:text-accent transition-colors"
-                data-cursor-hover
-              >
-                Close Gallery ✕
-              </button>
-
-              {/* Gallery container */}
-              <div
-                className="relative aspect-[16/10] bg-ink rounded-sm overflow-hidden"
-                onTouchStart={handleTouchStart}
-                onTouchEnd={handleTouchEnd}
-              >
-                <AnimatePresence mode="wait">
-                  <motion.div
-                    key={currentIndex}
-                    initial={{ opacity: 0, x: 80 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: -80 }}
-                    transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-                    className="absolute inset-0 flex items-center justify-center p-4"
-                  >
-                    <img
-                      src={project.gallery[currentIndex]}
-                      alt={project.caps?.[currentIndex] || `${project.name} — ${currentIndex + 1}`}
-                      className="max-w-full max-h-full object-contain rounded shadow-2xl"
-                    />
-                  </motion.div>
-                </AnimatePresence>
-
-                {/* Navigation arrows */}
-                {project.gallery.length > 1 && (
-                  <>
-                    <button
-                      onClick={prevImage}
-                      className="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full border border-paper/30 bg-ink/50 text-paper flex items-center justify-center text-2xl hover:bg-paper/10 transition-colors z-10"
-                      aria-label="Previous image"
-                      data-cursor-hover
-                    >
-                      ‹
-                    </button>
-                    <button
-                      onClick={nextImage}
-                      className="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full border border-paper/30 bg-ink/50 text-paper flex items-center justify-center text-2xl hover:bg-paper/10 transition-colors z-10"
-                      aria-label="Next image"
-                      data-cursor-hover
-                    >
-                      ›
-                    </button>
-                  </>
-                )}
-
-                {/* Counter */}
-                <div className="absolute top-4 right-4 text-paper text-[11px] tracking-[0.2em] font-semibold bg-ink/50 px-3 py-1.5 rounded-full">
-                  {currentIndex + 1} / {project.gallery.length}
-                </div>
-
-                {/* Caption */}
-                {project.caps?.[currentIndex] && (
-                  <div className="absolute bottom-4 left-1/2 -translate-x-1/2 text-center">
-                    <span className="text-paper text-[10px] tracking-[0.18em] uppercase font-bold bg-ink/50 px-3 py-1.5 rounded-full">
-                      {project.caps[currentIndex]}
-                    </span>
-                  </div>
-                )}
+              <div className="flex justify-end">
+                <button
+                  onClick={() => setRevealed(false)}
+                  className="text-[11px] tracking-[0.18em] uppercase font-semibold text-ink-50 hover:text-accent transition-colors"
+                  data-cursor-hover
+                >
+                  Close Gallery ✕
+                </button>
               </div>
 
-              {/* Dot indicators */}
-              {project.gallery.length > 1 && (
-                <div className="flex justify-center gap-2 mt-6">
-                  {project.gallery.map((_, i) => (
-                    <button
-                      key={i}
-                      onClick={() => setCurrentIndex(i)}
-                      className={`w-2 h-2 rounded-full transition-all ${
-                        i === currentIndex ? "bg-ink w-6" : "bg-ink/30"
-                      }`}
-                      aria-label={`Go to image ${i + 1}`}
-                    />
-                  ))}
-                </div>
-              )}
+              {/* Vertical image stack */}
+              {project.gallery.map((img, i) => (
+                <motion.div
+                  key={i}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: i * 0.08, ease: [0.22, 1, 0.36, 1] }}
+                  className="relative w-full overflow-hidden rounded-sm bg-paper-lo"
+                >
+                  <Image
+                    src={img}
+                    alt={project.caps?.[i] || `${project.name} — ${i + 1}`}
+                    width={1280}
+                    height={800}
+                    className="w-full h-auto object-cover"
+                    sizes="(max-width: 1280px) 100vw, 1280px"
+                  />
+                  {project.caps?.[i] && (
+                    <div className="absolute bottom-0 left-0 right-0 py-3 px-5 bg-gradient-to-t from-ink/40 to-transparent">
+                      <span className="text-white text-[10px] tracking-[0.18em] uppercase font-bold">
+                        {project.caps[i]}
+                      </span>
+                    </div>
+                  )}
+                </motion.div>
+              ))}
             </motion.div>
           )}
         </div>
