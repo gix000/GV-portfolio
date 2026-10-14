@@ -8,7 +8,7 @@ export function Hero() {
   return (
     <section
       id="top"
-      className="relative flex flex-col justify-start pt-24 md:pt-28 pb-16 px-[clamp(28px,6vw,72px)] overflow-hidden"
+      className="relative flex flex-col justify-start pt-20 md:pt-24 pb-12 px-[clamp(28px,6vw,72px)] overflow-hidden"
     >
       {/* Top bar — volume chip on the right only */}
       <motion.div
