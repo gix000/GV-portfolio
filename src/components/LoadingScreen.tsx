@@ -11,16 +11,17 @@ export function LoadingScreen() {
   function handleOpen() {
     if (opened) return;
     setOpened(true);
-    setTimeout(() => setGone(true), prefersReduced ? 50 : 1000);
+    // Disappear animation: scale down + fade out
+    setTimeout(() => setGone(true), prefersReduced ? 50 : 800);
   }
 
   return (
     <AnimatePresence>
       {!gone && (
         <motion.div
-          initial={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+          initial={{ opacity: 1, scale: 1 }}
+          exit={{ opacity: 0, scale: 0.95, filter: "blur(8px)" }}
+          transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
           className="fixed inset-0 z-[9999] flex items-center justify-center overflow-hidden"
           style={{ background: "#E8E4DE" }}
         >
@@ -163,44 +164,6 @@ export function LoadingScreen() {
                 </motion.div>
               </div>
             </motion.div>
-
-            {/* === OPENING ANIMATION — flaps fly open === */}
-            <AnimatePresence>
-              {opened && (
-                <>
-                  {/* Left flap */}
-                  <motion.div
-                    className="absolute top-0 bottom-0 left-0 origin-left rounded-l-2xl"
-                    style={{
-                      width: "50%",
-                      background:
-                        "linear-gradient(180deg, #F2EDE4 0%, #E8E2D6 55%, #DDD5C7 100%)",
-                      boxShadow: "inset 0 1px 0 rgba(255,255,255,0.7)",
-                      zIndex: 6,
-                    }}
-                    initial={{ rotateY: 0 }}
-                    animate={{ rotateY: -110 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ duration: 0.9, ease: [0.65, 0, 0.35, 1] }}
-                  />
-                  {/* Right flap */}
-                  <motion.div
-                    className="absolute top-0 bottom-0 right-0 origin-right rounded-r-2xl"
-                    style={{
-                      width: "50%",
-                      background:
-                        "linear-gradient(180deg, #F2EDE4 0%, #E8E2D6 55%, #DDD5C7 100%)",
-                      boxShadow: "inset 0 1px 0 rgba(255,255,255,0.7)",
-                      zIndex: 6,
-                    }}
-                    initial={{ rotateY: 0 }}
-                    animate={{ rotateY: 110 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ duration: 0.9, ease: [0.65, 0, 0.35, 1] }}
-                  />
-                </>
-              )}
-            </AnimatePresence>
           </button>
         </motion.div>
       )}
