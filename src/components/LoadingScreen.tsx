@@ -11,7 +11,8 @@ export function LoadingScreen() {
     if (isOpen) return;
     setIsOpen(true);
     // Scroll to top when folder opens so user lands at the header
-    window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+    const lenis = (window as unknown as { __lenis?: { scrollTo: (n: number, o?: { immediate?: boolean }) => void } }).__lenis;
+    if (lenis) { lenis.scrollTo(0, { immediate: true }); } else { window.scrollTo({ top: 0, left: 0 }); }
     setTimeout(() => setIsGone(true), 1000);
   }
 

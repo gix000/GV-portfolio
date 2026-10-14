@@ -17,7 +17,11 @@ export default function ProjectPage() {
 
   // No loading screen at all — render nothing until data is ready,
   // then fade the case study in smoothly. This avoids any flash/jank.
-  if (loading) return null;
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-paper" aria-hidden="true" />
+    );
+  }
 
   if (!project) {
     return (

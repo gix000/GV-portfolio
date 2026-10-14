@@ -1,7 +1,15 @@
 "use client";
-
 import { useEffect, useRef } from "react";
 import Lenis from "lenis";
+
+// Expose the Lenis instance globally so other components (ScrollToTop,
+// LoadingScreen) can call lenis.scrollTo(0) instead of window.scrollTo,
+// which Lenis overrides with its own virtual scroll position.
+declare global {
+  interface Window {
+    __lenis?: Lenis;
+  }
+}
 
 export function SmoothScroll({ children }: { children: React.ReactNode }) {
   const lenisRef = useRef<Lenis | null>(null);
@@ -24,15 +32,16 @@ export function SmoothScroll({ children }: { children: React.ReactNode }) {
     });
 
     lenisRef.current = lenis;
+    window.__lenis = lenis;
 
     function raf(time: number) {
       lenis.raf(time);
       requestAnimationFrame(raf);
     }
-
     requestAnimationFrame(raf);
 
     return () => {
+      window.__lenis = undefined;
       lenis.destroy();
     };
   }, []);
