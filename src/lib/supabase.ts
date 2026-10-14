@@ -7,19 +7,20 @@ export function getSupabase(): SupabaseClient {
   if (client) return client;
   if (initError) throw new Error(initError);
 
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  // Use server-only env vars (no NEXT_PUBLIC_ prefix) so they're never
+  // exposed to the browser bundle — this prevents client-side crashes.
+  const url = process.env.SUPABASE_URL;
   const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
   if (!url || !serviceKey) {
     initError =
-      "Missing Supabase env vars on Vercel: set NEXT_PUBLIC_SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY in Settings → Environment Variables, then redeploy.";
+      "Missing Supabase env vars on Vercel: set SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY in Settings → Environment Variables, then redeploy.";
     throw new Error(initError);
   }
 
-  // Validate that the URL looks like a real Supabase API endpoint, not the dashboard
   if (!url.includes(".supabase.co")) {
     initError =
-      "NEXT_PUBLIC_SUPABASE_URL is wrong — it must be your project API URL (https://xxxxx.supabase.co), not the Supabase dashboard URL. Go to Supabase → Settings → API → Project URL and copy that.";
+      "SUPABASE_URL is wrong — it must be your project API URL (https://xxxxx.supabase.co). Go to Supabase → Settings → API → Project URL and copy that.";
     throw new Error(initError);
   }
 
@@ -43,7 +44,6 @@ export function getSupabaseStatus(): { ok: boolean; error?: string } {
   }
 }
 
-// The single row id we use to store the whole site data blob.
 export const SITE_DATA_ROW_ID = "site_data_v1";
 
 export interface SiteDataRow {
