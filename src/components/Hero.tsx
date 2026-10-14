@@ -4,7 +4,7 @@ import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef, useEffect, useState } from "react";
 import { useSiteData } from "@/lib/useSiteData";
 
-const TYPING_TEXT = "Brand Into Identity";
+const TYPING_TEXT = "Ideas Into Reality";
 
 function TypingText() {
   const [displayed, setDisplayed] = useState("");
@@ -17,25 +17,25 @@ function TypingText() {
       setDisplayed(TYPING_TEXT.slice(0, i));
       if (i >= TYPING_TEXT.length) {
         clearInterval(interval);
-        setTimeout(() => setDone(true), 600);
+        setTimeout(() => setDone(true), 700);
       }
-    }, 90);
+    }, 85);
     return () => clearInterval(interval);
   }, []);
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 12 }}
+      initial={{ opacity: 0, y: 16 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
-      className="mb-4 flex items-center gap-1"
+      transition={{ duration: 0.7, delay: 0.25, ease: [0.22, 1, 0.36, 1] }}
+      className="mb-5 flex items-center gap-1.5 overflow-hidden"
     >
-      <span className="text-[11px] md:text-sm tracking-[0.28em] uppercase text-accent font-semibold">
+      <span className="font-serif italic leading-none tracking-[-0.01em] text-[clamp(1.6rem,5vw,3.4rem)] text-ink">
         {displayed}
       </span>
       {!done && (
         <motion.span
-          className="inline-block w-[2px] h-4 bg-accent ml-0.5"
+          className="inline-block w-[3px] self-stretch min-h-[1.6rem] md:min-h-[2.6rem] bg-accent rounded-sm"
           animate={{ opacity: [1, 0, 1] }}
           transition={{ duration: 0.7, repeat: Infinity }}
         />
