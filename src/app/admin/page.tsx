@@ -85,6 +85,55 @@ export default function AdminPage() {
     }
   }, []);
 
+  // Normalize whatever the API returns into a safe SiteData shape so the
+  // render path never throws on missing arrays/objects (which would trip the
+  // root ErrorBoundary and show "refresh page" instead of the real error).
+  function normalize(raw: unknown): SiteData {
+    const r = (raw && typeof raw === "object" ? raw : {}) as Record<string, unknown>;
+    const meta = (r.meta && typeof r.meta === "object" ? r.meta : {}) as Record<string, unknown>;
+    const hero = (r.hero && typeof r.hero === "object" ? r.hero : {}) as Record<string, unknown>;
+    const about = (r.about && typeof r.about === "object" ? r.about : {}) as Record<string, unknown>;
+    const contact = (r.contact && typeof r.contact === "object" ? r.contact : {}) as Record<string, unknown>;
+    return {
+      meta: {
+        title: typeof meta.title === "string" ? meta.title : "G.VIISUALS",
+        description: typeof meta.description === "string" ? meta.description : "",
+      },
+      hero: {
+        topLeft: String(hero.topLeft ?? ""),
+        topLeftDetail: String(hero.topLeftDetail ?? ""),
+        line1: String(hero.line1 ?? ""),
+        line2: String(hero.line2 ?? ""),
+        studio: String(hero.studio ?? ""),
+        disciplines: Array.isArray(hero.disciplines) ? (hero.disciplines as string[]) : [],
+        basedIn: String(hero.basedIn ?? ""),
+        volume: String(hero.volume ?? ""),
+      },
+      about: {
+        lead: String(about.lead ?? ""),
+        paragraphs: Array.isArray(about.paragraphs) ? (about.paragraphs as string[]) : [],
+        services: Array.isArray(about.services) ? (about.services as string[]) : [],
+        basedList: Array.isArray(about.basedList) ? (about.basedList as string[]) : [],
+        portraitTag: String(about.portraitTag ?? ""),
+      },
+      contact: {
+        heading: String(contact.heading ?? ""),
+        email: String(contact.email ?? ""),
+        instagramHandle: String(contact.instagramHandle ?? ""),
+        instagramUrl: String(contact.instagramUrl ?? ""),
+        phoneDisplay: String(contact.phoneDisplay ?? ""),
+        phoneTel: String(contact.phoneTel ?? ""),
+        location: String(contact.location ?? ""),
+        timeChip: String(contact.timeChip ?? ""),
+        whatsapp: String(contact.whatsapp ?? ""),
+        whatsappText: String(contact.whatsappText ?? ""),
+        footerA: String(contact.footerA ?? ""),
+        footerB: String(contact.footerB ?? ""),
+      },
+      projects: Array.isArray(r.projects) ? (r.projects as Project[]) : [],
+    };
+  }
+
   async function handleLogin(e: React.FormEvent) {
     e.preventDefault();
     setLoading(true);
@@ -96,16 +145,17 @@ export default function AdminPage() {
       });
 
       if (res.ok) {
-        const jsonData = await res.json();
-        setData(jsonData);
+        const jsonData = await res.json().catch(() => ({}));
+        setData(normalize(jsonData));
         setAuthenticated(true);
         sessionStorage.setItem("admin_auth", "true");
         sessionStorage.setItem("admin_password", password);
       } else {
-        setError("Invalid password");
+        const errData = await res.json().catch(() => ({}));
+        setError((errData && errData.error) || `Invalid password or unauthorized (${res.status})`);
       }
-    } catch {
-      setError("Connection error");
+    } catch (e) {
+      setError(`Connection error: ${String(e)}`);
     } finally {
       setLoading(false);
     }
@@ -120,14 +170,17 @@ export default function AdminPage() {
         headers: { Authorization: `Bearer ${storedPass}` },
       });
       if (res.ok) {
-        const jsonData = await res.json();
-        setData(jsonData);
+        const jsonData = await res.json().catch(() => ({}));
+        setData(normalize(jsonData));
       } else {
         const errData = await res.json().catch(() => ({}));
-        setError(errData.error || `Failed to load data (${res.status})`);
+        setError((errData && errData.error) || `Failed to load data (${res.status})`);
+        // Still render an empty shell so the page doesn't crash
+        setData(normalize({}));
       }
     } catch (e) {
       setError(`Connection error: ${String(e)}`);
+      setData(normalize({}));
     }
   }
 

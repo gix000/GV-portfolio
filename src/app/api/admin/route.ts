@@ -26,7 +26,7 @@ async function readData() {
       console.error("Supabase read error:", error.message);
       return { ...defaultSiteData };
     }
-    if (!data || !data.data) {
+    if (!data || !data.data || (typeof data.data === "object" && Object.keys(data.data as object).length === 0)) {
       return { ...defaultSiteData };
     }
     return data.data;
