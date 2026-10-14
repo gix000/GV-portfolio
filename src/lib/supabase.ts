@@ -16,6 +16,13 @@ export function getSupabase(): SupabaseClient {
     throw new Error(initError);
   }
 
+  // Validate that the URL looks like a real Supabase API endpoint, not the dashboard
+  if (!url.includes(".supabase.co")) {
+    initError =
+      "NEXT_PUBLIC_SUPABASE_URL is wrong — it must be your project API URL (https://xxxxx.supabase.co), not the Supabase dashboard URL. Go to Supabase → Settings → API → Project URL and copy that.";
+    throw new Error(initError);
+  }
+
   try {
     client = createClient(url, serviceKey, {
       auth: { persistSession: false, autoRefreshToken: false },

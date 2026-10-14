@@ -12,24 +12,30 @@ function verifyAuth(req: NextRequest): boolean {
 }
 
 // Read the site data blob from Supabase; fall back to the compiled default
-// if no row exists yet (first run before the admin has saved anything).
+// if Supabase is misconfigured, unreachable, or no row exists yet.
 async function readData() {
-  const supabase = getSupabase();
-  const { data, error } = await supabase
-    .from("site_data")
-    .select("data")
-    .eq("id", SITE_DATA_ROW_ID)
-    .maybeSingle();
+  try {
+    const supabase = getSupabase();
+    const { data, error } = await supabase
+      .from("site_data")
+      .select("data")
+      .eq("id", SITE_DATA_ROW_ID)
+      .maybeSingle();
 
-  if (error) {
-    // If the table doesn't exist yet, fall back to defaults rather than 500.
-    console.error("Supabase read error:", error.message);
+    if (error) {
+      console.error("Supabase read error:", error.message);
+      return { ...defaultSiteData };
+    }
+    if (!data || !data.data) {
+      return { ...defaultSiteData };
+    }
+    return data.data;
+  } catch (e) {
+    // Supabase client init failed (missing/wrong env vars) — serve defaults
+    // so the public site never crashes. The admin panel will surface the error.
+    console.error("Supabase unavailable, serving compiled defaults:", String(e));
     return { ...defaultSiteData };
   }
-  if (!data || !data.data) {
-    return { ...defaultSiteData };
-  }
-  return data.data;
 }
 
 async function writeData(data: unknown) {
