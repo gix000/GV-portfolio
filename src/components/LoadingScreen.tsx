@@ -22,9 +22,7 @@ export function LoadingScreen() {
           exit={{ opacity: 0 }}
           transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
           className="fixed inset-0 z-[9999] flex items-center justify-center overflow-hidden"
-          style={{
-            background: "#E8E4DE",
-          }}
+          style={{ background: "#E8E4DE" }}
         >
           {/* Subtle grain */}
           <div
@@ -48,58 +46,63 @@ export function LoadingScreen() {
             className="relative focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-700/40 focus-visible:ring-offset-4 rounded-2xl cursor-pointer"
             style={{ width: "min(80vw, 480px)" }}
           >
-            {/* === BACK TAB (brown leather) === */}
+            {/* === BROWN LEATHER TAB (wraps over top edge) === */}
             <motion.div
-              className="absolute rounded-t-xl"
+              className="absolute"
               style={{
-                top: "-18px",
-                left: "8%",
-                width: "38%",
-                height: "36px",
-                background: "linear-gradient(180deg, #8B5E3C 0%, #6B4226 100%)",
-                boxShadow: "0 -2px 8px rgba(107,66,38,0.3)",
-                zIndex: 1,
+                top: "-22px",
+                left: "6%",
+                width: "42%",
+                height: "44px",
+                background: "linear-gradient(180deg, #9B6B42 0%, #7A4E2D 60%, #6B4226 100%)",
+                borderRadius: "14px 14px 4px 4px",
+                boxShadow:
+                  "0 2px 6px rgba(107,66,38,0.35), inset 0 1px 0 rgba(255,255,255,0.15)",
+                zIndex: 3,
               }}
-              initial={{ y: -10, opacity: 0 }}
+              initial={{ y: -12, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               transition={{ duration: 0.7, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
             />
 
-            {/* === BACK PANEL (slightly visible behind front) === */}
+            {/* === WHITE PAPER SHEET (peeking between tab and front panel) === */}
             <motion.div
               className="absolute rounded-xl"
               style={{
-                top: "-6px",
-                left: "2%",
-                right: "2%",
-                bottom: "4px",
-                background: "linear-gradient(180deg, #D6CFC4 0%, #C8C0B4 100%)",
-                zIndex: 1,
+                top: "-8px",
+                left: "3%",
+                right: "3%",
+                bottom: "6px",
+                background: "linear-gradient(180deg, #FFFFFF 0%, #F5F1EA 100%)",
+                boxShadow: "0 1px 3px rgba(80,60,40,0.12)",
+                zIndex: 2,
               }}
-              initial={{ y: 20, opacity: 0 }}
+              initial={{ y: 14, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
-              transition={{ duration: 0.8, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
+              transition={{ duration: 0.8, delay: 0.18, ease: [0.22, 1, 0.36, 1] }}
             />
 
             {/* === FRONT PANEL (cream/beige main body) === */}
             <motion.div
-              className="relative rounded-xl overflow-hidden"
+              className="relative rounded-2xl overflow-hidden"
               style={{
-                background: "linear-gradient(180deg, #F0EBE3 0%, #E4DDD3 40%, #D9D1C5 100%)",
+                background:
+                  "linear-gradient(180deg, #F2EDE4 0%, #E8E2D6 55%, #DDD5C7 100%)",
                 aspectRatio: "4 / 3",
                 boxShadow:
-                  "0 20px 50px -12px rgba(80,60,40,0.25), 0 8px 20px -8px rgba(80,60,40,0.15), inset 0 1px 0 rgba(255,255,255,0.6)",
-                zIndex: 2,
+                  "0 24px 50px -14px rgba(80,60,40,0.28), 0 10px 22px -10px rgba(80,60,40,0.18), inset 0 1px 0 rgba(255,255,255,0.7)",
+                zIndex: 4,
               }}
               initial={{ y: 30, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
-              transition={{ duration: 0.9, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
+              transition={{ duration: 0.9, delay: 0.25, ease: [0.22, 1, 0.36, 1] }}
             >
               {/* Top edge highlight */}
               <div
                 className="h-[2px] w-full"
                 style={{
-                  background: "linear-gradient(90deg, transparent 5%, rgba(255,255,255,0.7) 30%, rgba(255,255,255,0.7) 70%, transparent 95%)",
+                  background:
+                    "linear-gradient(90deg, transparent 5%, rgba(255,255,255,0.85) 30%, rgba(255,255,255,0.85) 70%, transparent 95%)",
                 }}
               />
 
@@ -113,11 +116,11 @@ export function LoadingScreen() {
               />
 
               {/* Logo centered */}
-              <div className="flex flex-col items-center justify-center h-full pt-4 pb-2">
+              <div className="flex flex-col items-center justify-center h-full pt-2 pb-2">
                 <motion.div
                   initial={{ scale: 0.8, opacity: 0 }}
                   animate={{ scale: 1, opacity: 1 }}
-                  transition={{ duration: 1, delay: 0.4, ease: [0.22, 1, 0.36, 1] }}
+                  transition={{ duration: 1, delay: 0.45, ease: [0.22, 1, 0.36, 1] }}
                 >
                   <Image
                     src="/assets/img/logo.png"
@@ -131,11 +134,11 @@ export function LoadingScreen() {
 
                 {/* Tap to reveal text */}
                 <motion.p
-                  className="text-[10px] md:text-[11px] tracking-[0.24em] uppercase font-semibold mt-4"
-                  style={{ color: "rgba(107,90,72,0.5)" }}
+                  className="text-[10px] md:text-[11px] tracking-[0.24em] uppercase font-semibold mt-5"
+                  style={{ color: "rgba(107,90,72,0.55)" }}
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
-                  transition={{ duration: 0.8, delay: 0.8 }}
+                  transition={{ duration: 0.8, delay: 0.85 }}
                 >
                   Tap to reveal projects
                 </motion.p>
@@ -154,7 +157,7 @@ export function LoadingScreen() {
                       strokeWidth="1.5"
                       strokeLinecap="round"
                       strokeLinejoin="round"
-                      opacity="0.4"
+                      opacity="0.45"
                     />
                   </svg>
                 </motion.div>
@@ -167,12 +170,13 @@ export function LoadingScreen() {
                 <>
                   {/* Left flap */}
                   <motion.div
-                    className="absolute top-0 bottom-0 left-0 origin-left rounded-l-xl"
+                    className="absolute top-0 bottom-0 left-0 origin-left rounded-l-2xl"
                     style={{
                       width: "50%",
-                      background: "linear-gradient(180deg, #F0EBE3 0%, #E4DDD3 40%, #D9D1C5 100%)",
-                      boxShadow: "inset 0 1px 0 rgba(255,255,255,0.6)",
-                      zIndex: 5,
+                      background:
+                        "linear-gradient(180deg, #F2EDE4 0%, #E8E2D6 55%, #DDD5C7 100%)",
+                      boxShadow: "inset 0 1px 0 rgba(255,255,255,0.7)",
+                      zIndex: 6,
                     }}
                     initial={{ rotateY: 0 }}
                     animate={{ rotateY: -110 }}
@@ -181,12 +185,13 @@ export function LoadingScreen() {
                   />
                   {/* Right flap */}
                   <motion.div
-                    className="absolute top-0 bottom-0 right-0 origin-right rounded-r-xl"
+                    className="absolute top-0 bottom-0 right-0 origin-right rounded-r-2xl"
                     style={{
                       width: "50%",
-                      background: "linear-gradient(180deg, #F0EBE3 0%, #E4DDD3 40%, #D9D1C5 100%)",
-                      boxShadow: "inset 0 1px 0 rgba(255,255,255,0.6)",
-                      zIndex: 5,
+                      background:
+                        "linear-gradient(180deg, #F2EDE4 0%, #E8E2D6 55%, #DDD5C7 100%)",
+                      boxShadow: "inset 0 1px 0 rgba(255,255,255,0.7)",
+                      zIndex: 6,
                     }}
                     initial={{ rotateY: 0 }}
                     animate={{ rotateY: 110 }}
