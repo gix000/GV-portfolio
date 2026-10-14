@@ -34,10 +34,10 @@ export function Contact() {
   return (
     <section
       id="contact"
-      className="py-32 px-[clamp(28px,6vw,72px)] max-w-[1280px] mx-auto"
+      className="py-20 px-[clamp(28px,6vw,72px)] max-w-[1280px] mx-auto"
     >
       {/* Kicker */}
-      <Reveal className="flex items-center gap-4 text-[11px] tracking-[0.2em] uppercase text-ink-50 font-semibold mb-12">
+      <Reveal className="flex items-center gap-4 text-[11px] tracking-[0.2em] uppercase text-ink-50 font-semibold mb-8">
         <span className="text-accent">03</span>
         <span>Contact</span>
         <span className="flex-1 h-px bg-line" />
@@ -46,7 +46,7 @@ export function Contact() {
 
       {/* Time chip */}
       <Reveal delay={0.05}>
-        <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full border border-line bg-paper-hi text-[11px] tracking-[0.15em] uppercase font-semibold text-ink-70 mb-10">
+        <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full border border-line bg-paper-hi text-[11px] tracking-[0.15em] uppercase font-semibold text-ink-70 mb-6">
           <span className="w-1.5 h-1.5 rounded-full bg-green-600 animate-pulse" />
           Beirut &middot; <BeirutTime /> &middot; {siteData.contact.timeChip}
         </div>
@@ -76,7 +76,7 @@ export function Contact() {
 
       {/* Links grid */}
       <Reveal delay={0.3}>
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 mt-16 pt-12 border-t border-line">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 mt-10 pt-8 border-t border-line">
           <a
             href={siteData.contact.instagramUrl}
             target="_blank"

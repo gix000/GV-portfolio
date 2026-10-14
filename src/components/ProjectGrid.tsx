@@ -100,10 +100,10 @@ export function ProjectGrid() {
   const headerInView = useInView(headerRef, { once: true, margin: "-80px" });
 
   return (
-    <section id="works" className="py-32 px-[clamp(28px,6vw,72px)]">
+    <section id="works" className="py-20 px-[clamp(28px,6vw,72px)]">
       <div className="max-w-[1280px] mx-auto">
         {/* Section header */}
-        <div ref={headerRef} className="mb-20">
+        <div ref={headerRef} className="mb-12">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={headerInView ? { opacity: 1, y: 0 } : {}}
@@ -143,7 +143,7 @@ export function ProjectGrid() {
         </div>
 
         {/* Grid */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-16">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-10">
           {data.projects.map((project, i) => (
             <ProjectCard key={project.key} project={project} index={i} />
           ))}

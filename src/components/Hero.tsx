@@ -18,7 +18,7 @@ export function Hero() {
     <section
       ref={ref}
       id="top"
-      className="relative min-h-screen flex flex-col justify-start pt-32 md:pt-40 pb-24 px-[clamp(28px,6vw,72px)] overflow-hidden"
+      className="relative flex flex-col justify-start pt-24 md:pt-28 pb-16 px-[clamp(28px,6vw,72px)] overflow-hidden"
     >
       {/* Top bar — volume chip on the right only */}
       <motion.div
@@ -74,7 +74,7 @@ export function Hero() {
       {/* Sub info grid */}
       <motion.div
         style={{ opacity: subOpacity }}
-        className="grid grid-cols-2 md:grid-cols-4 gap-x-8 gap-y-6 mt-12 md:mt-20 max-w-[1280px]"
+        className="grid grid-cols-2 md:grid-cols-4 gap-x-8 gap-y-6 mt-8 md:mt-12 max-w-[1280px]"
       >
         {[
           { label: "Studio", value: siteData.hero.studio },

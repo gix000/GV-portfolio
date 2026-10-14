@@ -35,10 +35,10 @@ export function About() {
   return (
     <section
       id="about"
-      className="py-32 px-[clamp(28px,6vw,72px)] max-w-[1280px] mx-auto"
+      className="py-20 px-[clamp(28px,6vw,72px)] max-w-[1280px] mx-auto"
     >
       {/* Section kicker */}
-      <Reveal className="flex items-center gap-4 text-[11px] tracking-[0.2em] uppercase text-ink-50 font-semibold mb-16">
+      <Reveal className="flex items-center gap-4 text-[11px] tracking-[0.2em] uppercase text-ink-50 font-semibold mb-10">
         <span className="text-accent">01</span>
         <span>Introduction</span>
         <span className="flex-1 h-px bg-line" />
@@ -46,7 +46,7 @@ export function About() {
       </Reveal>
 
       {/* Portrait — big and centered, no cadre */}
-      <div className="flex flex-col items-center mb-16">
+      <div className="flex flex-col items-center mb-10">
         <Reveal className="relative flex justify-center w-full">
           <div className="relative aspect-[3/4] overflow-hidden rounded-sm w-full max-w-[480px]">
             <Image
@@ -80,7 +80,7 @@ export function About() {
         </Reveal>
 
         <Reveal delay={0.3}>
-          <div className="grid grid-cols-2 gap-8 mt-12 pt-12 border-t border-line">
+          <div className="grid grid-cols-2 gap-8 mt-8 pt-8 border-t border-line">
             <div>
               <div className="text-[10px] tracking-[0.2em] uppercase text-ink-50 font-semibold mb-3">
                 Services
