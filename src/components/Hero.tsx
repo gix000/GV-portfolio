@@ -20,7 +20,7 @@ export function Hero() {
     <section
       ref={ref}
       id="top"
-      className="relative min-h-screen flex flex-col justify-end pb-24 px-[clamp(28px,6vw,72px)] overflow-hidden"
+      className="relative min-h-screen flex flex-col justify-center pt-28 pb-24 px-[clamp(28px,6vw,72px)] overflow-hidden"
     >
       {/* Top bar — studio label on the left, volume chip on the right */}
       <motion.div
