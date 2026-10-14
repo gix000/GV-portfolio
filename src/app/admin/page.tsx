@@ -122,9 +122,12 @@ export default function AdminPage() {
       if (res.ok) {
         const jsonData = await res.json();
         setData(jsonData);
+      } else {
+        const errData = await res.json().catch(() => ({}));
+        setError(errData.error || `Failed to load data (${res.status})`);
       }
-    } catch {
-      console.error("Failed to fetch data");
+    } catch (e) {
+      setError(`Connection error: ${String(e)}`);
     }
   }
 
@@ -152,10 +155,11 @@ export default function AdminPage() {
         setEditingProject(null);
         setShowAddForm(false);
       } else {
-        setError("Failed to save project");
+        const errData = await res.json().catch(() => ({}));
+        setError(errData.error || `Failed to save project (${res.status})`);
       }
-    } catch {
-      setError("Connection error");
+    } catch (e) {
+      setError(`Connection error: ${String(e)}`);
     } finally {
       setLoading(false);
     }
@@ -177,10 +181,11 @@ export default function AdminPage() {
       if (res.ok) {
         fetchData();
       } else {
-        setError("Failed to delete project");
+        const errData = await res.json().catch(() => ({}));
+        setError(errData.error || `Failed to delete project (${res.status})`);
       }
-    } catch {
-      setError("Connection error");
+    } catch (e) {
+      setError(`Connection error: ${String(e)}`);
     } finally {
       setLoading(false);
     }
@@ -208,10 +213,11 @@ export default function AdminPage() {
         const result = await res.json();
         setData(result.data);
       } else {
-        setError("Failed to update");
+        const errData = await res.json().catch(() => ({}));
+        setError(errData.error || `Failed to update (${res.status})`);
       }
-    } catch {
-      setError("Connection error");
+    } catch (e) {
+      setError(`Connection error: ${String(e)}`);
     } finally {
       setLoading(false);
     }
@@ -277,6 +283,23 @@ export default function AdminPage() {
       </header>
 
       <div className="max-w-7xl mx-auto px-6 py-8">
+        {/* Error banner */}
+        {error && (
+          <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg flex items-start justify-between gap-4">
+            <div>
+              <p className="text-sm font-semibold text-red-800 mb-1">Something went wrong</p>
+              <p className="text-sm text-red-700 break-words">{error}</p>
+            </div>
+            <button
+              onClick={() => setError("")}
+              className="text-red-500 hover:text-red-700 text-lg leading-none flex-shrink-0"
+              aria-label="Dismiss error"
+            >
+              ✕
+            </button>
+          </div>
+        )}
+
         {/* Tabs */}
         <div className="flex gap-2 mb-8 border-b border-line">
           {(["projects", "meta", "hero", "about", "contact"] as const).map((tab) => (
