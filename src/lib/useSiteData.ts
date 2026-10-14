@@ -44,8 +44,9 @@ export function useSiteData(): { data: SiteData; loading: boolean } {
   return { data, loading };
 }
 
-export function useProject(key: string): { project: Project | undefined; loading: boolean } {
+export function useProject(key: string | undefined): { project: Project | undefined; loading: boolean } {
   const { data, loading } = useSiteData();
+  if (!key) return { project: undefined, loading };
   return { project: data.projects.find((p) => p.key === key), loading };
 }
 

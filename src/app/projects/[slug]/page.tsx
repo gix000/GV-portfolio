@@ -6,8 +6,8 @@ import { useProject } from "@/lib/useSiteData";
 import { CaseStudy } from "@/components/CaseStudy";
 
 export default function ProjectPage() {
-  const params = useParams<{ slug: string }>();
-  const slug = params?.slug as string;
+  const params = useParams();
+  const slug = typeof params?.slug === "string" ? params.slug : Array.isArray(params?.slug) ? params.slug[0] : "";
   const { project, loading } = useProject(slug);
 
   if (loading) {
@@ -30,7 +30,7 @@ export default function ProjectPage() {
           Project not found
         </h1>
         <p className="text-ink-70 max-w-md leading-relaxed mb-8">
-          The project you're looking for doesn't exist or has been removed.
+          The project you&apos;re looking for doesn&apos;t exist or has been removed.
         </p>
         <Link
           href="/#works"

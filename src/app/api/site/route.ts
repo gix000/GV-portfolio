@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import { getSupabase, SITE_DATA_ROW_ID } from "@/lib/supabase";
 import { siteData as defaultSiteData } from "@/lib/data";
+import { getSupabase, SITE_DATA_ROW_ID } from "@/lib/supabase";
 
 // Public (no-auth) endpoint used by the live portfolio pages. Reads the
 // Supabase `site_data` row and falls back to the compiled defaults if
