@@ -11,8 +11,7 @@ export function LoadingScreen() {
   function handleOpen() {
     if (opened) return;
     setOpened(true);
-    // After the folder-open animation, unmount the overlay
-    setTimeout(() => setGone(true), prefersReduced ? 50 : 900);
+    setTimeout(() => setGone(true), prefersReduced ? 50 : 1000);
   }
 
   return (
@@ -24,31 +23,18 @@ export function LoadingScreen() {
           transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
           className="fixed inset-0 z-[9999] flex items-center justify-center overflow-hidden"
           style={{
-            background:
-              "radial-gradient(120% 90% at 50% 30%, #F8F5ED 0%, #F2EDE4 46%, #E8E2D6 100%)",
+            background: "#E8E4DE",
           }}
         >
-          {/* Grain overlay */}
+          {/* Subtle grain */}
           <div
-            className="absolute inset-0 pointer-events-none opacity-[0.05] mix-blend-multiply"
+            className="absolute inset-0 pointer-events-none opacity-[0.03] mix-blend-multiply"
             style={{
               backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`,
             }}
           />
 
-          {/* Top bar */}
-          <div className="absolute top-0 left-0 right-0 flex justify-between items-start p-[clamp(24px,5vw,64px)] text-[10px] md:text-[11px] tracking-[0.22em] uppercase text-ink-70 font-semibold">
-            <div className="flex flex-col gap-1">
-              <b className="text-ink-soft font-bold tracking-[0.24em]">G.VIISUALS</b>
-              <span className="hidden sm:inline">by George Charbel</span>
-            </div>
-            <div className="flex flex-col gap-1 text-right">
-              <b className="text-ink-soft font-bold tracking-[0.24em]">Beirut, LB</b>
-              <span className="hidden sm:inline">Selected Works &middot; Vol. 01</span>
-            </div>
-          </div>
-
-          {/* Interactive folder */}
+          {/* Folder container */}
           <button
             onClick={handleOpen}
             onKeyDown={(e) => {
@@ -59,191 +45,169 @@ export function LoadingScreen() {
             }}
             aria-label="Tap the folder to reveal the projects"
             data-cursor-hover
-            className="relative focus:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-4 rounded-3xl"
-            style={{ width: "min(86vw, 560px)" }}
+            className="relative focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-700/40 focus-visible:ring-offset-4 rounded-2xl cursor-pointer"
+            style={{ width: "min(80vw, 480px)" }}
           >
-            {/* Back flap of the folder (revealed when opened) */}
+            {/* === BACK TAB (brown leather) === */}
             <motion.div
-              className="absolute left-0 right-0 rounded-2xl"
+              className="absolute rounded-t-xl"
               style={{
-                top: 0,
-                height: "100%",
-                backgroundColor: "#E8E2D6",
-                boxShadow: "inset 0 2px 0 rgba(255,255,255,0.4)",
+                top: "-18px",
+                left: "8%",
+                width: "38%",
+                height: "36px",
+                background: "linear-gradient(180deg, #8B5E3C 0%, #6B4226 100%)",
+                boxShadow: "0 -2px 8px rgba(107,66,38,0.3)",
+                zIndex: 1,
               }}
-              initial={false}
+              initial={{ y: -10, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ duration: 0.7, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
             />
 
-            {/* Folder body */}
+            {/* === BACK PANEL (slightly visible behind front) === */}
             <motion.div
-              className="relative rounded-2xl overflow-hidden"
+              className="absolute rounded-xl"
               style={{
-                backgroundColor: "#C9BFA8",
+                top: "-6px",
+                left: "2%",
+                right: "2%",
+                bottom: "4px",
+                background: "linear-gradient(180deg, #D6CFC4 0%, #C8C0B4 100%)",
+                zIndex: 1,
+              }}
+              initial={{ y: 20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ duration: 0.8, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
+            />
+
+            {/* === FRONT PANEL (cream/beige main body) === */}
+            <motion.div
+              className="relative rounded-xl overflow-hidden"
+              style={{
+                background: "linear-gradient(180deg, #F0EBE3 0%, #E4DDD3 40%, #D9D1C5 100%)",
                 aspectRatio: "4 / 3",
                 boxShadow:
-                  "0 30px 60px -20px rgba(60,45,25,0.35), 0 12px 24px -12px rgba(60,45,25,0.25)",
-                backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.65' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.08'/%3E%3C/svg%3E")`,
-                backgroundSize: "250px 250px",
+                  "0 20px 50px -12px rgba(80,60,40,0.25), 0 8px 20px -8px rgba(80,60,40,0.15), inset 0 1px 0 rgba(255,255,255,0.6)",
+                zIndex: 2,
               }}
               initial={{ y: 30, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
-              transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+              transition={{ duration: 0.9, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
             >
               {/* Top edge highlight */}
               <div
-                className="h-1 w-full"
-                style={{ backgroundColor: "#A89A7E" }}
+                className="h-[2px] w-full"
+                style={{
+                  background: "linear-gradient(90deg, transparent 5%, rgba(255,255,255,0.7) 30%, rgba(255,255,255,0.7) 70%, transparent 95%)",
+                }}
               />
 
-              {/* Tab on top of folder */}
-              <div className="absolute -top-px left-[18%] px-6 md:px-8 py-2 rounded-b-2xl font-serif text-sm md:text-base tracking-wide shadow-md"
-                style={{ backgroundColor: "#B8AC92", color: "#3d2210" }}
-              >
-                G.VIISUALS · 2026
-              </div>
-
-              {/* Pen + binder clip row */}
-              <div className="relative px-6 md:px-8 pt-10 flex items-end justify-between">
-                {/* Pen */}
-                <svg
-                  width="80"
-                  height="12"
-                  viewBox="0 0 80 12"
-                  fill="none"
-                  className="opacity-80 -rotate-6 hidden sm:block"
-                  aria-hidden="true"
-                >
-                  <rect x="2" y="4" width="60" height="4" rx="2" fill="#1a1a1a" />
-                  <path d="M62 3 L78 6 L62 9 Z" fill="#1a1a1a" />
-                  <circle cx="7" cy="6" r="2" fill="#aaa" />
-                  <rect x="13" y="4.5" width="6" height="3" fill="#444" />
-                </svg>
-
-                {/* Binder clip — centred */}
-                <div className="absolute left-1/2 -translate-x-1/2 top-2">
-                  <svg width="44" height="40" viewBox="0 0 44 40" fill="none" aria-hidden="true">
-                    <path
-                      d="M14 5 C14 1.5 17.5 0 22 0 C26.5 0 30 1.5 30 5 L30 11 L14 11 Z"
-                      stroke="#1a1a1a"
-                      strokeWidth="2.5"
-                      fill="none"
-                    />
-                    <rect x="6" y="11" width="32" height="24" rx="2.5" fill="#1a1a1a" />
-                    <rect x="10" y="15" width="24" height="3" fill="#333" />
-                    <rect x="10" y="21" width="24" height="2" fill="#333" />
-                  </svg>
-                </div>
-
-                {/* Year tab */}
-                <div
-                  className="px-5 py-1.5 rounded-t-xl font-serif text-sm tracking-wide shadow-sm ml-auto"
-                  style={{ backgroundColor: "#A89A7E", color: "#3d2210" }}
-                >
-                  Vol. 01
-                </div>
-              </div>
+              {/* Paper texture overlay */}
+              <div
+                className="absolute inset-0 pointer-events-none opacity-[0.04]"
+                style={{
+                  backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.65' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`,
+                  backgroundSize: "250px 250px",
+                }}
+              />
 
               {/* Logo centered */}
-              <div className="flex items-center justify-center pt-6 pb-2">
+              <div className="flex flex-col items-center justify-center h-full pt-4 pb-2">
                 <motion.div
-                  initial={{ scale: 0.85, opacity: 0 }}
+                  initial={{ scale: 0.8, opacity: 0 }}
                   animate={{ scale: 1, opacity: 1 }}
-                  transition={{ duration: 1, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
+                  transition={{ duration: 1, delay: 0.4, ease: [0.22, 1, 0.36, 1] }}
                 >
                   <Image
                     src="/assets/img/logo.png"
                     alt="GV Logo"
-                    width={140}
-                    height={100}
-                    className="h-20 md:h-28 w-auto drop-shadow-sm"
+                    width={160}
+                    height={114}
+                    className="h-24 md:h-32 w-auto drop-shadow-sm"
                     priority
                   />
                 </motion.div>
-              </div>
 
-              {/* Animated "tap to reveal" text */}
-              <div className="flex flex-col items-center pt-2 pb-6">
+                {/* G.VIISUALS · Vol. 01 text */}
                 <motion.p
-                  className="font-serif text-2xl md:text-3xl tracking-tight text-center"
-                  style={{ color: "#3d2210" }}
-                  initial={{ opacity: 0, y: 8 }}
+                  className="font-serif text-base md:text-lg tracking-[0.15em] mt-3"
+                  style={{ color: "#6B5A48" }}
+                  initial={{ opacity: 0, y: 6 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.8, delay: 0.5, ease: [0.22, 1, 0.36, 1] }}
+                  transition={{ duration: 0.8, delay: 0.6, ease: [0.22, 1, 0.36, 1] }}
                 >
-                  Tap the folder
+                  G.VIISUALS &middot; Vol. 01
                 </motion.p>
+
+                {/* Tap to reveal text */}
                 <motion.p
-                  className="text-[10px] md:text-[11px] tracking-[0.24em] uppercase font-semibold mt-2 text-center"
-                  style={{ color: "rgba(61,34,16,0.55)" }}
+                  className="text-[10px] md:text-[11px] tracking-[0.24em] uppercase font-semibold mt-4"
+                  style={{ color: "rgba(107,90,72,0.5)" }}
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
-                  transition={{ duration: 0.8, delay: 0.7 }}
+                  transition={{ duration: 0.8, delay: 0.8 }}
                 >
-                  to reveal the projects
+                  Tap to reveal projects
                 </motion.p>
 
-                {/* Pulsing hint arrow */}
+                {/* Pulsing arrow */}
                 <motion.div
-                  className="mt-4"
-                  animate={prefersReduced ? {} : { y: [0, 6, 0] }}
+                  className="mt-3"
+                  animate={prefersReduced ? {} : { y: [0, 5, 0] }}
                   transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
                   aria-hidden="true"
                 >
-                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                    <path d="M4 8 L10 14 L16 8" stroke="#3d2210" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                  <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+                    <path
+                      d="M4 7 L9 12 L14 7"
+                      stroke="#6B5A48"
+                      strokeWidth="1.5"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      opacity="0.4"
+                    />
                   </svg>
                 </motion.div>
               </div>
             </motion.div>
 
-            {/* Opening animation overlay — flaps fly open */}
+            {/* === OPENING ANIMATION — flaps fly open === */}
             <AnimatePresence>
               {opened && (
                 <>
                   {/* Left flap */}
                   <motion.div
-                    className="absolute top-0 bottom-0 left-0 origin-left rounded-l-2xl"
+                    className="absolute top-0 bottom-0 left-0 origin-left rounded-l-xl"
                     style={{
                       width: "50%",
-                      backgroundColor: "#C9BFA8",
-                      backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.65' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.08'/%3E%3C/svg%3E")`,
-                      backgroundSize: "250px 250px",
+                      background: "linear-gradient(180deg, #F0EBE3 0%, #E4DDD3 40%, #D9D1C5 100%)",
+                      boxShadow: "inset 0 1px 0 rgba(255,255,255,0.6)",
                       zIndex: 5,
                     }}
                     initial={{ rotateY: 0 }}
-                    animate={{ rotateY: -105 }}
+                    animate={{ rotateY: -110 }}
                     exit={{ opacity: 0 }}
-                    transition={{ duration: 0.85, ease: [0.65, 0, 0.35, 1] }}
+                    transition={{ duration: 0.9, ease: [0.65, 0, 0.35, 1] }}
                   />
                   {/* Right flap */}
                   <motion.div
-                    className="absolute top-0 bottom-0 right-0 origin-right rounded-r-2xl"
+                    className="absolute top-0 bottom-0 right-0 origin-right rounded-r-xl"
                     style={{
                       width: "50%",
-                      backgroundColor: "#C9BFA8",
-                      backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.65' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.08'/%3E%3C/svg%3E")`,
-                      backgroundSize: "250px 250px",
+                      background: "linear-gradient(180deg, #F0EBE3 0%, #E4DDD3 40%, #D9D1C5 100%)",
+                      boxShadow: "inset 0 1px 0 rgba(255,255,255,0.6)",
                       zIndex: 5,
                     }}
                     initial={{ rotateY: 0 }}
-                    animate={{ rotateY: 105 }}
+                    animate={{ rotateY: 110 }}
                     exit={{ opacity: 0 }}
-                    transition={{ duration: 0.85, ease: [0.65, 0, 0.35, 1] }}
+                    transition={{ duration: 0.9, ease: [0.65, 0, 0.35, 1] }}
                   />
                 </>
               )}
             </AnimatePresence>
           </button>
-
-          {/* Bottom hint */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 1, duration: 1 }}
-            className="absolute bottom-6 left-1/2 -translate-x-1/2 text-[10px] tracking-[0.2em] uppercase text-ink-50 font-semibold"
-          >
-            Creative Portfolio &middot; 2026
-          </motion.div>
         </motion.div>
       )}
     </AnimatePresence>
