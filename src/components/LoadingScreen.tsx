@@ -1,21 +1,17 @@
 "use client";
-import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
-import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { useState } from "react";
 import Image from "next/image";
 
 export function LoadingScreen() {
   const [isOpen, setIsOpen] = useState(false);
   const [isGone, setIsGone] = useState(false);
-  const prefersReduced = useReducedMotion();
-
-  // Auto-dismiss after interaction or timeout if user doesn't tap (optional, but good for UX)
-  // For now, we rely on tap as requested ("when i tap on the folder")
 
   function handleTap() {
     if (isOpen) return;
     setIsOpen(true);
-    // Wait for the folder opening animation to finish before removing from DOM
-    setTimeout(() => setIsGone(true), prefersReduced ? 100 : 1200);
+    // Wait for animation to finish before removing from DOM
+    setTimeout(() => setIsGone(true), 1000);
   }
 
   return (
@@ -23,7 +19,7 @@ export function LoadingScreen() {
       {!isGone && (
         <motion.div
           initial={{ opacity: 1 }}
-          exit={{ opacity: 0, transition: { duration: 0.8, ease: [0.22, 1, 0.36, 1] } }}
+          exit={{ opacity: 0, transition: { duration: 0.8, ease: "easeInOut" } }}
           className="fixed inset-0 z-[9999] flex items-center justify-center overflow-hidden bg-[#E8E4DE]"
         >
           {/* Background Grain */}
@@ -36,42 +32,44 @@ export function LoadingScreen() {
 
           {/* The Folder Container */}
           <div
-            className="relative cursor-pointer focus:outline-none"
+            className="relative cursor-pointer select-none"
             onClick={handleTap}
-            style={{ width: "min(85vw, 420px)", perspective: "1200px" }}
+            style={{ width: "min(85vw, 380px)", height: "280px" }}
           >
             {/* BACK OF FOLDER (Static) */}
-            <div
-              className="absolute bottom-0 left-0 right-0 h-[70%] rounded-b-xl rounded-t-sm bg-[#D4C5B0] shadow-inner"
-              style={{ zIndex: 1 }}
-            />
+            <div className="absolute bottom-0 left-0 right-0 h-[65%] rounded-b-xl rounded-t-sm bg-[#D4C5B0] shadow-inner z-10" />
+
+            {/* TAB (Static, attached to back) */}
+            <div className="absolute -top-5 left-6 w-24 h-7 bg-[#C4A57B] rounded-t-lg shadow-sm z-0" />
 
             {/* PAPERS INSIDE (Reveal on open) */}
             <motion.div
-              className="absolute bottom-[10%] left-[5%] right-[5%] h-[80%] bg-white rounded-sm shadow-sm origin-bottom"
-              initial={{ y: 0, rotateX: 0 }}
-              animate={isOpen ? { y: -20, rotateX: 5 } : {}}
+              className="absolute bottom-[12%] left-[6%] right-[6%] h-[75%] bg-white rounded-sm shadow-md z-20 overflow-hidden"
+              initial={{ y: 0 }}
+              animate={isOpen ? { y: -40 } : {}}
               transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-              style={{ zIndex: 2 }}
             >
-               <div className="w-full h-full p-4 flex flex-col gap-2 opacity-0">
-                  {/* Fake text lines */}
+               {/* Fake content lines */}
+               <div className="p-6 space-y-3 opacity-60">
                   <div className="h-2 w-3/4 bg-gray-200 rounded" />
                   <div className="h-2 w-1/2 bg-gray-200 rounded" />
                   <div className="h-2 w-5/6 bg-gray-200 rounded" />
+                  <div className="h-2 w-2/3 bg-gray-200 rounded" />
+               </div>
+               {/* Logo on paper */}
+               <div className="absolute inset-0 flex items-center justify-center opacity-10">
+                  <Image src="/assets/img/logo.png" alt="" width={100} height={100} className="w-24 h-auto grayscale" />
                </div>
             </motion.div>
 
             {/* FRONT FLAP (The part that opens) */}
             <motion.div
-              className="absolute bottom-0 left-0 right-0 h-[75%] rounded-b-xl rounded-t-sm origin-bottom shadow-2xl overflow-hidden"
+              className="absolute bottom-0 left-0 right-0 h-[70%] rounded-b-xl rounded-t-sm origin-bottom z-30 overflow-hidden shadow-xl"
               style={{
-                zIndex: 3,
                 background: "linear-gradient(180deg, #F2EDE4 0%, #E0D5C1 100%)",
-                transformStyle: "preserve-3d",
               }}
               initial={{ rotateX: 0 }}
-              animate={isOpen ? { rotateX: -105 } : {}} // Open upwards/backwards
+              animate={isOpen ? { rotateX: -110 } : {}}
               transition={{
                 duration: 0.8,
                 delay: 0.1,
@@ -79,49 +77,32 @@ export function LoadingScreen() {
               }}
             >
               {/* Flap Content */}
-              <div className="absolute inset-0 flex flex-col items-center justify-center p-6 backface-hidden">
-                 <motion.div
-                    initial={{ scale: 0.9, opacity: 0 }}
-                    animate={{ scale: 1, opacity: 1 }}
-                    transition={{ delay: 0.3, duration: 0.8 }}
-                 >
-                    <Image
-                      src="/assets/img/logo.png"
-                      alt="GV"
-                      width={120}
-                      height={85}
-                      className="w-24 h-auto drop-shadow-md mb-4"
-                      priority
-                    />
-                 </motion.div>
-
-                 <motion.p
-                    className="text-[10px] tracking-[0.2em] uppercase font-bold text-[#8B7355]"
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.6, duration: 0.8 }}
-                 >
-                    Tap to Enter
-                 </motion.p>
+              <div className="absolute inset-0 flex flex-col items-center justify-center p-6">
+                <motion.div
+                  initial={{ scale: 0.9, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  transition={{ delay: 0.3, duration: 0.8 }}
+                >
+                  <Image
+                    src="/assets/img/logo.png"
+                    alt="GV"
+                    width={120}
+                    height={85}
+                    className="w-24 h-auto drop-shadow-md mb-4"
+                    priority
+                  />
+                </motion.div>
+                <motion.p
+                  className="text-[10px] tracking-[0.2em] uppercase font-bold text-[#8B7355]"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.6, duration: 0.8 }}
+                >
+                  Tap to Enter
+                </motion.p>
               </div>
-
-              {/* Flap Texture/Highlight */}
-              <div className="absolute top-0 left-0 right-0 h-1 bg-white/30" />
-            </motion.div>
-
-            {/* TAB (Attached to front flap) */}
-            <motion.div
-               className="absolute -top-6 left-8 w-24 h-8 bg-[#C4A57B] rounded-t-lg shadow-sm"
-               style={{ zIndex: 4 }}
-               initial={{ rotateX: 0 }}
-               animate={isOpen ? { rotateX: -105 } : {}}
-               transition={{
-                 duration: 0.8,
-                 delay: 0.1,
-                 ease: [0.45, 0, 0.55, 1]
-               }}
-            >
-               <div className="absolute bottom-0 left-0 right-0 h-1 bg-black/10" />
+              {/* Top highlight */}
+              <div className="absolute top-0 left-0 right-0 h-1 bg-white/40" />
             </motion.div>
           </div>
         </motion.div>
