@@ -31,57 +31,63 @@ function ProjectCard({
       data-cursor-hover
     >
       <Link href={`/projects/${project.key}`} className="block">
-        {/* Image container — LANDSCAPE 16/10 */}
-        <div className="relative aspect-[16/10] overflow-hidden rounded-sm bg-paper-lo">
-          <Image
-            src={project.cover}
-            alt={`${project.name} — ${project.sub}`}
-            fill
-            className="object-cover transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-1.05"
-            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-            placeholder="blur"
-            blurDataURL={project.lqip}
-          />
+        {/* Liquid Glass Card Container */}
+        <div className="relative overflow-hidden rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 shadow-xl transition-all duration-500 group-hover:shadow-2xl group-hover:bg-white/20 group-hover:border-white/40">
+          {/* Image container — LANDSCAPE 16/10 */}
+          <div className="relative aspect-[16/10] overflow-hidden">
+            <Image
+              src={project.cover}
+              alt={`${project.name} — ${project.sub}`}
+              fill
+              className="object-cover transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-105"
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+              placeholder="blur"
+              blurDataURL={project.lqip}
+            />
 
-          {/* Overlay on hover */}
-          <div className="absolute inset-0 bg-ink/0 group-hover:bg-ink/20 transition-colors duration-500" />
+            {/* Overlay on hover - Gradient for depth */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
-          {/* Gallery badge */}
-          {project.gallery.length > 1 && (
-            <div className="absolute right-3 bottom-3 flex items-center gap-1.5 bg-ink-soft text-paper text-[9px] tracking-[0.13em] uppercase font-bold px-2.5 py-1.5 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-400 translate-y-2 group-hover:translate-y-0">
-              <svg
-                width="9"
-                height="9"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2.5"
-              >
-                <rect x="3" y="3" width="18" height="18" rx="2" />
-                <circle cx="8.5" cy="8.5" r="1.5" />
-                <path d="m21 15-5-5L5 21" />
-              </svg>
-              {project.gallery.length} images
-            </div>
-          )}
-        </div>
-
-        {/* Info */}
-        <div className="mt-5">
-          <div className="flex items-baseline justify-between gap-4">
-            <h3 className="font-serif text-xl md:text-2xl tracking-tight text-ink group-hover:text-accent transition-colors duration-300">
-              {project.name}
-            </h3>
-            <span className="text-[10px] tracking-[0.15em] uppercase text-ink-50 font-semibold whitespace-nowrap">
-              {String(index + 1).padStart(2, "0")}
-            </span>
+            {/* Gallery badge - Glassmorphism style */}
+            {project.gallery.length > 1 && (
+              <div className="absolute right-3 bottom-3 flex items-center gap-1.5 bg-black/30 backdrop-blur-sm text-white text-[9px] tracking-[0.13em] uppercase font-bold px-2.5 py-1.5 rounded-full border border-white/10 opacity-0 group-hover:opacity-100 transition-all duration-400 translate-y-2 group-hover:translate-y-0">
+                <svg
+                  width="9"
+                  height="9"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.5"
+                >
+                  <rect x="3" y="3" width="18" height="18" rx="2" />
+                  <circle cx="8.5" cy="8.5" r="1.5" />
+                  <path d="m21 15-5-5L5 21" />
+                </svg>
+                {project.gallery.length} images
+              </div>
+            )}
           </div>
-          <p className="text-xs tracking-[0.12em] uppercase text-ink-50 font-medium mt-1">
-            {project.cat}
-          </p>
-          <p className="text-sm text-ink-70 mt-2 line-clamp-2 leading-relaxed">
-            {project.quote || project.desc.slice(0, 120) + "..."}
-          </p>
+
+          {/* Info - Inside the glass card */}
+          <div className="p-5">
+            <div className="flex items-baseline justify-between gap-4">
+              <h3 className="font-serif text-xl md:text-2xl tracking-tight text-ink group-hover:text-accent transition-colors duration-300">
+                {project.name}
+              </h3>
+              <span className="text-[10px] tracking-[0.15em] uppercase text-ink-50 font-semibold whitespace-nowrap">
+                {String(index + 1).padStart(2, "0")}
+              </span>
+            </div>
+            <p className="text-xs tracking-[0.12em] uppercase text-ink-50 font-medium mt-1">
+              {project.cat}
+            </p>
+            <p className="text-sm text-ink-70 mt-2 line-clamp-2 leading-relaxed">
+              {project.quote || project.desc.slice(0, 120) + "..."}
+            </p>
+          </div>
+
+          {/* Shine effect on hover */}
+          <div className="absolute inset-0 bg-gradient-to-tr from-white/0 via-white/10 to-white/0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
         </div>
       </Link>
     </motion.article>
