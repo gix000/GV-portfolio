@@ -44,8 +44,8 @@ export function About() {
         <span className="hidden sm:inline">The Designer</span>
       </Reveal>
 
+      {/* Portrait — big and centered, no cadre */}
       <div className="flex flex-col items-center mb-16">
-        {/* Portrait — big and centered */}
         <Reveal className="relative flex justify-center w-full">
           <div className="relative aspect-[3/4] overflow-hidden rounded-sm w-full max-w-[480px]">
             <Image
@@ -63,48 +63,45 @@ export function About() {
         </span>
       </div>
 
+      {/* Content — centered below portrait */}
       <div className="max-w-2xl mx-auto">
+        <Reveal delay={0.1}>
+          <p
+            className="font-serif text-2xl md:text-3xl leading-relaxed text-ink mb-8"
+            dangerouslySetInnerHTML={{ __html: siteData.about.lead }}
+          />
+        </Reveal>
 
-        {/* Content */}
-        <div>
-          <Reveal delay={0.1}>
-            <p
-              className="font-serif text-2xl md:text-3xl leading-relaxed text-ink mb-8"
-              dangerouslySetInnerHTML={{ __html: siteData.about.lead }}
-            />
-          </Reveal>
+        <Reveal delay={0.2} className="space-y-5 text-ink-70 leading-relaxed">
+          {siteData.about.paragraphs.map((p, i) => (
+            <p key={i}>{p}</p>
+          ))}
+        </Reveal>
 
-          <Reveal delay={0.2} className="space-y-5 text-ink-70 leading-relaxed">
-            {siteData.about.paragraphs.map((p, i) => (
-              <p key={i}>{p}</p>
-            ))}
-          </Reveal>
-
-          <Reveal delay={0.3}>
-            <div className="grid grid-cols-2 gap-8 mt-12 pt-12 border-t border-line">
-              <div>
-                <div className="text-[10px] tracking-[0.2em] uppercase text-ink-50 font-semibold mb-3">
-                  Services
-                </div>
-                <ul className="space-y-1.5 text-sm">
-                  {siteData.about.services.map((s) => (
-                    <li key={s}>{s}</li>
-                  ))}
-                </ul>
+        <Reveal delay={0.3}>
+          <div className="grid grid-cols-2 gap-8 mt-12 pt-12 border-t border-line">
+            <div>
+              <div className="text-[10px] tracking-[0.2em] uppercase text-ink-50 font-semibold mb-3">
+                Services
               </div>
-              <div>
-                <div className="text-[10px] tracking-[0.2em] uppercase text-ink-50 font-semibold mb-3">
-                  Based in
-                </div>
-                <ul className="space-y-1.5 text-sm">
-                  {siteData.about.basedList.map((s) => (
-                    <li key={s}>{s}</li>
-                  ))}
-                </ul>
-              </div>
+              <ul className="space-y-1.5 text-sm">
+                {siteData.about.services.map((s) => (
+                  <li key={s}>{s}</li>
+                ))}
+              </ul>
             </div>
-          </Reveal>
-        </div>
+            <div>
+              <div className="text-[10px] tracking-[0.2em] uppercase text-ink-50 font-semibold mb-3">
+                Based in
+              </div>
+              <ul className="space-y-1.5 text-sm">
+                {siteData.about.basedList.map((s) => (
+                  <li key={s}>{s}</li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </Reveal>
       </div>
     </section>
   );
