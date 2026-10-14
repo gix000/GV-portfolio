@@ -550,6 +550,40 @@ function ProjectForm({
       think: {},
     }
   );
+  const [uploading, setUploading] = useState<string | null>(null);
+
+  async function uploadFile(file: File, target: "cover" | `gallery-${number}`) {
+    setUploading(target);
+    try {
+      const fd = new FormData();
+      fd.append("file", file);
+      const password = sessionStorage.getItem("admin_password") || "";
+      const res = await fetch("/api/upload", {
+        method: "POST",
+        headers: { Authorization: `Bearer ${password}` },
+        body: fd,
+      });
+      const json = await res.json();
+      if (!res.ok || !json.success) {
+        alert(json.error || "Upload failed");
+        return;
+      }
+      if (target === "cover") {
+        setFormData((prev) => ({ ...prev, cover: json.url }));
+      } else {
+        const idx = parseInt(target.split("-")[1], 10);
+        setFormData((prev) => {
+          const next = [...prev.gallery];
+          next[idx] = json.url;
+          return { ...prev, gallery: next };
+        });
+      }
+    } catch (err) {
+      alert(String(err));
+    } finally {
+      setUploading(null);
+    }
+  }
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -627,28 +661,60 @@ function ProjectForm({
       </div>
 
       <div>
-        <label className="block text-sm font-semibold text-ink mb-2">Cover Image Path</label>
-        <input
-          type="text"
-          value={formData.cover}
-          onChange={(e) => setFormData({ ...formData, cover: e.target.value })}
-          className="w-full px-4 py-2 border border-line rounded-lg focus:outline-none focus:ring-2 focus:ring-accent"
-          placeholder="/assets/img/project-cover.webp"
-          required
-        />
-        {formData.cover && (
-          <div className="mt-2 relative inline-block">
-            <img
-              src={formData.cover}
-              alt="Cover preview"
-              className="h-32 w-auto rounded-lg border border-line object-cover shadow-sm"
-              onError={(e) => {
-                (e.target as HTMLImageElement).style.display = "none";
-              }}
-            />
-            <span className="absolute bottom-1 left-1 bg-black/60 text-white text-[9px] px-1.5 py-0.5 rounded">
-              Cover
-            </span>
+        <label className="block text-sm font-semibold text-ink mb-2">Cover Image</label>
+        <div
+          className="relative border-2 border-dashed border-line rounded-lg p-6 text-center hover:border-accent transition-colors cursor-pointer group"
+          onClick={() => document.getElementById("cover-upload")?.click()}
+          onDragOver={(e) => { e.preventDefault(); e.currentTarget.classList.add("border-accent", "bg-paper-lo/50"); }}
+          onDragLeave={(e) => { e.currentTarget.classList.remove("border-accent", "bg-paper-lo/50"); }}
+          onDrop={async (e) => {
+            e.preventDefault();
+            e.currentTarget.classList.remove("border-accent", "bg-paper-lo/50");
+            const file = e.dataTransfer.files[0];
+            if (file) await uploadFile(file, "cover");
+          }}
+        >
+          <input
+            id="cover-upload"
+            type="file"
+            accept="image/*"
+            className="hidden"
+            onChange={async (e) => {
+              const file = e.target.files?.[0];
+              if (file) await uploadFile(file, "cover");
+            }}
+          />
+          {formData.cover ? (
+            <div className="relative inline-block">
+              <img
+                src={formData.cover}
+                alt="Cover preview"
+                className="h-40 w-auto rounded-lg border border-line object-cover shadow-sm mx-auto"
+                onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }}
+              />
+              <button
+                type="button"
+                onClick={(e) => { e.stopPropagation(); setFormData({ ...formData, cover: "" }); }}
+                className="absolute -top-2 -right-2 w-6 h-6 bg-red-500 text-white rounded-full text-xs flex items-center justify-center hover:bg-red-600"
+              >
+                ✕
+              </button>
+              <p className="text-[10px] text-ink-50 mt-2">Click or drop to replace</p>
+            </div>
+          ) : (
+            <div className="py-4">
+              <svg className="w-10 h-10 mx-auto text-ink-50 group-hover:text-accent transition-colors mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
+              </svg>
+              <p className="text-sm text-ink-70 font-medium">Drop image here or click to upload</p>
+              <p className="text-[10px] text-ink-50 mt-1">JPEG, PNG, WebP — max 10MB</p>
+            </div>
+          )}
+        </div>
+        {uploading === "cover" && (
+          <div className="mt-2 flex items-center gap-2 text-sm text-ink-50">
+            <div className="w-4 h-4 border-2 border-accent border-t-transparent rounded-full animate-spin" />
+            Uploading…
           </div>
         )}
       </div>
@@ -668,37 +734,65 @@ function ProjectForm({
       {/* Gallery Images */}
       <div>
         <label className="block text-sm font-semibold text-ink mb-2">Gallery Images</label>
-        <div className="space-y-2 mb-2">
+        <div className="space-y-3 mb-3">
           {formData.gallery.map((img, i) => (
-            <div key={i} className="flex gap-2 items-start">
-              {img && (
+            <div
+              key={i}
+              className="relative border-2 border-dashed border-line rounded-lg p-3 flex items-center gap-3 hover:border-accent transition-colors cursor-pointer group"
+              onClick={() => document.getElementById(`gallery-upload-${i}`)?.click()}
+              onDragOver={(e) => { e.preventDefault(); e.currentTarget.classList.add("border-accent", "bg-paper-lo/50"); }}
+              onDragLeave={(e) => { e.currentTarget.classList.remove("border-accent", "bg-paper-lo/50"); }}
+              onDrop={async (e) => {
+                e.preventDefault();
+                e.currentTarget.classList.remove("border-accent", "bg-paper-lo/50");
+                const file = e.dataTransfer.files[0];
+                if (file) await uploadFile(file, `gallery-${i}`);
+              }}
+            >
+              <input
+                id={`gallery-upload-${i}`}
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={async (e) => {
+                  const file = e.target.files?.[0];
+                  if (file) await uploadFile(file, `gallery-${i}`);
+                }}
+              />
+              {img ? (
                 <img
                   src={img}
                   alt={`Gallery ${i + 1}`}
-                  className="h-16 w-16 rounded border border-line object-cover flex-shrink-0 mt-1"
-                  onError={(e) => {
-                    (e.target as HTMLImageElement).style.display = "none";
-                  }}
+                  className="h-20 w-28 rounded border border-line object-cover flex-shrink-0"
+                  onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }}
                 />
+              ) : (
+                <div className="h-20 w-28 rounded border border-line bg-paper-lo flex items-center justify-center flex-shrink-0">
+                  <svg className="w-6 h-6 text-ink-50 group-hover:text-accent transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
+                  </svg>
+                </div>
               )}
-              <input
-                type="text"
-                value={img}
-                onChange={(e) => {
-                  const next = [...formData.gallery];
-                  next[i] = e.target.value;
-                  setFormData({ ...formData, gallery: next });
-                }}
-                className="flex-1 px-4 py-2 border border-line rounded-lg focus:outline-none focus:ring-2 focus:ring-accent text-sm"
-                placeholder="/assets/img/project-gallery-1.webp"
-              />
+              <div className="flex-1 min-w-0">
+                <p className="text-xs text-ink-70 font-medium truncate">
+                  {img ? `Image ${i + 1}` : `Drop or click to upload image ${i + 1}`}
+                </p>
+                <p className="text-[10px] text-ink-50 mt-0.5">JPEG, PNG, WebP — max 10MB</p>
+                {uploading === `gallery-${i}` && (
+                  <div className="mt-1 flex items-center gap-1.5 text-[10px] text-ink-50">
+                    <div className="w-3 h-3 border-2 border-accent border-t-transparent rounded-full animate-spin" />
+                    Uploading…
+                  </div>
+                )}
+              </div>
               <button
                 type="button"
-                onClick={() => {
+                onClick={(e) => {
+                  e.stopPropagation();
                   const next = formData.gallery.filter((_, idx) => idx !== i);
                   setFormData({ ...formData, gallery: next });
                 }}
-                className="px-3 py-2 text-red-600 border border-red-300 rounded-lg hover:bg-red-50 transition-colors text-sm"
+                className="px-3 py-2 text-red-600 border border-red-300 rounded-lg hover:bg-red-50 transition-colors text-sm self-start"
               >
                 Remove
               </button>
@@ -710,7 +804,7 @@ function ProjectForm({
           onClick={() => setFormData({ ...formData, gallery: [...formData.gallery, ""] })}
           className="px-4 py-2 text-sm border border-line rounded-lg hover:bg-paper-lo transition-colors"
         >
-          + Add Gallery Image
+          + Add Gallery Slot
         </button>
       </div>
 
