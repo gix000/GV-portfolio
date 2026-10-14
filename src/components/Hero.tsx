@@ -1,48 +1,7 @@
 "use client";
-
 import { motion, useScroll, useTransform } from "framer-motion";
-import { useRef, useEffect, useState } from "react";
+import { useRef } from "react";
 import { useSiteData } from "@/lib/useSiteData";
-
-const TYPING_TEXT = "Ideas Into Reality";
-
-function TypingText() {
-  const [displayed, setDisplayed] = useState("");
-  const [done, setDone] = useState(false);
-
-  useEffect(() => {
-    let i = 0;
-    const interval = setInterval(() => {
-      i++;
-      setDisplayed(TYPING_TEXT.slice(0, i));
-      if (i >= TYPING_TEXT.length) {
-        clearInterval(interval);
-        setTimeout(() => setDone(true), 700);
-      }
-    }, 85);
-    return () => clearInterval(interval);
-  }, []);
-
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 16 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.7, delay: 0.25, ease: [0.22, 1, 0.36, 1] }}
-      className="mb-5 flex items-center gap-1.5 overflow-hidden"
-    >
-      <span className="font-serif italic leading-none tracking-[-0.01em] text-[clamp(1.6rem,5vw,3.4rem)] text-ink">
-        {displayed}
-      </span>
-      {!done && (
-        <motion.span
-          className="inline-block w-[3px] self-stretch min-h-[1.6rem] md:min-h-[2.6rem] bg-accent rounded-sm"
-          animate={{ opacity: [1, 0, 1] }}
-          transition={{ duration: 0.7, repeat: Infinity }}
-        />
-      )}
-    </motion.div>
-  );
-}
 
 export function Hero() {
   const { data: siteData } = useSiteData();
@@ -51,7 +10,6 @@ export function Hero() {
     target: ref,
     offset: ["start start", "end start"],
   });
-
   const titleY = useTransform(scrollYProgress, [0, 1], [0, 200]);
   const subOpacity = useTransform(scrollYProgress, [0, 0.6], [1, 0]);
   const scale = useTransform(scrollYProgress, [0, 1], [1, 0.92]);
@@ -60,9 +18,9 @@ export function Hero() {
     <section
       ref={ref}
       id="top"
-      className="relative min-h-screen flex flex-col justify-center pt-28 pb-24 px-[clamp(28px,6vw,72px)] overflow-hidden"
+      className="relative min-h-screen flex flex-col justify-start pt-32 md:pt-40 pb-24 px-[clamp(28px,6vw,72px)] overflow-hidden"
     >
-      {/* Top bar — volume chip on the right only; G.VIISUALS removed per request */}
+      {/* Top bar — volume chip on the right only */}
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -76,20 +34,29 @@ export function Hero() {
         </div>
       </motion.div>
 
-      {/* Main title block */}
+      {/* Main title block — forced to top to remove empty gap */}
       <motion.div
         style={{ y: titleY, scale }}
-        className="relative z-10"
+        className="relative z-10 w-full max-w-[1280px]"
       >
-        {/* Animated typing line above the title */}
-        <TypingText />
+        {/* "Ideas Into Reality" — Big, animated entrance (no fragile typing logic) */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
+          className="mb-2 md:mb-4 overflow-hidden"
+        >
+          <h2 className="font-serif italic leading-none tracking-[-0.02em] text-[clamp(2rem,6vw,4.5rem)] text-ink">
+            Ideas Into Reality
+          </h2>
+        </motion.div>
 
         <h1 className="font-serif leading-[0.88] tracking-[-0.03em] text-[clamp(3.2rem,11vw,9.5rem)]">
           <motion.span
             className="block overflow-hidden"
             initial={{ y: "100%" }}
             animate={{ y: 0 }}
-            transition={{ duration: 1.2, delay: 0.5, ease: [0.22, 1, 0.36, 1] }}
+            transition={{ duration: 1.2, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
           >
             <span className="block">{siteData.hero.line1}</span>
           </motion.span>
@@ -97,7 +64,7 @@ export function Hero() {
             className="block overflow-hidden italic"
             initial={{ y: "100%" }}
             animate={{ y: 0 }}
-            transition={{ duration: 1.2, delay: 0.7, ease: [0.22, 1, 0.36, 1] }}
+            transition={{ duration: 1.2, delay: 0.5, ease: [0.22, 1, 0.36, 1] }}
           >
             <span className="block">{siteData.hero.line2}</span>
           </motion.span>
@@ -107,7 +74,7 @@ export function Hero() {
       {/* Sub info grid */}
       <motion.div
         style={{ opacity: subOpacity }}
-        className="grid grid-cols-2 md:grid-cols-4 gap-x-8 gap-y-6 mt-16 max-w-[1280px]"
+        className="grid grid-cols-2 md:grid-cols-4 gap-x-8 gap-y-6 mt-12 md:mt-20 max-w-[1280px]"
       >
         {[
           { label: "Studio", value: siteData.hero.studio },
@@ -121,7 +88,7 @@ export function Hero() {
             animate={{ opacity: 1, y: 0 }}
             transition={{
               duration: 0.8,
-              delay: 1 + i * 0.12,
+              delay: 0.8 + i * 0.12,
               ease: [0.22, 1, 0.36, 1],
             }}
           >
@@ -141,7 +108,7 @@ export function Hero() {
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ delay: 2, duration: 1 }}
+        transition={{ delay: 1.5, duration: 1 }}
         className="absolute bottom-8 left-[clamp(28px,6vw,72px)] flex items-center gap-3 text-[10px] tracking-[0.2em] uppercase text-ink-50 font-semibold"
       >
         <span>Scroll</span>
