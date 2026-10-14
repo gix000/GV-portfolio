@@ -636,6 +636,21 @@ function ProjectForm({
           placeholder="/assets/img/project-cover.webp"
           required
         />
+        {formData.cover && (
+          <div className="mt-2 relative inline-block">
+            <img
+              src={formData.cover}
+              alt="Cover preview"
+              className="h-32 w-auto rounded-lg border border-line object-cover shadow-sm"
+              onError={(e) => {
+                (e.target as HTMLImageElement).style.display = "none";
+              }}
+            />
+            <span className="absolute bottom-1 left-1 bg-black/60 text-white text-[9px] px-1.5 py-0.5 rounded">
+              Cover
+            </span>
+          </div>
+        )}
       </div>
 
       <div>
@@ -655,7 +670,17 @@ function ProjectForm({
         <label className="block text-sm font-semibold text-ink mb-2">Gallery Images</label>
         <div className="space-y-2 mb-2">
           {formData.gallery.map((img, i) => (
-            <div key={i} className="flex gap-2 items-center">
+            <div key={i} className="flex gap-2 items-start">
+              {img && (
+                <img
+                  src={img}
+                  alt={`Gallery ${i + 1}`}
+                  className="h-16 w-16 rounded border border-line object-cover flex-shrink-0 mt-1"
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).style.display = "none";
+                  }}
+                />
+              )}
               <input
                 type="text"
                 value={img}
