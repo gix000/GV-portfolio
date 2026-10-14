@@ -44,22 +44,26 @@ export function About() {
         <span className="hidden sm:inline">The Designer</span>
       </Reveal>
 
-      <div className="grid md:grid-cols-[1fr_1.4fr] gap-16 items-center">
-        {/* Portrait — centered */}
-        <Reveal className="relative flex justify-center">
-          <div className="relative aspect-[3/4] overflow-hidden rounded-sm w-full max-w-[360px]">
+      <div className="flex flex-col items-center mb-16">
+        {/* Portrait — big and centered */}
+        <Reveal className="relative flex justify-center w-full">
+          <div className="relative aspect-[3/4] overflow-hidden rounded-sm w-full max-w-[480px]">
             <Image
               src="/assets/img/about.webp"
               alt="George Charbel, Founder of G.VIISUALS"
               fill
               className="object-cover object-center"
-              sizes="(max-width: 768px) 100vw, 360px"
+              sizes="(max-width: 768px) 90vw, 480px"
+              priority
             />
           </div>
-          <span className="mt-4 block text-[10px] tracking-[0.18em] uppercase text-ink-50 font-semibold text-center w-full">
-            {siteData.about.portraitTag}
-          </span>
         </Reveal>
+        <span className="mt-5 block text-[10px] tracking-[0.18em] uppercase text-ink-50 font-semibold text-center">
+          {siteData.about.portraitTag}
+        </span>
+      </div>
+
+      <div className="max-w-2xl mx-auto">
 
         {/* Content */}
         <div>

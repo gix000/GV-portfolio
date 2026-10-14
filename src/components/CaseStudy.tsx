@@ -33,7 +33,7 @@ export function CaseStudy({ project }: { project: Project }) {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
-            className="relative aspect-[16/10] overflow-hidden rounded-sm bg-paper-lo mb-12 group cursor-pointer"
+            className="relative aspect-[16/10] overflow-hidden rounded-sm bg-paper-lo mb-8 group cursor-pointer"
             onClick={() => !revealed && setRevealed(true)}
           >
             <Image
@@ -46,7 +46,7 @@ export function CaseStudy({ project }: { project: Project }) {
               placeholder="blur"
               blurDataURL={project.lqip}
             />
-            {/* Sleek view-gallery cue — minimal bottom-right pill, no full scrim */}
+            {/* Sleek view-gallery cue — minimal bottom-right pill */}
             {!revealed && (
               <div className="absolute inset-0 pointer-events-none">
                 <motion.div
@@ -74,72 +74,29 @@ export function CaseStudy({ project }: { project: Project }) {
             )}
           </motion.div>
 
-          {/* Project info */}
+          {/* Title + subtitle always visible right under cover */}
           <motion.div
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.9, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
-            className="mb-12"
+            transition={{ duration: 0.8, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
+            className="mb-8"
           >
-            <h1 className="font-serif text-4xl md:text-6xl tracking-tight text-ink leading-[1.05] mb-4">
+            <h1 className="font-serif text-4xl md:text-6xl tracking-tight text-ink leading-[1.05] mb-3">
               {project.name}
             </h1>
-            <p className="text-lg md:text-xl text-ink-70 font-serif italic mb-6">
+            <p className="text-lg md:text-xl text-ink-70 font-serif italic">
               {project.sub}
             </p>
-            <p className="text-ink-70 leading-relaxed max-w-2xl mb-6">
-              {project.desc}
-            </p>
-            {project.quote && (
-              <blockquote className="font-serif text-xl italic text-ink border-l-2 border-accent pl-4 mb-6">
-                &ldquo;{project.quote}&rdquo;
-              </blockquote>
-            )}
-
-            {/* Color palette */}
-            {project.think?.pal && project.think.pal.length > 0 && (
-              <div className="mb-8">
-                <h3 className="text-[11px] tracking-[0.2em] uppercase text-ink-50 font-semibold mb-3">
-                  Color Palette
-                </h3>
-                <div className="flex gap-3 flex-wrap">
-                  {project.think.pal.map((color, i) => (
-                    <div key={i} className="flex flex-col items-center gap-1">
-                      <div
-                        className="w-12 h-12 rounded border border-line shadow-sm"
-                        style={{ backgroundColor: color }}
-                      />
-                      <span className="text-[9px] font-mono text-ink-50">
-                        {color}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Tags */}
-            <div className="flex flex-wrap gap-2 mb-8">
-              {project.tags.map((tag) => (
-                <span
-                  key={tag}
-                  className="text-[9px] tracking-[0.15em] uppercase font-semibold text-ink-70 border border-line rounded-full px-3 py-1"
-                >
-                  {tag}
-                </span>
-              ))}
-            </div>
           </motion.div>
 
-          {/* Gallery — clean vertical stack directly under cover, no black background */}
+          {/* Gallery — appears RIGHT UNDER the cover when tapped */}
           {revealed && (
             <motion.div
               initial={{ opacity: 0, y: 24 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-              className="mt-8 flex flex-col gap-5"
+              className="flex flex-col gap-5 mb-12"
             >
-              {/* Close button */}
               <div className="flex justify-end">
                 <button
                   onClick={() => setRevealed(false)}
@@ -149,8 +106,6 @@ export function CaseStudy({ project }: { project: Project }) {
                   Close Gallery ✕
                 </button>
               </div>
-
-              {/* Vertical image stack */}
               {project.gallery.map((img, i) => (
                 <motion.div
                   key={i}
@@ -178,6 +133,52 @@ export function CaseStudy({ project }: { project: Project }) {
               ))}
             </motion.div>
           )}
+
+          {/* Description, quote, palette, tags — AFTER all the pictures */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.25, ease: [0.22, 1, 0.36, 1] }}
+          >
+            <p className="text-ink-70 leading-relaxed max-w-2xl mb-6">
+              {project.desc}
+            </p>
+            {project.quote && (
+              <blockquote className="font-serif text-xl italic text-ink border-l-2 border-accent pl-4 mb-8">
+                &ldquo;{project.quote}&rdquo;
+              </blockquote>
+            )}
+
+            {project.think?.pal && project.think.pal.length > 0 && (
+              <div className="mb-8">
+                <h3 className="text-[11px] tracking-[0.2em] uppercase text-ink-50 font-semibold mb-3">
+                  Color Palette
+                </h3>
+                <div className="flex gap-3 flex-wrap">
+                  {project.think.pal.map((color, i) => (
+                    <div key={i} className="flex flex-col items-center gap-1">
+                      <div
+                        className="w-12 h-12 rounded border border-line shadow-sm"
+                        style={{ backgroundColor: color }}
+                      />
+                      <span className="text-[9px] font-mono text-ink-50">{color}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            <div className="flex flex-wrap gap-2">
+              {project.tags.map((tag) => (
+                <span
+                  key={tag}
+                  className="text-[9px] tracking-[0.15em] uppercase font-semibold text-ink-70 border border-line rounded-full px-3 py-1"
+                >
+                  {tag}
+                </span>
+              ))}
+            </div>
+          </motion.div>
         </div>
       </div>
     </div>
