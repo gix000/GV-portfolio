@@ -4,6 +4,7 @@ import { SmoothScroll } from "@/components/SmoothScroll";
 import { CustomCursor } from "@/components/CustomCursor";
 import { LoadingScreen } from "@/components/LoadingScreen";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
+import { ScrollToTop } from "@/components/ScrollToTop";
 import { siteData } from "@/lib/data";
 
 export const metadata: Metadata = {
@@ -84,6 +85,7 @@ export default function RootLayout({
       >
         <ErrorBoundary>
           <LoadingScreen />
+          <ScrollToTop />
           <SmoothScroll>
             <CustomCursor />
             <div className="grain" aria-hidden="true" />
