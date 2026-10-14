@@ -22,23 +22,14 @@ export function Hero() {
       id="top"
       className="relative min-h-screen flex flex-col justify-end pb-24 px-[clamp(28px,6vw,72px)] overflow-hidden"
     >
-      {/* Top bar */}
+      {/* Top bar — only the right-side volume chip; name removed per request */}
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 1, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
-        className="absolute top-0 left-0 right-0 flex justify-between items-start p-[clamp(28px,6vw,72px)] text-[11px] tracking-[0.22em] uppercase text-ink-70 font-semibold"
+        className="absolute top-0 right-0 flex justify-end items-start p-[clamp(28px,6vw,72px)] pt-20 text-[11px] tracking-[0.22em] uppercase text-ink-70 font-semibold"
       >
-        <div className="flex flex-col gap-1">
-          <b className="text-ink-soft font-bold tracking-[0.24em]">
-            {siteData.hero.topLeft}
-          </b>
-          <span className="hidden sm:inline">{siteData.hero.topLeftDetail}</span>
-        </div>
         <div className="flex flex-col gap-1 text-right">
-          <b className="text-ink-soft font-bold tracking-[0.24em]">
-            Beirut, LB
-          </b>
           <span className="hidden sm:inline">
             Selected Works · Vol. {siteData.hero.volume.split(",")[0]}
           </span>
