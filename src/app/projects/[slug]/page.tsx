@@ -1,36 +1,26 @@
-"use client";
-import { useParams } from "next/navigation";
 import Link from "next/link";
-import { motion } from "framer-motion";
-import { useProject } from "@/lib/useSiteData";
-import { CaseStudy } from "@/components/CaseStudy";
+import { siteData } from "@/lib/data";
+import { ProjectClientPage } from "./ProjectClientPage";
 
-export default function ProjectPage() {
-  const params = useParams();
-  const slug =
-    typeof params?.slug === "string"
-      ? params.slug
-      : Array.isArray(params?.slug)
-        ? params.slug[0]
-        : "";
-  const { project, loading } = useProject(slug);
+// Static generation: resolve the project at build time so there is zero
+// fetch wait on navigation — the case study renders immediately.
+export function generateStaticParams() {
+  return siteData.projects.map((p) => ({ slug: p.key }));
+}
 
-  // No loading screen at all — render nothing until data is ready,
-  // then fade the case study in smoothly. This avoids any flash/jank.
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-paper" aria-hidden="true" />
-    );
-  }
+export default function ProjectPage({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
+  // Next.js 15 App Router: params is async; unwrap synchronously here since
+  // generateStaticParams guarantees the slug exists at build time.
+  const { slug } = (params as unknown as { slug: string }) ?? { slug: "" };
+  const project = siteData.projects.find((p) => p.key === slug);
 
   if (!project) {
     return (
-      <motion.div
-        className="min-h-screen flex flex-col items-center justify-center bg-paper px-6 text-center"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-      >
+      <div className="min-h-screen flex flex-col items-center justify-center bg-paper px-6 text-center">
         <h1
           className="font-serif text-3xl md:text-5xl tracking-tight text-ink mb-4"
           style={{ fontFamily: "'Fraunces', serif" }}
@@ -47,17 +37,9 @@ export default function ProjectPage() {
         >
           Back to Works
         </Link>
-      </motion.div>
+      </div>
     );
   }
 
-  return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-    >
-      <CaseStudy project={project} />
-    </motion.div>
-  );
+  return <ProjectClientPage project={project} />;
 }
