@@ -118,18 +118,6 @@ function VideoModal({
           className="w-full h-full object-cover"
         />
       </motion.div>
-
-      {/* Title below video */}
-      <motion.div
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.2, duration: 0.4 }}
-        className="absolute bottom-6 left-0 right-0 text-center pointer-events-none"
-      >
-        <h2 className="font-serif text-xl md:text-2xl text-white tracking-tight">
-          {video.title}
-        </h2>
-      </motion.div>
     </motion.div>
   );
 }
