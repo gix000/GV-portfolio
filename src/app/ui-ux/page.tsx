@@ -28,7 +28,7 @@ function VideoCard({
       onClick={() => onPlay(video)}
       data-cursor-hover
     >
-      {/* Poster image container */}
+      {/* Poster image container - clean, no text overlay */}
       <div className="relative aspect-video overflow-hidden rounded-2xl bg-paper-lo shadow-lg">
         <Image
           src={video.poster}
@@ -37,51 +37,15 @@ function VideoCard({
           className="object-cover transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-105"
           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
         />
-        {/* Persistent play indicator - always visible so tap affordance is clear */}
+        {/* "Tap to play" label - only affordance, centered and pulsing */}
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-          <motion.div
-            animate={{ scale: [1, 1.08, 1] }}
-            transition={{ duration: 2.4, repeat: Infinity, ease: "easeInOut" }}
-            className="flex h-14 w-14 items-center justify-center rounded-full bg-white/80 backdrop-blur-sm shadow-lg group-hover:bg-white/95 group-hover:scale-110 transition-all duration-400"
+          <motion.span
+            animate={{ scale: [1, 1.06, 1], opacity: [0.85, 1, 0.85] }}
+            transition={{ duration: 2.2, repeat: Infinity, ease: "easeInOut" }}
+            className="text-[10px] tracking-[0.22em] uppercase font-bold text-white bg-black/45 backdrop-blur-sm px-4 py-2 rounded-full border border-white/15 shadow-lg"
           >
-            <svg
-              width="18"
-              height="22"
-              viewBox="0 0 20 24"
-              fill="none"
-              className="ml-1 text-ink"
-            >
-              <path d="M2 2L18 12L2 22V2Z" fill="currentColor" />
-            </svg>
-          </motion.div>
-        </div>
-        {/* "Tap to play" label - visible by default, fades on hover as play button takes over */}
-        <div className="absolute bottom-3 left-0 right-0 flex justify-center pointer-events-none">
-          <span className="text-[9px] tracking-[0.2em] uppercase font-bold text-white/90 bg-black/30 backdrop-blur-sm px-3 py-1.5 rounded-full border border-white/10 transition-opacity duration-300 group-hover:opacity-0">
             Tap to play
-          </span>
-        </div>
-        {/* Gradient overlay for text readability */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-60" />
-      </div>
-
-      {/* Info below card */}
-      <div className="mt-4">
-        <h3 className="font-serif text-xl md:text-2xl tracking-tight text-ink group-hover:text-accent transition-colors duration-300">
-          {video.title}
-        </h3>
-        <p className="mt-2 text-sm text-ink-70 leading-relaxed line-clamp-2">
-          {video.description}
-        </p>
-        <div className="mt-3 flex flex-wrap gap-2">
-          {video.tags.map((tag) => (
-            <span
-              key={tag}
-              className="text-[9px] tracking-[0.15em] uppercase font-semibold text-ink-50 border border-line rounded-full px-3 py-1"
-            >
-              {tag}
-            </span>
-          ))}
+          </motion.span>
         </div>
       </div>
     </motion.article>

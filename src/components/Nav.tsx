@@ -31,12 +31,16 @@ export function Nav() {
           priority
         />
       </Link>
-      <div className="flex items-center gap-6 text-[10px] tracking-[0.18em] uppercase font-semibold text-ink-70">
+      <div className="flex items-center gap-4 text-[10px] tracking-[0.18em] uppercase font-semibold text-ink-70">
         <Link
           href="/ui-ux"
-          className="hover:text-accent transition-colors duration-300"
+          className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full border border-ink/20 bg-ink/[0.04] hover:bg-accent hover:text-paper hover:border-accent transition-all duration-300"
           data-cursor-hover
+          aria-label="View UI/UX work"
         >
+          <svg width="11" height="11" viewBox="0 0 20 24" fill="none" aria-hidden="true">
+            <path d="M2 2L18 12L2 22V2Z" fill="currentColor" />
+          </svg>
           UI/UX
         </Link>
         <span className="hidden sm:inline">Beirut, LB</span>
