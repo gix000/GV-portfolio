@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, useInView } from "framer-motion";
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useSiteData, type Project } from "@/lib/useSiteData";
@@ -9,6 +9,16 @@ import { useSiteData, type Project } from "@/lib/useSiteData";
 // Track whether the grid has already animated in this browser session so
 // return-navigation skips the entrance and avoids the brief card flash.
 let hasVisitedWorks = false;
+
+// Fisher-Yates shuffle algorithm
+function shuffleArray<T>(array: T[]): T[] {
+  const shuffled = [...array];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  return shuffled;
+}
 
 function ProjectCard({
   project,
@@ -30,6 +40,8 @@ function ProjectCard({
     <motion.article
       ref={ref}
       id={`project-${project.key}`}
+      layout
+      layoutTransition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
       initial={skipEntrance ? false : { opacity: 0, y: 60 }}
       animate={showImmediately ? { opacity: 1, y: 0 } : {}}
       transition={{
@@ -110,11 +122,23 @@ export function ProjectGrid() {
   const headerInView = useInView(headerRef, { once: true, margin: "-80px" });
   const skipEntrance = hasVisitedWorks;
 
+  // Shuffle state: periodically reorder projects for the shuffle effect
+  const [shuffledProjects, setShuffledProjects] = useState<Project[]>(data.projects);
+
   useEffect(() => {
     // Mark as visited after first render so subsequent mounts skip animation.
     if (!hasVisitedWorks) {
       hasVisitedWorks = true;
     }
+  }, []);
+
+  // Periodic shuffle every 4 seconds
+  useEffect(() => {
+    const shuffleInterval = setInterval(() => {
+      setShuffledProjects(prev => shuffleArray(prev));
+    }, 4000);
+
+    return () => clearInterval(shuffleInterval);
   }, []);
 
   const showHeader = skipEntrance || headerInView;
@@ -162,10 +186,15 @@ export function ProjectGrid() {
           </motion.p>
         </div>
 
-        {/* Grid */}
+        {/* Grid with shuffle animation */}
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-16 md:gap-y-20">
-          {data.projects.map((project, i) => (
-            <ProjectCard key={project.key} project={project} index={i} skipEntrance={skipEntrance} />
+          {shuffledProjects.map((project, i) => (
+            <ProjectCard
+              key={project.key}
+              project={project}
+              index={i}
+              skipEntrance={skipEntrance}
+            />
           ))}
         </div>
       </div>
