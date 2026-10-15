@@ -1,30 +1,40 @@
 "use client";
 
 import { motion, useInView } from "framer-motion";
-import { useRef } from "react";
+import { useRef, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useSiteData, type Project } from "@/lib/useSiteData";
 
+// Track whether the grid has already animated in this browser session so
+// return-navigation skips the entrance and avoids the brief card flash.
+let hasVisitedWorks = false;
+
 function ProjectCard({
   project,
   index,
+  skipEntrance,
 }: {
   project: Project;
   index: number;
+  skipEntrance: boolean;
 }) {
   const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref, { once: true, margin: "-60px" });
+
+  // On return navigation, render cards fully visible immediately so there's
+  // no brief flash of the entrance animation replaying.
+  const showImmediately = skipEntrance || inView;
 
   return (
     <motion.article
       ref={ref}
       id={`project-${project.key}`}
-      initial={{ opacity: 0, y: 60 }}
-      animate={inView ? { opacity: 1, y: 0 } : {}}
+      initial={skipEntrance ? false : { opacity: 0, y: 60 }}
+      animate={showImmediately ? { opacity: 1, y: 0 } : {}}
       transition={{
-        duration: 0.9,
-        delay: (index % 3) * 0.12,
+        duration: skipEntrance ? 0 : 0.9,
+        delay: skipEntrance ? 0 : (index % 3) * 0.12,
         ease: [0.22, 1, 0.36, 1],
       }}
       className="group relative scroll-mt-24"
@@ -98,6 +108,16 @@ export function ProjectGrid() {
   const { data } = useSiteData();
   const headerRef = useRef<HTMLDivElement>(null);
   const headerInView = useInView(headerRef, { once: true, margin: "-80px" });
+  const skipEntrance = hasVisitedWorks;
+
+  useEffect(() => {
+    // Mark as visited after first render so subsequent mounts skip animation.
+    if (!hasVisitedWorks) {
+      hasVisitedWorks = true;
+    }
+  }, []);
+
+  const showHeader = skipEntrance || headerInView;
 
   return (
     <section id="works" className="py-20 px-[clamp(28px,6vw,72px)]">
@@ -105,9 +125,9 @@ export function ProjectGrid() {
         {/* Section header */}
         <div ref={headerRef} className="mb-12">
           <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={headerInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+            initial={skipEntrance ? false : { opacity: 0, y: 30 }}
+            animate={showHeader ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: skipEntrance ? 0 : 0.9, ease: [0.22, 1, 0.36, 1] }}
             className="flex items-center gap-4 text-[11px] tracking-[0.2em] uppercase text-ink-50 font-semibold mb-8"
           >
             <span className="text-accent">02</span>
@@ -117,11 +137,11 @@ export function ProjectGrid() {
           </motion.div>
 
           <motion.h2
-            initial={{ opacity: 0, y: 40 }}
-            animate={headerInView ? { opacity: 1, y: 0 } : {}}
+            initial={skipEntrance ? false : { opacity: 0, y: 40 }}
+            animate={showHeader ? { opacity: 1, y: 0 } : {}}
             transition={{
-              duration: 0.9,
-              delay: 0.1,
+              duration: skipEntrance ? 0 : 0.9,
+              delay: skipEntrance ? 0 : 0.1,
               ease: [0.22, 1, 0.36, 1],
             }}
             className="font-serif text-3xl md:text-5xl tracking-tight text-ink leading-[1.1]"
@@ -129,11 +149,11 @@ export function ProjectGrid() {
           />
 
           <motion.p
-            initial={{ opacity: 0, y: 30 }}
-            animate={headerInView ? { opacity: 1, y: 0 } : {}}
+            initial={skipEntrance ? false : { opacity: 0, y: 30 }}
+            animate={showHeader ? { opacity: 1, y: 0 } : {}}
             transition={{
-              duration: 0.9,
-              delay: 0.2,
+              duration: skipEntrance ? 0 : 0.9,
+              delay: skipEntrance ? 0 : 0.2,
               ease: [0.22, 1, 0.36, 1],
             }}
             className="mt-4 text-ink-70 max-w-xl leading-relaxed"
@@ -145,7 +165,7 @@ export function ProjectGrid() {
         {/* Grid */}
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-16 md:gap-y-20">
           {data.projects.map((project, i) => (
-            <ProjectCard key={project.key} project={project} index={i} />
+            <ProjectCard key={project.key} project={project} index={i} skipEntrance={skipEntrance} />
           ))}
         </div>
       </div>
