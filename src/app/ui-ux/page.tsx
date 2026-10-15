@@ -37,19 +37,29 @@ function VideoCard({
           className="object-cover transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-105"
           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
         />
-        {/* Play button overlay */}
-        <div className="absolute inset-0 flex items-center justify-center bg-black/20 opacity-0 transition-opacity duration-400 group-hover:opacity-100">
-          <div className="flex h-16 w-16 items-center justify-center rounded-full bg-white/90 backdrop-blur-sm shadow-xl transition-transform duration-400 group-hover:scale-110">
+        {/* Persistent play indicator — always visible so tap affordance is clear */}
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+          <motion.div
+            animate={{ scale: [1, 1.08, 1] }}
+            transition={{ duration: 2.4, repeat: Infinity, ease: "easeInOut" }}
+            className="flex h-14 w-14 items-center justify-center rounded-full bg-white/80 backdrop-blur-sm shadow-lg group-hover:bg-white/95 group-hover:scale-110 transition-all duration-400"
+          >
             <svg
-              width="20"
-              height="24"
+              width="18"
+              height="22"
               viewBox="0 0 20 24"
               fill="none"
               className="ml-1 text-ink"
             >
               <path d="M2 2L18 12L2 22V2Z" fill="currentColor" />
             </svg>
-          </div>
+          </motion.div>
+        </div>
+        {/* "Tap to play" label — visible by default, fades on hover as play button takes over */}
+        <div className="absolute bottom-3 left-0 right-0 flex justify-center pointer-events-none">
+          <span className="text-[9px] tracking-[0.2em] uppercase font-bold text-white/90 bg-black/30 backdrop-blur-sm px-3 py-1.5 rounded-full border border-white/10 transition-opacity duration-300 group-hover:opacity-0">
+            Tap to play
+          </span>
         </div>
         {/* Gradient overlay for text readability */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-60" />
