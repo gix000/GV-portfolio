@@ -37,7 +37,7 @@ function VideoCard({
           className="object-cover transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-105"
           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
         />
-        {/* Persistent play indicator — always visible so tap affordance is clear */}
+        {/* Persistent play indicator - always visible so tap affordance is clear */}
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
           <motion.div
             animate={{ scale: [1, 1.08, 1] }}
@@ -55,7 +55,7 @@ function VideoCard({
             </svg>
           </motion.div>
         </div>
-        {/* "Tap to play" label — visible by default, fades on hover as play button takes over */}
+        {/* "Tap to play" label - visible by default, fades on hover as play button takes over */}
         <div className="absolute bottom-3 left-0 right-0 flex justify-center pointer-events-none">
           <span className="text-[9px] tracking-[0.2em] uppercase font-bold text-white/90 bg-black/30 backdrop-blur-sm px-3 py-1.5 rounded-full border border-white/10 transition-opacity duration-300 group-hover:opacity-0">
             Tap to play
@@ -208,7 +208,7 @@ export default function UiUxPage() {
                 Interface & Experience
               </h1>
               <p className="text-ink-70 max-w-xl leading-relaxed text-lg">
-                Digital product design work — from dashboards and mobile apps to
+                Digital product design work - from dashboards and mobile apps to
                 conversion-focused flows. Each video walks through the thinking,
                 process, and interaction details behind the design.
               </p>

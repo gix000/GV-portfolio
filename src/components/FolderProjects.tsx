@@ -12,7 +12,7 @@ import { useSiteData } from "@/lib/useSiteData";
    treatment in the stack. Edit here to add/remove
    projects or change colours/positions.
    tabPos: "left" | "center" | "right"
-   previewSide: "left" | "right" — where the
+   previewSide: "left" | "right" - where the
    thumbnail peeks out from
    ───────────────────────────────────────────── */
 interface FolderConfig {
@@ -136,7 +136,7 @@ export function FolderProjects() {
           className="relative select-none"
           style={{ height: totalH }}
           role="list"
-          aria-label="Project folders — tap any folder to view the project"
+          aria-label="Project folders - tap any folder to view the project"
         >
           {/* ── Back folders (back → front) ── */}
           {folders.map((folder, i) => {
@@ -156,7 +156,7 @@ export function FolderProjects() {
                   href={`/projects/${folder.key}`}
                   data-cursor-hover
                   className="block w-full h-full focus:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 rounded-2xl"
-                  aria-label={`${folder.num} — ${folder.project!.name}: ${folder.project!.cat}`}
+                  aria-label={`${folder.num} - ${folder.project!.name}: ${folder.project!.cat}`}
                 >
                   {/* ── Tab ─ */}
                   <div
@@ -258,7 +258,7 @@ export function FolderProjects() {
                 <rect x="13" y="4.5" width="6" height="3" fill="#444" />
               </svg>
 
-              {/* Binder clip — centred */}
+              {/* Binder clip - centred */}
               <div className="absolute left-1/2 -translate-x-1/2 -top-1">
                 <svg width="44" height="40" viewBox="0 0 44 40" fill="none" aria-hidden="true">
                   <path

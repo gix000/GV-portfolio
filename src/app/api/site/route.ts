@@ -4,7 +4,7 @@ import { getSupabase, SITE_DATA_ROW_ID } from "@/lib/supabase";
 
 // Public (no-auth) endpoint used by the live portfolio pages. Reads the
 // Supabase `site_data` row and falls back to the compiled defaults if
-// Supabase is misconfigured, unreachable, or the row is empty — so the
+// Supabase is misconfigured, unreachable, or the row is empty - so the
 // public site always renders something even before the first admin save.
 export const dynamic = "force-dynamic";
 export const revalidate = 0;

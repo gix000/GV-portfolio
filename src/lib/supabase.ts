@@ -8,7 +8,7 @@ export function getSupabase(): SupabaseClient {
   if (initError) throw new Error(initError);
 
   // Use server-only env vars (no NEXT_PUBLIC_ prefix) so they're never
-  // exposed to the browser bundle — this prevents client-side crashes.
+  // exposed to the browser bundle - this prevents client-side crashes.
   const url = process.env.SUPABASE_URL;
   const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
@@ -20,7 +20,7 @@ export function getSupabase(): SupabaseClient {
 
   if (!url.includes(".supabase.co")) {
     initError =
-      "SUPABASE_URL is wrong — it must be your project API URL (https://xxxxx.supabase.co). Go to Supabase → Settings → API → Project URL and copy that.";
+      "SUPABASE_URL is wrong - it must be your project API URL (https://xxxxx.supabase.co). Go to Supabase → Settings → API → Project URL and copy that.";
     throw new Error(initError);
   }
 

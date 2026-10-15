@@ -43,11 +43,11 @@ function ProjectCard({
       <Link href={`/projects/${project.key}`} className="block">
         {/* Liquid Glass Card Container */}
         <div className="relative overflow-hidden rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 shadow-xl transition-all duration-500 group-hover:shadow-2xl group-hover:bg-white/20 group-hover:border-white/40">
-          {/* Image container — LANDSCAPE 16/10 */}
+          {/* Image container - LANDSCAPE 16/10 */}
           <div className="relative aspect-[16/10] overflow-hidden">
             <Image
               src={project.cover}
-              alt={`${project.name} — ${project.sub}`}
+              alt={`${project.name} - ${project.sub}`}
               fill
               className="object-cover transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-105"
               sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"

@@ -45,7 +45,7 @@ export function About() {
         <span className="hidden sm:inline">The Designer</span>
       </Reveal>
 
-      {/* Portrait — big and centered, no cadre */}
+      {/* Portrait - big and centered, no cadre */}
       <div className="flex flex-col items-center mb-10">
         <Reveal className="relative flex justify-center w-full">
           <div className="relative aspect-[3/4] overflow-hidden rounded-sm w-full max-w-[480px]">
@@ -64,7 +64,7 @@ export function About() {
         </span>
       </div>
 
-      {/* Content — centered below portrait */}
+      {/* Content - centered below portrait */}
       <div className="max-w-2xl mx-auto">
         <Reveal delay={0.1}>
           <p

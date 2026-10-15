@@ -31,7 +31,7 @@ async function readData() {
     }
     return data.data;
   } catch (e) {
-    // Supabase client init failed (missing/wrong env vars) — serve defaults
+    // Supabase client init failed (missing/wrong env vars) - serve defaults
     // so the public site never crashes. The admin panel will surface the error.
     console.error("Supabase unavailable, serving compiled defaults:", String(e));
     return { ...defaultSiteData };

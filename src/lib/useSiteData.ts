@@ -31,7 +31,7 @@ export function useSiteData(): { data: SiteData; loading: boolean } {
         });
       })
       .catch(() => {
-        // Network failure — keep the compiled defaults already in state.
+        // Network failure - keep the compiled defaults already in state.
       })
       .finally(() => {
         if (!cancelled) setLoading(false);

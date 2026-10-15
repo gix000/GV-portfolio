@@ -3,7 +3,7 @@ import { siteData } from "@/lib/data";
 import { ProjectClientPage } from "./ProjectClientPage";
 
 // Static generation: resolve the project at build time so there is zero
-// fetch wait on navigation — the case study renders immediately.
+// fetch wait on navigation - the case study renders immediately.
 export function generateStaticParams() {
   return siteData.projects.map((p) => ({ slug: p.key }));
 }

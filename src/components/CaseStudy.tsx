@@ -9,7 +9,7 @@ export function CaseStudy({ project }: { project: Project }) {
   const [revealed, setRevealed] = useState(false);
   const prefersReduced = useReducedMotion();
 
-  // Page entrance — smooth fade/slide so there's no jarring "loading screen"
+  // Page entrance - smooth fade/slide so there's no jarring "loading screen"
   const pageVariants = {
     initial: { opacity: 0, y: 24 },
     animate: { opacity: 1, y: 0, transition: { duration: 0.7, ease: [0.22, 1, 0.36, 1] as const } },
@@ -98,7 +98,7 @@ export function CaseStudy({ project }: { project: Project }) {
             </p>
           </motion.div>
 
-          {/* Gallery — animated reveal under the cover */}
+          {/* Gallery - animated reveal under the cover */}
           <AnimatePresence initial={false}>
             {revealed && (
               <motion.div
@@ -133,7 +133,7 @@ export function CaseStudy({ project }: { project: Project }) {
                     >
                       <Image
                         src={img}
-                        alt={project.caps?.[i] || `${project.name} — ${i + 1}`}
+                        alt={project.caps?.[i] || `${project.name} - ${i + 1}`}
                         width={1280}
                         height={800}
                         className="w-full h-auto object-cover"

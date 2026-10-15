@@ -783,7 +783,7 @@ function ProjectForm({
                 <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
               </svg>
               <p className="text-sm text-ink-70 font-medium">Drop image here or click to upload</p>
-              <p className="text-[10px] text-ink-50 mt-1">JPEG, PNG, WebP — max 10MB</p>
+              <p className="text-[10px] text-ink-50 mt-1">JPEG, PNG, WebP - max 10MB</p>
             </div>
           )}
         </div>
@@ -853,7 +853,7 @@ function ProjectForm({
                 <p className="text-xs text-ink-70 font-medium truncate">
                   {img ? `Image ${i + 1}` : `Drop or click to upload image ${i + 1}`}
                 </p>
-                <p className="text-[10px] text-ink-50 mt-0.5">JPEG, PNG, WebP — max 10MB</p>
+                <p className="text-[10px] text-ink-50 mt-0.5">JPEG, PNG, WebP - max 10MB</p>
                 {uploading === `gallery-${i}` && (
                   <div className="mt-1 flex items-center gap-1.5 text-[10px] text-ink-50">
                     <div className="w-3 h-3 border-2 border-accent border-t-transparent rounded-full animate-spin" />

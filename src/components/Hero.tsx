@@ -10,7 +10,7 @@ export function Hero() {
       id="top"
       className="relative flex flex-col justify-start pt-20 md:pt-24 pb-12 px-[clamp(28px,6vw,72px)] overflow-hidden"
     >
-      {/* Top bar — volume chip on the right only */}
+      {/* Top bar - volume chip on the right only */}
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -24,9 +24,9 @@ export function Hero() {
         </div>
       </motion.div>
 
-      {/* Main title block — no parallax transforms (kills scroll lag) */}
+      {/* Main title block - no parallax transforms (kills scroll lag) */}
       <div className="relative z-10 w-full max-w-[1280px]">
-        {/* "Ideas Into Reality" — big serif italic, fade-and-rise entrance */}
+        {/* "Ideas Into Reality" - big serif italic, fade-and-rise entrance */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -93,7 +93,7 @@ export function Hero() {
         ))}
       </motion.div>
 
-      {/* Scroll indicator — animated chevron that bounces */}
+      {/* Scroll indicator - animated chevron that bounces */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
