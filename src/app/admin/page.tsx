@@ -287,7 +287,7 @@ export default function AdminPage() {
   // Login screen
   if (!authenticated) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#F8F5ED] to-[#E8E2D6] p-8">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#FAF3DE] to-[#EDE0BE] p-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -321,7 +321,7 @@ export default function AdminPage() {
 
   // Admin dashboard
   return (
-    <div className="min-h-screen bg-[#F8F5ED]">
+    <div className="min-h-screen bg-[#FAF3DE]">
       {/* Header */}
       <header className="bg-white border-b border-line sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">

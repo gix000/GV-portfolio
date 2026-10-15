@@ -1,18 +1,18 @@
 @import "tailwindcss";
 
 @theme {
-  --color-paper: #F2EDE4;
-  --color-paper-hi: #F8F5ED;
-  --color-paper-lo: #E8E2D6;
-  --color-ink: #0F0E0A;
-  --color-ink-soft: #1C1B16;
-  --color-ink-70: rgba(15, 14, 10, 0.7);
-  --color-ink-50: rgba(15, 14, 10, 0.5);
-  --color-ink-30: rgba(15, 14, 10, 0.3);
-  --color-line: rgba(15, 14, 10, 0.12);
-  --color-line-soft: rgba(15, 14, 10, 0.06);
-  --color-accent: #C4572A;
-  --color-accent-soft: rgba(196, 87, 42, 0.12);
+  --color-paper: #F5EBD0;
+  --color-paper-hi: #FAF3DE;
+  --color-paper-lo: #EDE0BE;
+  --color-ink: #7F011F;
+  --color-ink-soft: #5C0116;
+  --color-ink-70: rgba(127, 1, 31, 0.7);
+  --color-ink-50: rgba(127, 1, 31, 0.5);
+  --color-ink-30: rgba(127, 1, 31, 0.3);
+  --color-line: rgba(127, 1, 31, 0.15);
+  --color-line-soft: rgba(127, 1, 31, 0.08);
+  --color-accent: #7F011F;
+  --color-accent-soft: rgba(127, 1, 31, 0.12);
 
   --font-serif: "Fraunces", Georgia, "Times New Roman", serif;
   --font-sans: "Hanken Grotesk", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;

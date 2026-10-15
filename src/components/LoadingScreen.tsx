@@ -22,7 +22,7 @@ export function LoadingScreen() {
         <motion.div
           initial={{ opacity: 1 }}
           exit={{ opacity: 0, transition: { duration: 0.8, ease: "easeInOut" } }}
-          className="fixed inset-0 z-[9999] flex items-center justify-center overflow-hidden bg-[#E8E4DE]"
+          className="fixed inset-0 z-[9999] flex items-center justify-center overflow-hidden bg-[#EDE0BE]"
         >
           <div
             className="absolute inset-0 pointer-events-none opacity-[0.04] mix-blend-multiply"
@@ -35,7 +35,7 @@ export function LoadingScreen() {
             onClick={handleTap}
             style={{ width: "min(85vw, 380px)", height: "280px" }}
           >
-            <div className="absolute bottom-0 left-0 right-0 h-[65%] rounded-b-xl rounded-t-sm bg-[#D4C5B0] shadow-inner z-10" />
+            <div className="absolute bottom-0 left-0 right-0 h-[65%] rounded-b-xl rounded-t-sm bg-[#D9C9A3] shadow-inner z-10" />
             <motion.div
               className="absolute bottom-[12%] left-[6%] right-[6%] h-[75%] bg-white rounded-sm shadow-md z-20 overflow-hidden"
               initial={{ y: 0 }}
@@ -54,7 +54,7 @@ export function LoadingScreen() {
             </motion.div>
             <motion.div
               className="absolute bottom-0 left-0 right-0 h-[70%] rounded-b-xl rounded-t-sm origin-bottom z-30 overflow-hidden shadow-xl"
-              style={{ background: "linear-gradient(180deg, #F2EDE4 0%, #E0D5C1 100%)" }}
+              style={{ background: "linear-gradient(180deg, #F5EBD0 0%, #D9C9A3 100%)" }}
               initial={{ rotateX: 0 }}
               animate={isOpen ? { rotateX: -110 } : {}}
               transition={{ duration: 0.8, delay: 0.1, ease: [0.45, 0, 0.55, 1] }}
@@ -68,7 +68,7 @@ export function LoadingScreen() {
                   <Image src="/assets/img/logo.png" alt="GV" width={120} height={85} className="w-24 h-auto drop-shadow-md mb-4" priority />
                 </motion.div>
                 <motion.p
-                  className="text-[10px] tracking-[0.2em] uppercase font-bold text-[#8B7355]"
+                  className="text-[10px] tracking-[0.2em] uppercase font-bold text-[#7F011F]"
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.6, duration: 0.8 }}
