@@ -2,12 +2,37 @@
 import { useState } from "react";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import Image from "next/image";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 import type { Project } from "@/lib/data";
 
 export function CaseStudy({ project }: { project: Project }) {
   const [revealed, setRevealed] = useState(false);
   const prefersReduced = useReducedMotion();
+  const router = useRouter();
+
+  // Navigate home, then Lenis-scroll to the exact project card we came from.
+  function handleBack() {
+    const targetId = `project-${project.key}`;
+    router.push("/");
+    // Wait for the homepage to mount, then scroll to the anchor via Lenis so
+    // smooth scrolling lands on the right card instead of jumping to the top.
+    const scrollToCard = (attempts = 0) => {
+      const el = document.getElementById(targetId);
+      if (el) {
+        const lenis = (window as unknown as { __lenis?: { scrollTo: (to: number | HTMLElement, opts?: { offset?: number; duration?: number }) => void } }).__lenis;
+        if (lenis) {
+          lenis.scrollTo(el, { offset: -80, duration: 1 });
+        } else {
+          el.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+        return;
+      }
+      if (attempts < 20) {
+        setTimeout(() => scrollToCard(attempts + 1), 60);
+      }
+    };
+    setTimeout(scrollToCard, 120);
+  }
 
   // Page entrance - smooth fade/slide so there's no jarring "loading screen"
   const pageVariants = {
@@ -24,13 +49,14 @@ export function CaseStudy({ project }: { project: Project }) {
     >
       {/* Back link */}
       <div className="fixed top-0 left-0 right-0 z-50 px-[clamp(28px,6vw,72px)] py-5 flex items-center justify-between bg-paper/80 backdrop-blur-sm">
-        <Link
-          href={`/#project-${project.key}`}
+        <button
+          type="button"
+          onClick={handleBack}
           className="text-[11px] tracking-[0.18em] uppercase font-semibold hover:text-accent transition-colors duration-300 text-ink"
           data-cursor-hover
         >
           &larr; Back to Works
-        </Link>
+        </button>
         <span className="text-[10px] tracking-[0.15em] uppercase text-ink-50 font-semibold">
           {project.cat}
         </span>
