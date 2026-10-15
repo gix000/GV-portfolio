@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, useInView } from "framer-motion";
+import { motion, useInView, LayoutGroup } from "framer-motion";
 import { useRef, useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
@@ -132,14 +132,23 @@ export function ProjectGrid() {
     }
   }, []);
 
+  // Sync shuffledProjects when data.projects changes (e.g., async load)
+  useEffect(() => {
+    if (data.projects.length > 0 && shuffledProjects.length === 0) {
+      setShuffledProjects(data.projects);
+    }
+  }, [data.projects, shuffledProjects.length]);
+
   // Periodic shuffle every 4 seconds
   useEffect(() => {
+    if (shuffledProjects.length === 0) return;
+
     const shuffleInterval = setInterval(() => {
       setShuffledProjects(prev => shuffleArray(prev));
     }, 4000);
 
     return () => clearInterval(shuffleInterval);
-  }, []);
+  }, [shuffledProjects.length]);
 
   const showHeader = skipEntrance || headerInView;
 
@@ -187,16 +196,18 @@ export function ProjectGrid() {
         </div>
 
         {/* Grid with shuffle animation */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-16 md:gap-y-20">
-          {shuffledProjects.map((project, i) => (
-            <ProjectCard
-              key={project.key}
-              project={project}
-              index={i}
-              skipEntrance={skipEntrance}
-            />
-          ))}
-        </div>
+        <LayoutGroup>
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-16 md:gap-y-20">
+            {shuffledProjects.map((project, i) => (
+              <ProjectCard
+                key={project.key}
+                project={project}
+                index={i}
+                skipEntrance={skipEntrance}
+              />
+            ))}
+          </div>
+        </LayoutGroup>
       </div>
     </section>
   );
