@@ -1,3 +1,12 @@
+export interface VideoProject {
+  key: string;
+  title: string;
+  description: string;
+  poster: string;
+  videoUrl: string;
+  tags: string[];
+}
+
 export interface ProjectThink {
   challenge?: string;
   idea?: string;
@@ -63,6 +72,7 @@ export interface SiteData {
     footerB: string;
   };
   projects: Project[];
+  uiuxVideos: VideoProject[];
 }
 
 export const siteData: SiteData = {
@@ -835,6 +845,35 @@ export const siteData: SiteData = {
         type: "Type-led covers where the title becomes the image — scale, weight, and placement doing the heavy lifting.",
         pal: ["#F5F0E8", "#1A1A1A", "#C0392B", "#2C3E50"],
       },
+    },
+  ],
+  uiuxVideos: [
+    {
+      key: "fintech-app",
+      title: "FinTech Dashboard Redesign",
+      description:
+        "A complete redesign of a financial analytics dashboard — focusing on data clarity, user flows, and micro-interactions that make complex data feel approachable.",
+      poster: "/assets/img/uiux-fintech-poster.webp",
+      videoUrl: "/assets/videos/uiux-fintech.mp4",
+      tags: ["UI/UX", "Dashboard", "Figma", "Motion"],
+    },
+    {
+      key: "health-wellness",
+      title: "Health & Wellness App",
+      description:
+        "Mobile-first wellness platform designed around daily habits, mindfulness tracking, and gentle visual feedback that encourages consistency over perfection.",
+      poster: "/assets/img/uiux-health-poster.webp",
+      videoUrl: "/assets/videos/uiux-health.mp4",
+      tags: ["Mobile", "Wellness", "Prototyping", "User Research"],
+    },
+    {
+      key: "ecommerce-checkout",
+      title: "E-Commerce Checkout Flow",
+      description:
+        "Streamlined checkout experience reducing cart abandonment through progressive disclosure, trust signals, and frictionless payment integration.",
+      poster: "/assets/img/uiux-ecommerce-poster.webp",
+      videoUrl: "/assets/videos/uiux-ecommerce.mp4",
+      tags: ["E-Commerce", "Conversion", "A/B Testing", "UX Audit"],
     },
   ],
 };

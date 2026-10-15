@@ -31,7 +31,14 @@ export function Nav() {
           priority
         />
       </Link>
-      <div className="flex items-center gap-2 text-[10px] tracking-[0.18em] uppercase font-semibold text-ink-70">
+      <div className="flex items-center gap-6 text-[10px] tracking-[0.18em] uppercase font-semibold text-ink-70">
+        <Link
+          href="/ui-ux"
+          className="hover:text-accent transition-colors duration-300"
+          data-cursor-hover
+        >
+          UI/UX
+        </Link>
         <span className="hidden sm:inline">Beirut, LB</span>
       </div>
     </motion.nav>
