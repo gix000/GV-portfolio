@@ -10,33 +10,14 @@ export function CaseStudy({ project }: { project: Project }) {
   const prefersReduced = useReducedMotion();
   const router = useRouter();
 
-  // Navigate home, then Lenis-scroll to the exact project card we came from.
+  // Navigate home; ScrollToTop reads this target after the homepage mounts
+  // and Lenis-scrolls to the exact card (this component unmounts on nav,
+  // so the scroll must live in a component that survives it).
   function handleBack() {
-    const targetId = `project-${project.key}`;
-    // Tell ScrollToTop to skip its reset on this navigation so our
-    // Lenis scroll-to-card below isn't overridden back to the top.
     if (typeof window !== "undefined") {
-      sessionStorage.setItem("gv_skip_scroll_top", "1");
+      sessionStorage.setItem("gv_scroll_to_card", `project-${project.key}`);
     }
     router.push("/");
-    // Wait for the homepage to mount, then scroll to the anchor via Lenis so
-    // smooth scrolling lands on the right card instead of jumping to the top.
-    const scrollToCard = (attempts = 0) => {
-      const el = document.getElementById(targetId);
-      if (el) {
-        const lenis = (window as unknown as { __lenis?: { scrollTo: (to: number | HTMLElement, opts?: { offset?: number; duration?: number }) => void } }).__lenis;
-        if (lenis) {
-          lenis.scrollTo(el, { offset: -80, duration: 1 });
-        } else {
-          el.scrollIntoView({ behavior: "smooth", block: "start" });
-        }
-        return;
-      }
-      if (attempts < 20) {
-        setTimeout(() => scrollToCard(attempts + 1), 60);
-      }
-    };
-    setTimeout(scrollToCard, 120);
   }
 
   // Page entrance - smooth fade/slide so there's no jarring "loading screen"

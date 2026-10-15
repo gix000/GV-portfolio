@@ -12,12 +12,33 @@ export function ScrollToTop() {
   const pathname = usePathname();
 
   useEffect(() => {
-    // If we're returning from a project page to a specific card, skip the
-    // reset entirely - CaseStudy's handleBack will Lenis-scroll to the card.
-    const skipFlag = "gv_skip_scroll_top";
-    if (typeof window !== "undefined" && sessionStorage.getItem(skipFlag)) {
-      sessionStorage.removeItem(skipFlag);
-      return;
+    // If we're returning from a project page to a specific card, scroll to
+    // that card instead of the top. The target id is set by CaseStudy's
+    // handleBack before navigation and survives the unmount via sessionStorage.
+    const targetFlag = "gv_scroll_to_card";
+    if (typeof window !== "undefined") {
+      const targetId = sessionStorage.getItem(targetFlag);
+      if (targetId) {
+        sessionStorage.removeItem(targetFlag);
+        const scrollToCard = (attempts = 0) => {
+          const el = document.getElementById(targetId);
+          if (el) {
+            const lenis = (window as unknown as { __lenis?: { scrollTo: (to: number | HTMLElement, opts?: { offset?: number; duration?: number }) => void } }).__lenis;
+            if (lenis) {
+              lenis.scrollTo(el, { offset: -80, duration: 1 });
+            } else {
+              el.scrollIntoView({ behavior: "smooth", block: "start" });
+            }
+            return;
+          }
+          if (attempts < 30) {
+            setTimeout(() => scrollToCard(attempts + 1), 60);
+          }
+        };
+        // Give the homepage time to mount the ProjectGrid cards.
+        setTimeout(scrollToCard, 150);
+        return;
+      }
     }
 
     const goTop = () => {
