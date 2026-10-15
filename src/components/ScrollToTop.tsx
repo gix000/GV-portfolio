@@ -12,6 +12,14 @@ export function ScrollToTop() {
   const pathname = usePathname();
 
   useEffect(() => {
+    // If we're returning from a project page to a specific card, skip the
+    // reset entirely - CaseStudy's handleBack will Lenis-scroll to the card.
+    const skipFlag = "gv_skip_scroll_top";
+    if (typeof window !== "undefined" && sessionStorage.getItem(skipFlag)) {
+      sessionStorage.removeItem(skipFlag);
+      return;
+    }
+
     const goTop = () => {
       // Use Lenis if available (it owns the scroll position), else native.
       if (typeof window !== "undefined" && window.__lenis) {

@@ -13,6 +13,11 @@ export function CaseStudy({ project }: { project: Project }) {
   // Navigate home, then Lenis-scroll to the exact project card we came from.
   function handleBack() {
     const targetId = `project-${project.key}`;
+    // Tell ScrollToTop to skip its reset on this navigation so our
+    // Lenis scroll-to-card below isn't overridden back to the top.
+    if (typeof window !== "undefined") {
+      sessionStorage.setItem("gv_skip_scroll_top", "1");
+    }
     router.push("/");
     // Wait for the homepage to mount, then scroll to the anchor via Lenis so
     // smooth scrolling lands on the right card instead of jumping to the top.
