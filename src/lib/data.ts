@@ -849,31 +849,22 @@ export const siteData: SiteData = {
   ],
   uiuxVideos: [
     {
-      key: "fintech-app",
-      title: "FinTech Dashboard Redesign",
+      key: "whish-money",
+      title: "Whish Money - App Redesign",
       description:
-        "A complete redesign of a financial analytics dashboard - focusing on data clarity, user flows, and micro-interactions that make complex data feel approachable.",
-      poster: "/assets/img/uiux-fintech-poster.webp",
-      videoUrl: "/assets/videos/uiux-fintech.mp4",
-      tags: ["UI/UX", "Dashboard", "Figma", "Motion"],
+        "An independent redesign concept that makes everyday money management feel simpler. A cleaner interface brings together live transfer tracking, bill splitting, scam checks, and Arabic language support in one intuitive experience.",
+      poster: "/assets/img/uiux-whish-poster.png",
+      videoUrl: "/assets/videos/whish-money.mp4",
+      tags: ["UI/UX", "FINTECH", "MOBILE APP", "REDESIGN"],
     },
     {
-      key: "health-wellness",
-      title: "Health & Wellness App",
+      key: "toters",
+      title: "Toters - Delivery Reimagined",
       description:
-        "Mobile-first wellness platform designed around daily habits, mindfulness tracking, and gentle visual feedback that encourages consistency over perfection.",
-      poster: "/assets/img/uiux-health-poster.webp",
-      videoUrl: "/assets/videos/uiux-health.mp4",
-      tags: ["Mobile", "Wellness", "Prototyping", "User Research"],
-    },
-    {
-      key: "ecommerce-checkout",
-      title: "E-Commerce Checkout Flow",
-      description:
-        "Streamlined checkout experience reducing cart abandonment through progressive disclosure, trust signals, and frictionless payment integration.",
-      poster: "/assets/img/uiux-ecommerce-poster.webp",
-      videoUrl: "/assets/videos/uiux-ecommerce.mp4",
-      tags: ["E-Commerce", "Conversion", "A/B Testing", "UX Audit"],
+        "An independent redesign concept focused on a smoother ordering experience, from browsing to delivery. Clearer arrival estimates, group orders, instant refunds, and smarter address entry help make every step feel more straightforward.",
+      poster: "/assets/img/uiux-toters-poster.png",
+      videoUrl: "/assets/videos/toters.mp4",
+      tags: ["UI/UX", "DELIVERY", "MOBILE APP", "REDESIGN"],
     },
   ],
 };

@@ -136,13 +136,13 @@ function VideoModal({
         </svg>
       </button>
 
-      {/* Video container */}
+      {/* Video container - 9:16 portrait for TikTok-style videos */}
       <motion.div
         initial={{ scale: 0.95, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         exit={{ scale: 0.95, opacity: 0 }}
         transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-        className="relative w-full max-w-5xl aspect-video rounded-xl overflow-hidden shadow-2xl bg-black"
+        className="relative h-[85vh] max-h-[800px] aspect-[9/16] rounded-2xl overflow-hidden shadow-2xl bg-black"
         onClick={(e) => e.stopPropagation()}
       >
         <video
@@ -151,7 +151,7 @@ function VideoModal({
           poster={video.poster}
           controls
           playsInline
-          className="w-full h-full object-contain"
+          className="w-full h-full object-cover"
         />
       </motion.div>
 
