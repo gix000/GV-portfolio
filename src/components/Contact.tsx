@@ -34,7 +34,7 @@ export function Contact() {
   return (
     <section
       id="contact"
-      className="py-12 px-[clamp(28px,6vw,72px)] max-w-[1280px] mx-auto"
+      className="pt-12 pb-6 px-[clamp(28px,6vw,72px)] max-w-[1280px] mx-auto"
     >
       {/* Kicker */}
       <Reveal className="flex items-center gap-4 text-[11px] tracking-[0.2em] uppercase text-ink-50 font-semibold mb-8">
@@ -66,41 +66,33 @@ export function Contact() {
         </a>
       </Reveal>
 
-      {/* Links grid */}
+      {/* Links — single inline row */}
       <Reveal delay={0.3}>
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 mt-10 pt-8 border-t border-line">
+        <div className="flex flex-wrap items-center gap-x-5 gap-y-2 mt-6 pt-5 border-t border-line text-sm">
           <a
             href={siteData.contact.instagramUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="group block"
+            className="group inline-flex items-center gap-2 font-medium hover:text-accent transition-colors duration-300"
             data-cursor-hover
           >
-            <div className="text-[10px] tracking-[0.2em] uppercase text-ink-50 font-semibold mb-1">
-              Instagram
-            </div>
-            <div className="text-sm font-medium group-hover:text-accent transition-colors duration-300">
-              {siteData.contact.instagramHandle}
-            </div>
+            <span className="text-ink-50 text-[10px] tracking-[0.2em] uppercase font-semibold">IG</span>
+            {siteData.contact.instagramHandle}
           </a>
+          <span className="w-px h-3.5 bg-line" aria-hidden="true" />
           <a
             href={`tel:${siteData.contact.phoneTel}`}
-            className="group block"
+            className="group inline-flex items-center gap-2 font-medium hover:text-accent transition-colors duration-300"
             data-cursor-hover
           >
-            <div className="text-[10px] tracking-[0.2em] uppercase text-ink-50 font-semibold mb-1">
-              Phone
-            </div>
-            <div className="text-sm font-medium group-hover:text-accent transition-colors duration-300">
-              {siteData.contact.phoneDisplay}
-            </div>
+            <span className="text-ink-50 text-[10px] tracking-[0.2em] uppercase font-semibold">Tel</span>
+            {siteData.contact.phoneDisplay}
           </a>
-          <div className="block">
-            <div className="text-[10px] tracking-[0.2em] uppercase text-ink-50 font-semibold mb-1">
-              Location
-            </div>
-            <div className="text-sm font-medium">{siteData.contact.location}</div>
-          </div>
+          <span className="w-px h-3.5 bg-line" aria-hidden="true" />
+          <span className="inline-flex items-center gap-2 font-medium">
+            <span className="text-ink-50 text-[10px] tracking-[0.2em] uppercase font-semibold">Loc</span>
+            {siteData.contact.location}
+          </span>
         </div>
       </Reveal>
     </section>
