@@ -14,25 +14,8 @@ export function ProjectGrid() {
   const headerInView = useInView(headerRef, { once: true, margin: "-80px" });
   const skipEntrance = hasVisitedWorks;
 
-  // Merge branding projects with UI/UX concept videos into one deck.
-  const mergedDeck = useMemo<Project[]>(
-    () => [
-      ...data.projects,
-      ...(data.uiuxVideos ?? []).map((v) => ({
-        key: v.key,
-        name: v.title,
-        cat: "UI/UX Concept",
-        sub: "Redesign",
-        desc: v.description,
-        tags: v.tags,
-        cover: v.poster,
-        lqip: "",
-        gallery: [v.poster],
-        caps: [],
-      })),
-    ],
-    [data.projects, data.uiuxVideos],
-  );
+  // Only branding/packaging projects here — UI/UX concepts live on /ui-ux.
+  const mergedDeck = useMemo<Project[]>(() => data.projects, [data.projects]);
 
   const scrollerRef = useRef<HTMLDivElement>(null);
   const [activeIndex, setActiveIndex] = useState(0);
@@ -92,7 +75,7 @@ export function ProjectGrid() {
   const showHeader = skipEntrance || headerInView;
 
   return (
-    <section id="works" className="py-20 overflow-hidden">
+    <section id="works" className="py-12 overflow-hidden">
       <style>{`
         .gv-spacer { width: calc(50vw - 44vw - 12px); }
         @media (min-width: 640px) { .gv-spacer { width: calc(50vw - 280px - 12px); } }
@@ -101,7 +84,7 @@ export function ProjectGrid() {
 
       <div className="max-w-[1280px] mx-auto px-[clamp(28px,6vw,72px)]">
         {/* Section header */}
-        <div ref={headerRef} className="mb-12">
+        <div ref={headerRef} className="mb-8">
           <motion.div
             initial={skipEntrance ? false : { opacity: 0, y: 30 }}
             animate={showHeader ? { opacity: 1, y: 0 } : {}}
@@ -242,46 +225,49 @@ export function ProjectGrid() {
           />
         </div>
 
-        {/* Animated scroll hint with arrow */}
-        <div className="mt-10 flex justify-center">
-          <motion.span
+        {/* Prominent "more projects" cue — sits right under the carousel */}
+        <div className="mt-5 flex flex-col items-center gap-3">
+          {/* Animated swipe pill */}
+          <motion.div
             aria-hidden="true"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: showHint ? 1 : 0 }}
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: showHint ? 1 : 0.45, y: 0 }}
             transition={{ duration: 0.4 }}
-            className="inline-flex items-center gap-2.5 text-[11px] tracking-[0.22em] uppercase font-bold text-ink-50 select-none pointer-events-none"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-line bg-paper-hi text-[11px] tracking-[0.18em] uppercase font-bold text-ink-70 select-none pointer-events-none"
           >
-            Scroll to explore
             <motion.span
-              animate={{ x: [0, 8, 0] }}
-              transition={{ duration: 1.6, repeat: Infinity, repeatDelay: 0.5, ease: "easeInOut" }}
-              className="inline-block"
+              animate={{ x: [0, 6, 0] }}
+              transition={{ duration: 1.4, repeat: Infinity, repeatDelay: 0.4, ease: "easeInOut" }}
+              className="inline-flex items-center gap-1.5"
             >
-              <svg width="16" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+              <svg width="14" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                 <path d="M5 12h14M13 5l7 7-7 7" />
               </svg>
+              Swipe for more
             </motion.span>
-          </motion.span>
-        </div>
+            <span className="w-px h-3 bg-line" />
+            <span className="text-ink-50">{mergedDeck.length} projects</span>
+          </motion.div>
 
-        {/* Progress dots */}
-        <div className="mt-6 flex justify-center items-center gap-2">
-          {mergedDeck.map((p, i) => (
-            <button
-              key={p.key}
-              type="button"
-              aria-label={`Go to ${p.name}`}
-              onClick={() => {
-                const scroller = scrollerRef.current;
-                if (!scroller) return;
-                const card = scroller.querySelector<HTMLElement>(`[data-index="${i}"]`);
-                if (card) card.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
-              }}
-              className={`h-1.5 rounded-full transition-all duration-300 ${
-                activeIndex === i ? "w-6 bg-accent" : "w-1.5 bg-ink-30 hover:bg-ink-50"
-              }`}
-            />
-          ))}
+          {/* Progress dots */}
+          <div className="flex items-center gap-2">
+            {mergedDeck.map((p, i) => (
+              <button
+                key={p.key}
+                type="button"
+                aria-label={`Go to ${p.name}`}
+                onClick={() => {
+                  const scroller = scrollerRef.current;
+                  if (!scroller) return;
+                  const card = scroller.querySelector<HTMLElement>(`[data-index="${i}"]`);
+                  if (card) card.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
+                }}
+                className={`h-1.5 rounded-full transition-all duration-300 ${
+                  activeIndex === i ? "w-6 bg-accent" : "w-1.5 bg-ink-30 hover:bg-ink-50"
+                }`}
+              />
+            ))}
+          </div>
         </div>
       </div>
     </section>

@@ -34,7 +34,7 @@ export function Contact() {
   return (
     <section
       id="contact"
-      className="py-20 px-[clamp(28px,6vw,72px)] max-w-[1280px] mx-auto"
+      className="py-12 px-[clamp(28px,6vw,72px)] max-w-[1280px] mx-auto"
     >
       {/* Kicker */}
       <Reveal className="flex items-center gap-4 text-[11px] tracking-[0.2em] uppercase text-ink-50 font-semibold mb-8">
@@ -42,14 +42,6 @@ export function Contact() {
         <span>Contact</span>
         <span className="flex-1 h-px bg-line" />
         <span className="hidden sm:inline">{"Let’s Work"}</span>
-      </Reveal>
-
-      {/* Time chip */}
-      <Reveal delay={0.05}>
-        <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full border border-line bg-paper-hi text-[11px] tracking-[0.15em] uppercase font-semibold text-ink-70 mb-6">
-          <span className="w-1.5 h-1.5 rounded-full bg-green-600 animate-pulse" />
-          Beirut &middot; <BeirutTime /> &middot; {siteData.contact.timeChip}
-        </div>
       </Reveal>
 
       {/* Heading */}
@@ -64,11 +56,11 @@ export function Contact() {
       <Reveal delay={0.2} className="mt-10">
         <a
           href={`mailto:${siteData.contact.email}`}
-          className="group inline-flex items-center gap-3 font-serif text-2xl md:text-3xl text-ink hover:text-accent transition-colors duration-300"
+          className="group inline-flex items-center gap-2 font-serif text-base md:text-lg text-ink hover:text-accent transition-colors duration-300"
           data-cursor-hover
         >
           {siteData.contact.email}
-          <span className="text-xl opacity-40 group-hover:opacity-100 group-hover:translate-x-1 transition-all duration-300">
+          <span className="text-sm opacity-40 group-hover:opacity-100 group-hover:translate-x-1 transition-all duration-300">
             →
           </span>
         </a>

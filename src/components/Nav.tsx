@@ -43,7 +43,6 @@ export function Nav() {
           </svg>
           UI/UX
         </Link>
-        <span className="hidden sm:inline">Beirut, LB</span>
       </div>
     </motion.nav>
   );
