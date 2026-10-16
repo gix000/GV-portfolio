@@ -159,12 +159,16 @@ export function ProjectGrid() {
                 opacity: activeIndex === i ? 1 : 0.6,
               }}
             >
-              <Link href={`/projects/${project.key}`} className="block group outline-none">
+              <Link href={`/projects/${project.key}`} className="block group">
                 <div
-                  className="relative overflow-hidden rounded-2xl bg-paper border-0 transition-all duration-500 group-hover:-translate-y-1"
+                  className={`relative overflow-hidden rounded-2xl bg-paper border transition-all duration-500 group-hover:-translate-y-1 ${
+                    activeIndex === i ? "border-accent ring-2 ring-accent/30" : "border-line"
+                  }`}
                   style={{
-                    borderColor: "transparent",
-                    boxShadow: "none",
+                    boxShadow:
+                      activeIndex === i
+                        ? "0 12px 28px rgba(0, 0, 0, 0.22)"
+                        : "0 8px 18px rgba(0, 0, 0, 0.14)",
                   }}
                 >
                   {/* Cover image — landscape 16/10 */}
