@@ -164,9 +164,7 @@ export function ProjectGrid() {
                   className="relative overflow-hidden rounded-2xl bg-paper border-0 transition-all duration-500 group-hover:-translate-y-1"
                   style={{
                     borderColor: "transparent",
-                    boxShadow: activeIndex === i
-                      ? "0 24px 60px rgba(90, 60, 40, 0.16)"
-                      : "0 16px 40px rgba(90, 60, 40, 0.10)",
+                    boxShadow: "none",
                   }}
                 >
                   {/* Cover image — landscape 16/10 */}
