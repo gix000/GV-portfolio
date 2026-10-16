@@ -128,8 +128,8 @@ export function ProjectGrid() {
       <div className="relative">
         <div
           ref={scrollerRef}
-          className="flex gap-6 md:gap-8 overflow-x-auto overflow-y-hidden snap-x snap-mandatory pb-6 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden [overscroll-behavior-x:contain]"
-          style={{ minHeight: 480, touchAction: "pan-x pan-y" }}
+          className="flex gap-6 md:gap-8 overflow-x-auto overflow-y-hidden snap-x snap-mandatory pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden [overscroll-behavior-x:contain]"
+          style={{ touchAction: "pan-x pan-y" }}
         >
           {/* Leading spacer tracks half-card at every breakpoint so card 1 snaps dead-center */}
           <div
@@ -226,7 +226,7 @@ export function ProjectGrid() {
         </div>
 
         {/* Prominent "more projects" cue — sits right under the carousel */}
-        <div className="mt-5 flex flex-col items-center gap-3">
+        <div className="mt-3 flex flex-col items-center gap-3">
           {/* Animated swipe pill */}
           <motion.div
             aria-hidden="true"
