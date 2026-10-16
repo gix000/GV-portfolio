@@ -22,15 +22,12 @@ function StackCard({
   stackIndex: number; // 0 = top of stack
   skipEntrance: boolean;
 }) {
-  // Depth faked purely in 2D (scale + yOffset + opacity + darkening overlay)
-  // so every card stays perfectly centered — no Z/perspective projection that
-  // would shift deeper cards horizontally. Deeper cards tuck well behind the
-  // top card (big Y step + heavy darkening) so only a clean stacked edge
-  // shows, never readable text bleeding through.
+  // Depth faked purely in 2D. Heavier darkening + scale down ensures deeper
+  // cards read as solid shadowed edges, not readable content.
   const depth = stackIndex;
-  const scale = 1 - depth * 0.045;
-  const yOffset = depth * 26;
-  const opacity = 1 - depth * 0.12;
+  const scale = 1 - depth * 0.05;
+  const yOffset = depth * 12; // Tighter stack
+  const opacity = 1 - depth * 0.15;
 
   return (
     <motion.article
@@ -119,12 +116,11 @@ function StackCard({
             </p>
           </div>
 
-          {/* Depth darkening overlay for cards behind — heavy enough that the
-              peeking edge reads as a shadowed stack lip, not a readable card */}
+          {/* Depth darkening overlay: nearly opaque for deeper cards to hide text */}
           {depth > 0 && (
             <div
               className="absolute inset-0 bg-ink pointer-events-none"
-              style={{ opacity: Math.min(0.55, depth * 0.28) }}
+              style={{ opacity: Math.min(0.9, 0.4 + depth * 0.25) }}
             />
           )}
         </div>
