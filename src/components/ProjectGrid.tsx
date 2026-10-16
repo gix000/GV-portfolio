@@ -226,7 +226,7 @@ export function ProjectGrid() {
         </div>
 
         {/* Prominent "more projects" cue — sits right under the carousel */}
-        <div className="mt-2 flex flex-col items-center gap-2">
+        <div className="mt-6 flex flex-col items-center gap-2">
           {/* Animated swipe pill */}
           <motion.div
             aria-hidden="true"
