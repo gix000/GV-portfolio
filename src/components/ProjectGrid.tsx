@@ -22,13 +22,13 @@ function StackCard({
   stackIndex: number; // 0 = top of stack
   skipEntrance: boolean;
 }) {
-  // 3D perspective depth: deeper cards tilt back, scale down, darken
+  // Depth faked purely in 2D (scale + yOffset + opacity + darkening overlay)
+  // so every card stays perfectly centered — no Z/perspective projection that
+  // would shift deeper cards horizontally.
   const depth = stackIndex;
-  const scale = 1 - depth * 0.06;
-  const yOffset = depth * 18;
-  const opacity = 1 - depth * 0.2;
-  const rotateX = depth * 4; // tilt back in 3D
-  const zOffset = -depth * 60; // push back in Z space
+  const scale = 1 - depth * 0.05;
+  const yOffset = depth * 16;
+  const opacity = 1 - depth * 0.18;
 
   return (
     <motion.article
@@ -36,23 +36,16 @@ function StackCard({
       className={`absolute inset-x-0 top-0 ${
         stackIndex === 0 ? "z-30" : "z-20 pointer-events-none"
       }`}
-      style={{
-        transformStyle: "preserve-3d",
-      }}
-      initial={skipEntrance ? false : { opacity: 0, y: 100, scale: 0.85, rotateX: 15 }}
+      initial={skipEntrance ? false : { opacity: 0, y: 100, scale: 0.85 }}
       animate={{
         opacity,
         y: yOffset,
         scale,
-        rotateX,
-        z: zOffset,
       }}
       exit={{
         opacity: 0,
         y: -280,
         scale: 0.85,
-        rotateX: -12,
-        z: 80,
         transition: { duration: 0.6, ease: [0.32, 0, 0.67, 0] },
       }}
       transition={{
@@ -281,11 +274,11 @@ export function ProjectGrid() {
         <div
           ref={stackRef}
           className="relative w-full flex justify-center"
-          style={{ minHeight: 480, perspective: "1200px" }}
+          style={{ minHeight: 480 }}
         >
           <div
             className="relative mx-auto w-[88vw] sm:w-[560px] md:w-[640px]"
-            style={{ height: 440, transformStyle: "preserve-3d" }}
+            style={{ height: 440 }}
           >
             <AnimatePresence mode="sync" initial={false}>
               {visible.map((project, i) => (
