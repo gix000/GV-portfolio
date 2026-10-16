@@ -147,7 +147,25 @@ export function ProjectGrid() {
   const skipEntrance = hasVisitedWorks;
 
   // The full shuffled deck; the top of the stack is index 0
-  const [deck, setDeck] = useState<Project[]>(data.projects);
+  // Merge branding projects with UI/UX concept videos into one deck.
+  // UI/UX entries are VideoProject (poster field) — map poster -> cover and
+  // synthesize the fields ProjectGrid needs so their real thumbnails show.
+  const mergedDeck: Project[] = [
+    ...data.projects,
+    ...(data.uiuxVideos ?? []).map((v) => ({
+      key: v.key,
+      name: v.title,
+      cat: "UI/UX Concept",
+      sub: "Redesign",
+      desc: v.description,
+      tags: v.tags,
+      cover: v.poster,
+      lqip: "",
+      gallery: [v.poster],
+      caps: [],
+    })),
+  ];
+  const [deck, setDeck] = useState<Project[]>(mergedDeck);
   // Key bumped on each shuffle so AnimatePresence re-runs exit on the leaving card
   const [cycleKey, setCycleKey] = useState(0);
 
@@ -165,10 +183,10 @@ export function ProjectGrid() {
 
   // Sync when data loads async
   useEffect(() => {
-    if (data.projects.length > 0 && deck.length === 0) {
-      setDeck(data.projects);
+    if (mergedDeck.length > 0 && deck.length === 0) {
+      setDeck(mergedDeck);
     }
-  }, [data.projects, deck.length]);
+  }, [mergedDeck, deck.length]);
 
   // Move the top card to the back of the deck (the "shuffle")
   const cycleTopToBack = useCallback(() => {
