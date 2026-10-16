@@ -167,8 +167,8 @@ export function ProjectGrid() {
                   style={{
                     boxShadow:
                       activeIndex === i
-                        ? "0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255,255,255,0.1)"
-                        : "0 10px 30px -10px rgba(0, 0, 0, 0.25)",
+                        ? "0 8px 20px -6px rgba(0, 0, 0, 0.35), 0 0 0 1px rgba(255,255,255,0.1)"
+                        : "0 4px 12px -4px rgba(0, 0, 0, 0.2)",
                   }}
                 >
                   {/* Cover image — landscape 16/10 */}
@@ -226,7 +226,7 @@ export function ProjectGrid() {
         </div>
 
         {/* Prominent "more projects" cue — sits right under the carousel */}
-        <div className="mt-0 flex flex-col items-center gap-1.5 pt-2">
+        <div className="-mt-2 flex flex-col items-center gap-1.5 pt-2">
           {/* Animated swipe pill */}
           <motion.div
             aria-hidden="true"
