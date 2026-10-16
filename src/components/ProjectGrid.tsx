@@ -145,7 +145,7 @@ export function ProjectGrid() {
       <div className="relative">
         <div
           ref={scrollerRef}
-          className="flex gap-6 md:gap-8 overflow-x-auto overflow-y-hidden snap-x snap-mandatory scroll-smooth pb-6 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden [overscroll-behavior-x:contain]"
+          className="flex gap-6 md:gap-8 overflow-x-auto overflow-y-hidden snap-x snap-mandatory pb-6 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden [overscroll-behavior-x:contain]"
           style={{ minHeight: 480, touchAction: "pan-x pan-y" }}
         >
           {/* Leading spacer tracks half-card at every breakpoint so card 1 snaps dead-center */}
@@ -171,7 +171,7 @@ export function ProjectGrid() {
                 delay: skipEntrance ? 0 : Math.min(i * 0.05, 0.3),
                 ease: [0.22, 1, 0.36, 1],
               }}
-              className="shrink-0 snap-center w-[88vw] sm:w-[560px] md:w-[640px] transition-transform duration-500 ease-out"
+              className="shrink-0 snap-center w-[88vw] sm:w-[560px] md:w-[640px] transition-transform duration-500 ease-out will-change-transform"
               style={{
                 transform: activeIndex === i ? "scale(1)" : "scale(0.92)",
                 opacity: activeIndex === i ? 1 : 0.55,
