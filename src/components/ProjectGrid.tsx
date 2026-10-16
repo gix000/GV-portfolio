@@ -42,6 +42,20 @@ export function ProjectGrid() {
     if (!hasVisitedWorks) hasVisitedWorks = true;
   }, []);
 
+  // On first paint, scroll the first card to the horizontal center so the
+  // section opens with a project dead-centered rather than left-aligned.
+  useEffect(() => {
+    const scroller = scrollerRef.current;
+    if (!scroller) return;
+    const first = scroller.querySelector<HTMLElement>('[data-index="0"]');
+    if (!first) return;
+    const raf = requestAnimationFrame(() => {
+      const cardCenter = first.offsetLeft + first.offsetWidth / 2;
+      scroller.scrollTo({ left: cardCenter - scroller.clientWidth / 2, behavior: "auto" });
+    });
+    return () => cancelAnimationFrame(raf);
+  }, [mergedDeck.length]);
+
   // Track which card is centered using IntersectionObserver
   useEffect(() => {
     const scroller = scrollerRef.current;
@@ -125,14 +139,14 @@ export function ProjectGrid() {
       <div className="relative">
         <div
           ref={scrollerRef}
-          className="flex gap-6 md:gap-8 overflow-x-auto snap-x snap-mandatory scroll-smooth pb-4 -mx-[clamp(28px,6vw,72px)] px-[clamp(28px,6vw,72px)] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
-          style={{ scrollPaddingLeft: "clamp(28px, 6vw, 72px)", minHeight: 480 }}
+          className="flex gap-6 md:gap-8 overflow-x-auto snap-x snap-mandatory scroll-smooth pb-6 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+          style={{ minHeight: 480 }}
         >
-          {/* Leading spacer so the first card can center */}
+          {/* Leading spacer = half viewport minus half card => card 1 snaps dead-center */}
           <div
             aria-hidden="true"
-            className="shrink-0 snap-start"
-            style={{ width: "max(0px, calc((100vw - min(88vw, 640px)) / 2 - clamp(28px, 6vw, 72px)))" }}
+            className="shrink-0"
+            style={{ width: "calc(50vw - min(44vw, 320px))" }}
           />
 
           {mergedDeck.map((project, i) => (
@@ -216,11 +230,11 @@ export function ProjectGrid() {
             </motion.article>
           ))}
 
-          {/* Trailing spacer so the last card can center */}
+          {/* Trailing spacer mirrors leading so the last card centers too */}
           <div
             aria-hidden="true"
-            className="shrink-0 snap-start"
-            style={{ width: "max(0px, calc((100vw - min(88vw, 640px)) / 2 - clamp(28px, 6vw, 72px)))" }}
+            className="shrink-0"
+            style={{ width: "calc(50vw - min(44vw, 320px))" }}
           />
         </div>
 
