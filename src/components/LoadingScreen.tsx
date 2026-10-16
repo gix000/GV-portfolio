@@ -7,18 +7,28 @@ export function LoadingScreen() {
   const [isOpen, setIsOpen] = useState(false);
   const [isGone, setIsGone] = useState(false);
 
-  // Lock body scroll while loading screen is visible
+  // Lock ALL scroll while loading screen is visible — body, html, AND lenis
   useEffect(() => {
+    const lenis = (window as unknown as { __lenis?: { stop: () => void; start: () => void } }).__lenis;
     if (!isGone) {
       document.body.style.overflow = "hidden";
       document.body.style.touchAction = "none";
+      document.documentElement.style.overflow = "hidden";
+      document.documentElement.style.touchAction = "none";
+      if (lenis) lenis.stop();
     } else {
       document.body.style.overflow = "";
       document.body.style.touchAction = "";
+      document.documentElement.style.overflow = "";
+      document.documentElement.style.touchAction = "";
+      if (lenis) lenis.start();
     }
     return () => {
       document.body.style.overflow = "";
       document.body.style.touchAction = "";
+      document.documentElement.style.overflow = "";
+      document.documentElement.style.touchAction = "";
+      if (lenis) lenis.start();
     };
   }, [isGone]);
 
