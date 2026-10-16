@@ -125,10 +125,10 @@ export function ProjectGrid() {
       </div>
 
       {/* Horizontal snap-scroll carousel — full-bleed so cards can center in viewport */}
-      <div className="relative overflow-hidden">
+      <div className="relative">
         <div
           ref={scrollerRef}
-          className="flex items-start gap-6 md:gap-8 overflow-x-auto overflow-y-hidden snap-x snap-mandatory pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden [overscroll-behavior-x:contain]"
+          className="flex gap-6 md:gap-8 overflow-x-auto overflow-y-hidden snap-x snap-mandatory pb-0 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden [overscroll-behavior-x:contain]"
           style={{ touchAction: "pan-x pan-y" }}
         >
           {/* Leading spacer tracks half-card at every breakpoint so card 1 snaps dead-center */}
@@ -226,7 +226,7 @@ export function ProjectGrid() {
         </div>
 
         {/* Prominent "more projects" cue — sits right under the carousel */}
-        <div className="mt-1 flex flex-col items-center gap-1.5">
+        <div className="mt-0 flex flex-col items-center gap-1.5 pt-2">
           {/* Animated swipe pill */}
           <motion.div
             aria-hidden="true"
