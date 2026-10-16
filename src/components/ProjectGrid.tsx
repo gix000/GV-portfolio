@@ -126,7 +126,7 @@ export function ProjectGrid() {
         <div
           ref={scrollerRef}
           className="flex gap-6 md:gap-8 overflow-x-auto snap-x snap-mandatory scroll-smooth pb-4 -mx-[clamp(28px,6vw,72px)] px-[clamp(28px,6vw,72px)] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
-          style={{ scrollPaddingLeft: "clamp(28px, 6vw, 72px)" }}
+          style={{ scrollPaddingLeft: "clamp(28px, 6vw, 72px)", minHeight: 480 }}
         >
           {/* Leading spacer so the first card can center */}
           <div
@@ -142,8 +142,7 @@ export function ProjectGrid() {
               data-index={i}
               data-cursor-hover
               initial={skipEntrance ? false : { opacity: 0, y: 60 }}
-              whileInView={skipEntrance ? undefined : { opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "0px -10% 0px -10%" }}
+              animate={skipEntrance ? undefined : { opacity: 1, y: 0 }}
               transition={{
                 duration: skipEntrance ? 0 : 0.7,
                 delay: skipEntrance ? 0 : Math.min(i * 0.05, 0.3),
