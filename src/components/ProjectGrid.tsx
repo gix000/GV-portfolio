@@ -93,6 +93,12 @@ export function ProjectGrid() {
 
   return (
     <section id="works" className="py-20 overflow-hidden">
+      <style>{`
+        .gv-spacer { width: calc(50vw - 44vw); }
+        @media (min-width: 640px) { .gv-spacer { width: calc(50vw - 280px); } }
+        @media (min-width: 768px) { .gv-spacer { width: calc(50vw - 320px); } }
+      `}</style>
+
       <div className="max-w-[1280px] mx-auto px-[clamp(28px,6vw,72px)]">
         {/* Section header */}
         <div ref={headerRef} className="mb-12">
@@ -142,11 +148,10 @@ export function ProjectGrid() {
           className="flex gap-6 md:gap-8 overflow-x-auto snap-x snap-mandatory scroll-smooth pb-6 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
           style={{ minHeight: 480 }}
         >
-          {/* Leading spacer = half viewport minus half card => card 1 snaps dead-center */}
+          {/* Leading spacer tracks half-card at every breakpoint so card 1 snaps dead-center */}
           <div
             aria-hidden="true"
-            className="shrink-0"
-            style={{ width: "calc(50vw - min(44vw, 320px))" }}
+            className="shrink-0 gv-spacer"
           />
 
           {mergedDeck.map((project, i) => (
@@ -233,8 +238,7 @@ export function ProjectGrid() {
           {/* Trailing spacer mirrors leading so the last card centers too */}
           <div
             aria-hidden="true"
-            className="shrink-0"
-            style={{ width: "calc(50vw - min(44vw, 320px))" }}
+            className="shrink-0 gv-spacer"
           />
         </div>
 
