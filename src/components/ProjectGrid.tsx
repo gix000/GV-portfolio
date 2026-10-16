@@ -146,7 +146,7 @@ export function ProjectGrid() {
         <div
           ref={scrollerRef}
           className="flex gap-6 md:gap-8 overflow-x-auto overflow-y-hidden snap-x snap-mandatory scroll-smooth pb-6 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden [overscroll-behavior-x:contain]"
-          style={{ minHeight: 480, touchAction: "pan-x" }}
+          style={{ minHeight: 480, touchAction: "pan-x pan-y" }}
         >
           {/* Leading spacer tracks half-card at every breakpoint so card 1 snaps dead-center */}
           <div
