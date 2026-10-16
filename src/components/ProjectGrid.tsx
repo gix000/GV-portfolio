@@ -94,9 +94,9 @@ export function ProjectGrid() {
   return (
     <section id="works" className="py-20 overflow-hidden">
       <style>{`
-        .gv-spacer { width: calc(50vw - 44vw); }
-        @media (min-width: 640px) { .gv-spacer { width: calc(50vw - 280px); } }
-        @media (min-width: 768px) { .gv-spacer { width: calc(50vw - 320px); } }
+        .gv-spacer { width: calc(50vw - 44vw - 12px); }
+        @media (min-width: 640px) { .gv-spacer { width: calc(50vw - 280px - 12px); } }
+        @media (min-width: 768px) { .gv-spacer { width: calc(50vw - 320px - 16px); } }
       `}</style>
 
       <div className="max-w-[1280px] mx-auto px-[clamp(28px,6vw,72px)]">
