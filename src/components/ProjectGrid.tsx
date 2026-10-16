@@ -142,13 +142,22 @@ export function ProjectGrid() {
               data-index={i}
               data-cursor-hover
               initial={skipEntrance ? false : { opacity: 0, y: 60 }}
-              animate={skipEntrance ? undefined : { opacity: 1, y: 0 }}
+              animate={
+                skipEntrance
+                  ? undefined
+                  : { opacity: 1, y: 0 }
+              }
               transition={{
                 duration: skipEntrance ? 0 : 0.7,
                 delay: skipEntrance ? 0 : Math.min(i * 0.05, 0.3),
                 ease: [0.22, 1, 0.36, 1],
               }}
-              className="shrink-0 snap-center w-[88vw] sm:w-[560px] md:w-[640px]"
+              className="shrink-0 snap-center w-[88vw] sm:w-[560px] md:w-[640px] transition-transform duration-500 ease-out"
+              style={{
+                transform: activeIndex === i ? "scale(1)" : "scale(0.92)",
+                opacity: activeIndex === i ? 1 : 0.55,
+                filter: activeIndex === i ? "none" : "brightness(0.85)",
+              }}
             >
               <Link href={`/projects/${project.key}`} className="block group">
                 <div
