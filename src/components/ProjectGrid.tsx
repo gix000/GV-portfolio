@@ -126,7 +126,6 @@ export function ProjectGrid() {
 
   // Shuffle state: manually triggered by tap
   const [shuffledProjects, setShuffledProjects] = useState<Project[]>(data.projects);
-  const [shuffleKey, setShuffleKey] = useState(0);
 
   useEffect(() => {
     // Mark as visited after first render so subsequent mounts skip animation.
@@ -145,7 +144,6 @@ export function ProjectGrid() {
   // Tap to shuffle handler
   const handleShuffle = () => {
     setShuffledProjects(prev => shuffleArray(prev));
-    setShuffleKey(prev => prev + 1);
   };
 
   const showHeader = skipEntrance || headerInView;
