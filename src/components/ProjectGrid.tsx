@@ -197,7 +197,7 @@ export function ProjectGrid() {
                   </div>
 
                   {/* Info */}
-                  <div className="p-5">
+                  <div className="p-4 pb-2">
                     <div className="flex items-baseline justify-between gap-4">
                       <h3 className="font-serif text-xl md:text-2xl tracking-tight text-ink">
                         {project.name}
@@ -226,7 +226,7 @@ export function ProjectGrid() {
         </div>
 
         {/* Prominent "more projects" cue — sits right under the carousel */}
-        <div className="-mt-16 flex flex-col items-center gap-1.5 pt-2">
+        <div className="mt-3 flex flex-col items-center gap-2">
           {/* Animated swipe pill */}
           <motion.div
             aria-hidden="true"
