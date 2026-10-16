@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, useInView, AnimatePresence } from "framer-motion";
-import { useRef, useEffect, useState, useCallback } from "react";
+import { useRef, useEffect, useState, useCallback, useMemo } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useSiteData, type Project } from "@/lib/useSiteData";
@@ -150,21 +150,26 @@ export function ProjectGrid() {
   // Merge branding projects with UI/UX concept videos into one deck.
   // UI/UX entries are VideoProject (poster field) — map poster -> cover and
   // synthesize the fields ProjectGrid needs so their real thumbnails show.
-  const mergedDeck: Project[] = [
-    ...data.projects,
-    ...(data.uiuxVideos ?? []).map((v) => ({
-      key: v.key,
-      name: v.title,
-      cat: "UI/UX Concept",
-      sub: "Redesign",
-      desc: v.description,
-      tags: v.tags,
-      cover: v.poster,
-      lqip: "",
-      gallery: [v.poster],
-      caps: [],
-    })),
-  ];
+  // useMemo keeps the array identity stable so the sync effect below doesn't
+  // re-run on every render.
+  const mergedDeck = useMemo<Project[]>(
+    () => [
+      ...data.projects,
+      ...(data.uiuxVideos ?? []).map((v) => ({
+        key: v.key,
+        name: v.title,
+        cat: "UI/UX Concept",
+        sub: "Redesign",
+        desc: v.description,
+        tags: v.tags,
+        cover: v.poster,
+        lqip: "",
+        gallery: [v.poster],
+        caps: [],
+      })),
+    ],
+    [data.projects, data.uiuxVideos],
+  );
   const [deck, setDeck] = useState<Project[]>(mergedDeck);
   // Key bumped on each shuffle so AnimatePresence re-runs exit on the leaving card
   const [cycleKey, setCycleKey] = useState(0);
