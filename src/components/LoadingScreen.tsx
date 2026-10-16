@@ -60,9 +60,9 @@ export function LoadingScreen() {
             onClick={handleTap}
             style={{ width: "min(85vw, 380px)", height: "280px" }}
           >
-            <div className="absolute bottom-0 left-0 right-0 h-[65%] rounded-b-xl rounded-t-sm bg-[#D9C9A3] shadow-inner z-10" />
+            <div className="absolute bottom-0 left-0 right-0 h-[65%] rounded-b-xl rounded-t-sm bg-[#D9C9A3] z-10" />
             <motion.div
-              className="absolute bottom-[12%] left-[6%] right-[6%] h-[75%] bg-white rounded-sm shadow-md z-20 overflow-hidden"
+              className="absolute bottom-[12%] left-[6%] right-[6%] h-[75%] bg-white rounded-sm z-20 overflow-hidden"
               initial={{ y: 0 }}
               animate={isOpen ? { y: -40 } : {}}
               transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
@@ -78,7 +78,7 @@ export function LoadingScreen() {
               </div>
             </motion.div>
             <motion.div
-              className="absolute bottom-0 left-0 right-0 h-[70%] rounded-b-xl rounded-t-sm origin-bottom z-30 overflow-hidden shadow-xl"
+              className="absolute bottom-0 left-0 right-0 h-[70%] rounded-b-xl rounded-t-sm origin-bottom z-30 overflow-hidden"
               style={{ background: "linear-gradient(180deg, #F5EBD0 0%, #D9C9A3 100%)" }}
               initial={{ rotateX: 0 }}
               animate={isOpen ? { rotateX: -110 } : {}}
