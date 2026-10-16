@@ -66,9 +66,9 @@ export function Contact() {
         </a>
       </Reveal>
 
-      {/* Links — single inline row */}
+      {/* Links — centered IG + Tel, no Loc */}
       <Reveal delay={0.3}>
-        <div className="flex flex-wrap items-center gap-x-5 gap-y-2 mt-6 pt-5 border-t border-line text-sm">
+        <div className="flex items-center justify-center gap-5 mt-6 pt-5 border-t border-line text-sm">
           <a
             href={siteData.contact.instagramUrl}
             target="_blank"
@@ -88,11 +88,6 @@ export function Contact() {
             <span className="text-ink-50 text-[10px] tracking-[0.2em] uppercase font-semibold">Tel</span>
             {siteData.contact.phoneDisplay}
           </a>
-          <span className="w-px h-3.5 bg-line" aria-hidden="true" />
-          <span className="inline-flex items-center gap-2 font-medium">
-            <span className="text-ink-50 text-[10px] tracking-[0.2em] uppercase font-semibold">Loc</span>
-            {siteData.contact.location}
-          </span>
         </div>
       </Reveal>
     </section>
