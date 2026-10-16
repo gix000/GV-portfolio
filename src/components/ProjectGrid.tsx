@@ -167,8 +167,8 @@ export function ProjectGrid() {
                   style={{
                     boxShadow:
                       activeIndex === i
-                        ? "0 12px 28px rgba(0, 0, 0, 0.22)"
-                        : "0 8px 18px rgba(0, 0, 0, 0.14)",
+                        ? "0 4px 10px rgba(80, 20, 30, 0.12)"
+                        : "0 3px 7px rgba(80, 20, 30, 0.08)",
                   }}
                 >
                   {/* Cover image — landscape 16/10 */}
