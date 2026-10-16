@@ -75,7 +75,7 @@ export function ProjectGrid() {
   const showHeader = skipEntrance || headerInView;
 
   return (
-    <section id="works" className="py-12">
+    <section id="works" className="pt-28 pb-12">
       <style>{`
         .gv-spacer { width: calc(50vw - 44vw - 12px); }
         @media (min-width: 640px) { .gv-spacer { width: calc(50vw - 280px - 12px); } }
@@ -164,6 +164,12 @@ export function ProjectGrid() {
                   className={`relative overflow-hidden rounded-2xl bg-paper border transition-all duration-500 group-hover:-translate-y-1 ${
                     activeIndex === i ? "border-accent" : "border-line"
                   }`}
+                  style={{
+                    boxShadow:
+                      activeIndex === i
+                        ? "0 18px 40px -24px rgba(60, 20, 20, 0.45)"
+                        : "0 10px 30px -22px rgba(60, 20, 20, 0.3)",
+                  }}
                 >
                   {/* Cover image — landscape 16/10 */}
                   <div className="relative aspect-[16/10] overflow-hidden">
