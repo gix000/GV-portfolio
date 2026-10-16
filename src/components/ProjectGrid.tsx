@@ -163,13 +163,10 @@ export function ProjectGrid() {
                 <div
                   className="relative overflow-hidden rounded-2xl bg-paper border-0 transition-all duration-500 group-hover:-translate-y-1"
                   style={{
-                    borderWidth: 0,
-                    borderStyle: "none",
-                    outline: "none",
-                    filter:
-                      activeIndex === i
-                        ? "drop-shadow(0 20px 40px rgba(80, 60, 40, 0.15))"
-                        : "drop-shadow(0 12px 24px rgba(80, 60, 40, 0.1))",
+                    borderColor: "transparent",
+                    boxShadow: activeIndex === i
+                      ? "0 20px 50px -20px rgba(80, 50, 30, 0.22)"
+                      : "0 12px 30px -16px rgba(80, 50, 30, 0.14)",
                   }}
                 >
                   {/* Cover image — landscape 16/10 */}
