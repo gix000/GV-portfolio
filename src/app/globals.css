@@ -143,3 +143,9 @@
 .font-sans {
   font-family: var(--font-sans);
 }
+
+/* Kill any shadow on the loading-screen folder (the dark band under the GV folder) */
+.fixed.z-\[9999\] div[class*="rounded-b-xl"] {
+  box-shadow: none !important;
+  filter: none !important;
+}
