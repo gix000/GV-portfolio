@@ -284,10 +284,10 @@ export function ProjectGrid() {
           style={{ minHeight: 480, perspective: "1200px" }}
         >
           <div
-            className="relative w-[88vw] sm:w-[560px] md:w-[640px]"
+            className="relative mx-auto w-[88vw] sm:w-[560px] md:w-[640px]"
             style={{ height: 440, transformStyle: "preserve-3d" }}
           >
-            <AnimatePresence mode="popLayout" initial={false}>
+            <AnimatePresence mode="sync" initial={false}>
               {visible.map((project, i) => (
                 <StackCard
                   key={`${project.key}-${cycleKey}-${i}`}
