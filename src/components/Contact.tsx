@@ -107,7 +107,3 @@ export function Contact() {
   );
 }
 
-function BeirutTime() {
-  // Server-safe: render placeholder, client hydrates
-  return <span suppressHydrationWarning>--:--</span>;
-}
