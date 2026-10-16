@@ -10,7 +10,6 @@ import { useSiteData, type Project } from "@/lib/useSiteData";
 // return-navigation skips the entrance and avoids the brief card flash.
 let hasVisitedWorks = false;
 
-
 // How many cards are visible in the stack at once
 const STACK_SIZE = 4;
 
@@ -23,11 +22,13 @@ function StackCard({
   stackIndex: number; // 0 = top of stack
   skipEntrance: boolean;
 }) {
-  // Deeper cards sit directly behind: same position, just scaled down and faded
+  // 3D perspective depth: deeper cards tilt back, scale down, darken
   const depth = stackIndex;
-  const scale = 1 - depth * 0.045;
-  const yOffset = depth * 10;
-  const opacity = 1 - depth * 0.16;
+  const scale = 1 - depth * 0.06;
+  const yOffset = depth * 18;
+  const opacity = 1 - depth * 0.2;
+  const rotateX = depth * 4; // tilt back in 3D
+  const zOffset = -depth * 60; // push back in Z space
 
   return (
     <motion.article
@@ -36,31 +37,46 @@ function StackCard({
       className={`absolute left-1/2 top-0 w-[88vw] sm:w-[560px] md:w-[640px] ${
         stackIndex === 0 ? "z-30" : "z-20 pointer-events-none"
       }`}
-      style={{ x: "-50%" }}
-      initial={skipEntrance ? false : { opacity: 0, y: 80, scale: 0.9 }}
+      style={{
+        x: "-50%",
+        transformPerspective: 1200,
+        transformStyle: "preserve-3d",
+      }}
+      initial={skipEntrance ? false : { opacity: 0, y: 100, scale: 0.85, rotateX: 15 }}
       animate={{
         opacity,
         y: yOffset,
         scale,
-        rotate: 0,
+        rotateX,
+        z: zOffset,
       }}
       exit={{
         opacity: 0,
-        y: -220,
-        scale: 0.9,
-        transition: { duration: 0.5, ease: [0.4, 0, 0.2, 1] },
+        y: -280,
+        scale: 0.85,
+        rotateX: -12,
+        z: 80,
+        transition: { duration: 0.6, ease: [0.32, 0, 0.67, 0] },
       }}
       transition={{
         type: "spring",
-        stiffness: 280,
-        damping: 28,
-        mass: 0.85,
-        delay: skipEntrance ? 0 : depth * 0.05,
+        stiffness: 240,
+        damping: 24,
+        mass: 0.9,
+        delay: skipEntrance ? 0 : depth * 0.07,
       }}
     >
       <Link href={`/projects/${project.key}`} className="block">
-        {/* Liquid Glass Card Container */}
-        <div className="relative overflow-hidden rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 shadow-xl transition-all duration-500 group-hover:shadow-2xl">
+        {/* Card Container with 3D shadow */}
+        <div
+          className="relative overflow-hidden rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 transition-all duration-500"
+          style={{
+            boxShadow:
+              stackIndex === 0
+                ? "0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255,255,255,0.1)"
+                : `0 ${10 + depth * 5}px ${20 + depth * 10}px -${5 + depth * 2}px rgba(0, 0, 0, ${0.3 + depth * 0.1})`,
+          }}
+        >
           {/* Image container - LANDSCAPE 16/10 */}
           <div className="relative aspect-[16/10] overflow-hidden">
             <Image
@@ -73,9 +89,9 @@ function StackCard({
               placeholder="blur"
               blurDataURL={project.lqip}
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/10 to-transparent" />
             {project.gallery.length > 1 && (
-              <div className="absolute right-3 bottom-3 flex items-center gap-1.5 bg-black/30 backdrop-blur-sm text-white text-[9px] tracking-[0.13em] uppercase font-bold px-2.5 py-1.5 rounded-full border border-white/10">
+              <div className="absolute right-3 bottom-3 flex items-center gap-1.5 bg-black/40 backdrop-blur-sm text-white text-[9px] tracking-[0.13em] uppercase font-bold px-2.5 py-1.5 rounded-full border border-white/10">
                 <svg
                   width="9"
                   height="9"
@@ -111,7 +127,13 @@ function StackCard({
             </p>
           </div>
 
-          <div className="absolute inset-0 bg-gradient-to-tr from-white/0 via-white/10 to-white/0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
+          {/* Depth darkening overlay for cards behind */}
+          {depth > 0 && (
+            <div
+              className="absolute inset-0 bg-black pointer-events-none"
+              style={{ opacity: depth * 0.12 }}
+            />
+          )}
         </div>
       </Link>
     </motion.article>
@@ -133,7 +155,7 @@ export function ProjectGrid() {
   const stackRef = useRef<HTMLDivElement>(null);
   const lastScrollY = useRef(0);
   const scrollAccum = useRef(0);
-  const SCROLL_THRESHOLD = 220; // px of vertical scroll to trigger one shuffle
+  const SCROLL_THRESHOLD = 200; // px of vertical scroll to trigger one shuffle
 
   useEffect(() => {
     if (!hasVisitedWorks) {
@@ -167,7 +189,7 @@ export function ProjectGrid() {
       const rect = node.getBoundingClientRect();
       const vh = window.innerHeight;
       // Only react while the stack occupies the viewport
-      const inView = rect.bottom > vh * 0.2 && rect.top < vh * 0.85;
+      const inView = rect.bottom > vh * 0.15 && rect.top < vh * 0.9;
       if (!inView) {
         lastScrollY.current = window.scrollY;
         scrollAccum.current = 0;
@@ -235,9 +257,16 @@ export function ProjectGrid() {
           </motion.p>
         </div>
 
-        {/* Stacked deck: cards layered directly behind each other */}
-        <div ref={stackRef} className="relative w-full flex justify-center" style={{ minHeight: 460 }}>
-          <div className="relative w-[88vw] sm:w-[560px] md:w-[640px]" style={{ height: 420 }}>
+        {/* 3D Stacked deck: cards layered with perspective */}
+        <div
+          ref={stackRef}
+          className="relative w-full flex justify-center"
+          style={{ minHeight: 480, perspective: "1200px" }}
+        >
+          <div
+            className="relative w-[88vw] sm:w-[560px] md:w-[640px]"
+            style={{ height: 440, transformStyle: "preserve-3d" }}
+          >
             <AnimatePresence mode="popLayout" initial={false}>
               {visible.map((project, i) => (
                 <StackCard
