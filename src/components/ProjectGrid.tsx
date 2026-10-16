@@ -34,11 +34,10 @@ function StackCard({
     <motion.article
       layout
       data-cursor-hover
-      className={`absolute left-1/2 top-0 w-[88vw] sm:w-[560px] md:w-[640px] ${
+      className={`absolute left-0 right-0 top-0 mx-auto w-[88vw] sm:w-[560px] md:w-[640px] ${
         stackIndex === 0 ? "z-30" : "z-20 pointer-events-none"
       }`}
       style={{
-        x: "-50%",
         transformPerspective: 1200,
         transformStyle: "preserve-3d",
       }}
