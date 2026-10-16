@@ -211,7 +211,7 @@ export function ProjectGrid() {
           <AnimatePresence mode="popLayout">
             {shuffledProjects.map((project, i) => (
               <ProjectCard
-                key={`${project.key}-${shuffleKey}`}
+                key={project.key}
                 project={project}
                 index={i}
                 skipEntrance={skipEntrance}
