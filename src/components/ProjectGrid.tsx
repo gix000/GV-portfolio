@@ -156,15 +156,14 @@ export function ProjectGrid() {
               }}
               className="shrink-0 snap-center w-[88vw] sm:w-[560px] md:w-[640px] transition-transform duration-500 ease-out will-change-transform"
               style={{
-                transform: activeIndex === i ? "scale(1)" : "scale(0.92)",
-                transformOrigin: "top center",
-                opacity: activeIndex === i ? 1 : 0.55,
-                filter: activeIndex === i ? "none" : "brightness(0.85)",
+                opacity: activeIndex === i ? 1 : 0.6,
               }}
             >
               <Link href={`/projects/${project.key}`} className="block group">
                 <div
-                  className="relative overflow-hidden rounded-2xl bg-paper border border-line transition-all duration-500 group-hover:-translate-y-1"
+                  className={`relative overflow-hidden rounded-2xl bg-paper border transition-all duration-500 group-hover:-translate-y-1 ${
+                    activeIndex === i ? "border-accent ring-2 ring-accent/30" : "border-line"
+                  }`}
                   style={{
                     boxShadow:
                       activeIndex === i
