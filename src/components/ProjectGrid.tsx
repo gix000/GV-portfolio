@@ -75,7 +75,7 @@ export function ProjectGrid() {
   const showHeader = skipEntrance || headerInView;
 
   return (
-    <section id="works" className="py-12 overflow-hidden">
+    <section id="works" className="py-12">
       <style>{`
         .gv-spacer { width: calc(50vw - 44vw - 12px); }
         @media (min-width: 640px) { .gv-spacer { width: calc(50vw - 280px - 12px); } }
@@ -128,7 +128,7 @@ export function ProjectGrid() {
       <div className="relative">
         <div
           ref={scrollerRef}
-          className="flex gap-6 md:gap-8 overflow-x-auto snap-x snap-mandatory pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden [overscroll-behavior-x:contain]"
+          className="flex gap-6 md:gap-8 overflow-x-auto snap-x snap-mandatory pb-6 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden [overscroll-behavior-x:contain]"
           style={{ touchAction: "pan-x pan-y" }}
         >
           {/* Leading spacer tracks half-card at every breakpoint so card 1 snaps dead-center */}
