@@ -161,13 +161,13 @@ export function ProjectGrid() {
             >
               <Link href={`/projects/${project.key}`} className="block group">
                 <div
-                  className={`relative rounded-2xl bg-paper border transition-all duration-500 group-hover:-translate-y-1 ${
-                    activeIndex === i ? "border-accent ring-2 ring-accent/30" : "border-line"
+                  className={`relative overflow-hidden rounded-2xl bg-paper border transition-all duration-500 group-hover:-translate-y-1 ${
+                    activeIndex === i ? "border-accent" : "border-line"
                   }`}
                   style={{
                     boxShadow:
                       activeIndex === i
-                        ? "0 8px 20px -6px rgba(0, 0, 0, 0.35), 0 0 0 1px rgba(255,255,255,0.1)"
+                        ? "0 8px 24px -6px rgba(0, 0, 0, 0.3)"
                         : "0 4px 12px -4px rgba(0, 0, 0, 0.2)",
                   }}
                 >

@@ -1,11 +1,26 @@
 "use client";
 import { motion, AnimatePresence } from "framer-motion";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 
 export function LoadingScreen() {
   const [isOpen, setIsOpen] = useState(false);
   const [isGone, setIsGone] = useState(false);
+
+  // Lock body scroll while loading screen is visible
+  useEffect(() => {
+    if (!isGone) {
+      document.body.style.overflow = "hidden";
+      document.body.style.touchAction = "none";
+    } else {
+      document.body.style.overflow = "";
+      document.body.style.touchAction = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+      document.body.style.touchAction = "";
+    };
+  }, [isGone]);
 
   function handleTap() {
     if (isOpen) return;
