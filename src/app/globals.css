@@ -29,6 +29,14 @@
     -webkit-tap-highlight-color: transparent;
   }
 
+  /* Kill any default/preflight border on project cards */
+  [data-card] > a > div {
+    border: 0 !important;
+    border-width: 0 !important;
+    border-style: none !important;
+    outline: none !important;
+  }
+
   html {
     scroll-behavior: auto; /* Lenis handles smooth scroll */
     -webkit-text-size-adjust: 100%;
