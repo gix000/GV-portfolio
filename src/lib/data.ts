@@ -108,6 +108,8 @@ export const siteData: SiteData = {
       "Packaging Design",
       "Social Media Design",
       "Logo & Monogram",
+      "UI/UX Design",
+      "Web Development",
     ],
     basedList: [
       "Beirut, Lebanon",
