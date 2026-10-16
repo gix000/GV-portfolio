@@ -164,12 +164,6 @@ export function ProjectGrid() {
                   className={`relative overflow-hidden rounded-2xl bg-paper border transition-all duration-500 group-hover:-translate-y-1 ${
                     activeIndex === i ? "border-accent" : "border-line"
                   }`}
-                  style={{
-                    boxShadow:
-                      activeIndex === i
-                        ? "0 8px 24px -6px rgba(0, 0, 0, 0.3)"
-                        : "0 4px 12px -4px rgba(0, 0, 0, 0.2)",
-                  }}
                 >
                   {/* Cover image — landscape 16/10 */}
                   <div className="relative aspect-[16/10] overflow-hidden">
