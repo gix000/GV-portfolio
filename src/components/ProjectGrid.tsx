@@ -10,15 +10,6 @@ import { useSiteData, type Project } from "@/lib/useSiteData";
 // return-navigation skips the entrance and avoids the brief card flash.
 let hasVisitedWorks = false;
 
-// Fisher-Yates shuffle
-function shuffleArray<T>(array: T[]): T[] {
-  const shuffled = [...array];
-  for (let i = shuffled.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-  }
-  return shuffled;
-}
 
 // How many cards are visible in the stack at once
 const STACK_SIZE = 4;
@@ -27,29 +18,23 @@ function StackCard({
   project,
   stackIndex,
   skipEntrance,
-  onTop,
-  onTapTop,
 }: {
   project: Project;
   stackIndex: number; // 0 = top of stack
   skipEntrance: boolean;
-  onTop: boolean;
-  onTapTop: () => void;
 }) {
-  // Deeper cards sit lower, smaller, and more transparent
+  // Deeper cards sit directly behind: same position, just scaled down and faded
   const depth = stackIndex;
-  const scale = 1 - depth * 0.05;
-  const yOffset = depth * 14;
-  const opacity = 1 - depth * 0.18;
-  const rotate = (depth % 2 === 0 ? -1 : 1) * depth * 1.4;
+  const scale = 1 - depth * 0.045;
+  const yOffset = depth * 10;
+  const opacity = 1 - depth * 0.16;
 
   return (
     <motion.article
       layout
       data-cursor-hover
-      onClick={onTop ? onTapTop : undefined}
       className={`absolute left-1/2 top-0 w-[88vw] sm:w-[560px] md:w-[640px] ${
-        onTop ? "cursor-pointer z-30" : "z-20 pointer-events-none"
+        stackIndex === 0 ? "z-30" : "z-20 pointer-events-none"
       }`}
       style={{ x: "-50%" }}
       initial={skipEntrance ? false : { opacity: 0, y: 80, scale: 0.9 }}
@@ -57,34 +42,23 @@ function StackCard({
         opacity,
         y: yOffset,
         scale,
-        rotate,
+        rotate: 0,
       }}
       exit={{
         opacity: 0,
-        y: -260,
-        x: 140,
-        rotate: 14,
-        scale: 0.92,
-        transition: { duration: 0.55, ease: [0.4, 0, 0.2, 1] },
+        y: -220,
+        scale: 0.9,
+        transition: { duration: 0.5, ease: [0.4, 0, 0.2, 1] },
       }}
       transition={{
         type: "spring",
-        stiffness: 260,
-        damping: 26,
-        mass: 0.9,
-        delay: skipEntrance ? 0 : depth * 0.06,
+        stiffness: 280,
+        damping: 28,
+        mass: 0.85,
+        delay: skipEntrance ? 0 : depth * 0.05,
       }}
     >
-      <Link
-        href={`/projects/${project.key}`}
-        className="block"
-        onClick={(e) => {
-          // Only the top card navigates; tapping it also triggers the shuffle fly-away
-          if (!onTop) {
-            e.preventDefault();
-          }
-        }}
-      >
+      <Link href={`/projects/${project.key}`} className="block">
         {/* Liquid Glass Card Container */}
         <div className="relative overflow-hidden rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 shadow-xl transition-all duration-500 group-hover:shadow-2xl">
           {/* Image container - LANDSCAPE 16/10 */}
@@ -93,7 +67,7 @@ function StackCard({
               src={project.cover}
               alt={`${project.name} - ${project.sub}`}
               fill
-              priority={onTop}
+              priority={stackIndex === 0}
               className="object-cover"
               sizes="(max-width: 640px) 88vw, 640px"
               placeholder="blur"
@@ -155,6 +129,12 @@ export function ProjectGrid() {
   // Key bumped on each shuffle so AnimatePresence re-runs exit on the leaving card
   const [cycleKey, setCycleKey] = useState(0);
 
+  // Scroll-driven shuffle state
+  const stackRef = useRef<HTMLDivElement>(null);
+  const lastScrollY = useRef(0);
+  const scrollAccum = useRef(0);
+  const SCROLL_THRESHOLD = 220; // px of vertical scroll to trigger one shuffle
+
   useEffect(() => {
     if (!hasVisitedWorks) {
       hasVisitedWorks = true;
@@ -168,7 +148,7 @@ export function ProjectGrid() {
     }
   }, [data.projects, deck.length]);
 
-  // Move the top card to the back of the deck (the "shuffle" fly-away)
+  // Move the top card to the back of the deck (the "shuffle")
   const cycleTopToBack = useCallback(() => {
     setDeck((prev) => {
       if (prev.length <= 1) return prev;
@@ -178,11 +158,36 @@ export function ProjectGrid() {
     setCycleKey((k) => k + 1);
   }, []);
 
-  // Full reshuffle of the whole deck
-  const reshuffleDeck = useCallback(() => {
-    setDeck((prev) => shuffleArray(prev));
-    setCycleKey((k) => k + 1);
-  }, []);
+  // Listen to vertical page scroll while the stack is in view; accumulate
+  // distance and shuffle the deck each time the threshold is crossed.
+  useEffect(() => {
+    const onScroll = () => {
+      const node = stackRef.current;
+      if (!node) return;
+      const rect = node.getBoundingClientRect();
+      const vh = window.innerHeight;
+      // Only react while the stack occupies the viewport
+      const inView = rect.bottom > vh * 0.2 && rect.top < vh * 0.85;
+      if (!inView) {
+        lastScrollY.current = window.scrollY;
+        scrollAccum.current = 0;
+        return;
+      }
+      const delta = window.scrollY - lastScrollY.current;
+      lastScrollY.current = window.scrollY;
+      // Only count downward scroll so scrolling back up doesn't reshuffle
+      if (delta > 0) {
+        scrollAccum.current += delta;
+        if (scrollAccum.current >= SCROLL_THRESHOLD) {
+          scrollAccum.current = 0;
+          cycleTopToBack();
+        }
+      }
+    };
+    lastScrollY.current = window.scrollY;
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, [cycleTopToBack]);
 
   const showHeader = skipEntrance || headerInView;
   const visible = deck.slice(0, Math.min(STACK_SIZE, deck.length));
@@ -230,8 +235,8 @@ export function ProjectGrid() {
           </motion.p>
         </div>
 
-        {/* Stacked deck: cards layered behind each other */}
-        <div className="relative w-full flex justify-center" style={{ minHeight: 460 }}>
+        {/* Stacked deck: cards layered directly behind each other */}
+        <div ref={stackRef} className="relative w-full flex justify-center" style={{ minHeight: 460 }}>
           <div className="relative w-[88vw] sm:w-[560px] md:w-[640px]" style={{ height: 420 }}>
             <AnimatePresence mode="popLayout" initial={false}>
               {visible.map((project, i) => (
@@ -239,37 +244,30 @@ export function ProjectGrid() {
                   key={`${project.key}-${cycleKey}-${i}`}
                   project={project}
                   stackIndex={i}
-                  total={visible.length}
                   skipEntrance={skipEntrance}
-                  onTop={i === 0}
-                  onTapTop={cycleTopToBack}
                 />
               ))}
             </AnimatePresence>
           </div>
         </div>
 
-        {/* Animated "shuffle for more" link under the stack */}
+        {/* Non-interactive "shuffle for more" hint under the stack */}
         <div className="mt-10 flex justify-center">
-          <button
-            onClick={reshuffleDeck}
-            data-cursor-hover
-            className="group relative inline-flex items-center gap-2.5 text-[11px] tracking-[0.22em] uppercase font-bold text-ink-70 hover:text-accent transition-colors duration-300"
+          <span
+            aria-hidden="true"
+            className="inline-flex items-center gap-2.5 text-[11px] tracking-[0.22em] uppercase font-bold text-ink-50 select-none pointer-events-none"
           >
             <motion.span
-              animate={{ rotate: [0, -8, 8, -6, 6, 0] }}
-              transition={{ duration: 2.4, repeat: Infinity, repeatDelay: 1.2, ease: "easeInOut" }}
+              animate={{ y: [0, 5, 0] }}
+              transition={{ duration: 1.8, repeat: Infinity, repeatDelay: 0.6, ease: "easeInOut" }}
               className="inline-block"
             >
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                <path d="M16 3h5v5M4 20L21 3M21 16v5h-5M15 15l6 6M4 4l5 5" />
+                <path d="M12 5v14M19 12l-7 7-7-7" />
               </svg>
             </motion.span>
-            <span className="relative">
-              Shuffle for more
-              <span className="absolute left-0 -bottom-1 h-px w-0 bg-accent transition-all duration-400 group-hover:w-full" />
-            </span>
-          </button>
+            Shuffle for more
+          </span>
         </div>
       </div>
     </section>
