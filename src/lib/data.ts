@@ -704,6 +704,33 @@ export const siteData: SiteData = {
       videoUrl: "/assets/videos/toters.mp4",
       tags: ["UI/UX", "DELIVERY", "MOBILE APP", "REDESIGN"],
     },
+    {
+      key: "omt-pay",
+      title: "OMT Pay - Without the Queue",
+      description:
+        "An independent redesign concept for OMT Pay that eliminates the queue. Features include live wait times, Western Union to wallet transfers, and a guarantee that the app never freezes, backed by real support.",
+      poster: "/assets/img/uiux-omt-poster.png",
+      videoUrl: "/assets/videos/omt-pay.mp4",
+      tags: ["UI/UX", "FINTECH", "MOBILE APP", "REDESIGN"],
+    },
+    {
+      key: "suyool",
+      title: "Suyool - Everything in View",
+      description:
+        "An independent redesign concept for Suyool that brings everything into view. Key features include subscription management, a dedicated Euro pocket, the ability to erase purchases, and family wallets for shared expenses.",
+      poster: "/assets/img/uiux-suyool-poster.png",
+      videoUrl: "/assets/videos/suyool.mp4",
+      tags: ["UI/UX", "FINTECH", "MOBILE APP", "REDESIGN"],
+    },
+    {
+      key: "neo",
+      title: "Neo - A Bank You Can Just Ask",
+      description:
+        "An independent redesign concept for Neo by Bank Audi, reimagined as a bank you can just ask. Features include 'Ask Neo' AI support, live ATM cash availability, a top-up guarantee, and seamless web integration.",
+      poster: "/assets/img/uiux-neo-poster.png",
+      videoUrl: "/assets/videos/neo.mp4",
+      tags: ["UI/UX", "BANKING", "MOBILE APP", "REDESIGN"],
+    },
   ],
 };
 
