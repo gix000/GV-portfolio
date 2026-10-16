@@ -166,10 +166,10 @@ export function ProjectGrid() {
                     borderWidth: 0,
                     borderStyle: "none",
                     outline: "none",
-                    boxShadow:
+                    filter:
                       activeIndex === i
-                        ? "0 24px 48px -12px rgba(80, 60, 40, 0.18)"
-                        : "0 16px 32px -10px rgba(80, 60, 40, 0.12)",
+                        ? "drop-shadow(0 20px 40px rgba(80, 60, 40, 0.15))"
+                        : "drop-shadow(0 12px 24px rgba(80, 60, 40, 0.1))",
                   }}
                 >
                   {/* Cover image — landscape 16/10 */}
