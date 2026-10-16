@@ -161,7 +161,7 @@ export function ProjectGrid() {
             >
               <Link href={`/projects/${project.key}`} className="block group">
                 <div
-                  className={`relative overflow-hidden rounded-2xl bg-paper border transition-all duration-500 group-hover:-translate-y-1 ${
+                  className={`relative rounded-2xl bg-paper border transition-all duration-500 group-hover:-translate-y-1 ${
                     activeIndex === i ? "border-accent ring-2 ring-accent/30" : "border-line"
                   }`}
                   style={{
