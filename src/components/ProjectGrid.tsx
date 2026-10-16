@@ -32,13 +32,11 @@ function StackCard({
 
   return (
     <motion.article
-      layout
       data-cursor-hover
-      className={`absolute left-0 right-0 top-0 mx-auto w-[88vw] sm:w-[560px] md:w-[640px] ${
+      className={`absolute inset-x-0 top-0 ${
         stackIndex === 0 ? "z-30" : "z-20 pointer-events-none"
       }`}
       style={{
-        transformPerspective: 1200,
         transformStyle: "preserve-3d",
       }}
       initial={skipEntrance ? false : { opacity: 0, y: 100, scale: 0.85, rotateX: 15 }}
