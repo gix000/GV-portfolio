@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, useInView, LayoutGroup } from "framer-motion";
+import { motion, useInView, AnimatePresence } from "framer-motion";
 import { useRef, useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
@@ -41,15 +41,16 @@ function ProjectCard({
       ref={ref}
       id={`project-${project.key}`}
       layout
-      layoutTransition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-      initial={skipEntrance ? false : { opacity: 0, y: 60 }}
-      animate={showImmediately ? { opacity: 1, y: 0 } : {}}
+      layoutTransition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+      initial={skipEntrance ? false : { opacity: 0, scale: 0.9 }}
+      animate={showImmediately ? { opacity: 1, scale: 1 } : {}}
+      exit={{ opacity: 0, scale: 0.9 }}
       transition={{
-        duration: skipEntrance ? 0 : 0.9,
-        delay: skipEntrance ? 0 : (index % 3) * 0.12,
+        duration: skipEntrance ? 0 : 0.7,
+        delay: skipEntrance ? 0 : index * 0.08,
         ease: [0.22, 1, 0.36, 1],
       }}
-      className="group relative scroll-mt-24"
+      className="group relative flex-shrink-0 w-[85vw] sm:w-[60vw] md:w-[45vw] lg:w-[380px]"
       data-cursor-hover
     >
       <Link href={`/projects/${project.key}`} className="block">
@@ -62,7 +63,7 @@ function ProjectCard({
               alt={`${project.name} - ${project.sub}`}
               fill
               className="object-cover transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-105"
-              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+              sizes="(max-width: 640px) 85vw, (max-width: 768px) 60vw, (max-width: 1024px) 45vw, 380px"
               placeholder="blur"
               blurDataURL={project.lqip}
             />
@@ -121,9 +122,11 @@ export function ProjectGrid() {
   const headerRef = useRef<HTMLDivElement>(null);
   const headerInView = useInView(headerRef, { once: true, margin: "-80px" });
   const skipEntrance = hasVisitedWorks;
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
 
-  // Shuffle state: periodically reorder projects for the shuffle effect
+  // Shuffle state: manually triggered by tap
   const [shuffledProjects, setShuffledProjects] = useState<Project[]>(data.projects);
+  const [shuffleKey, setShuffleKey] = useState(0);
 
   useEffect(() => {
     // Mark as visited after first render so subsequent mounts skip animation.
@@ -139,16 +142,11 @@ export function ProjectGrid() {
     }
   }, [data.projects, shuffledProjects.length]);
 
-  // Periodic shuffle every 4 seconds
-  useEffect(() => {
-    if (shuffledProjects.length === 0) return;
-
-    const shuffleInterval = setInterval(() => {
-      setShuffledProjects(prev => shuffleArray(prev));
-    }, 4000);
-
-    return () => clearInterval(shuffleInterval);
-  }, [shuffledProjects.length]);
+  // Tap to shuffle handler
+  const handleShuffle = () => {
+    setShuffledProjects(prev => shuffleArray(prev));
+    setShuffleKey(prev => prev + 1);
+  };
 
   const showHeader = skipEntrance || headerInView;
 
@@ -166,7 +164,16 @@ export function ProjectGrid() {
             <span className="text-accent">02</span>
             <span>Selected Works</span>
             <span className="flex-1 h-px bg-line" />
-            <span className="hidden sm:inline">Branding & Packaging</span>
+            <button
+              onClick={handleShuffle}
+              className="flex items-center gap-2 px-4 py-2 rounded-full border border-ink/20 bg-ink/[0.04] hover:bg-accent hover:text-paper hover:border-accent transition-all duration-300 text-[10px] tracking-[0.15em] uppercase font-bold"
+              data-cursor-hover
+            >
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                <path d="M16 3h5v5M4 20L21 3M21 16v5h-5M15 15l6 6M4 4l5 5" />
+              </svg>
+              Shuffle
+            </button>
           </motion.div>
 
           <motion.h2
@@ -195,19 +202,23 @@ export function ProjectGrid() {
           </motion.p>
         </div>
 
-        {/* Grid with shuffle animation */}
-        <LayoutGroup>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-16 md:gap-y-20">
+        {/* Horizontal scrollable carousel with shuffle */}
+        <div
+          ref={scrollContainerRef}
+          className="flex gap-6 overflow-x-auto pb-8 snap-x snap-mandatory scrollbar-hide -mx-[clamp(28px,6vw,72px)] px-[clamp(28px,6vw,72px)]"
+          style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+        >
+          <AnimatePresence mode="popLayout">
             {shuffledProjects.map((project, i) => (
               <ProjectCard
-                key={project.key}
+                key={`${project.key}-${shuffleKey}`}
                 project={project}
                 index={i}
                 skipEntrance={skipEntrance}
               />
             ))}
-          </div>
-        </LayoutGroup>
+          </AnimatePresence>
+        </div>
       </div>
     </section>
   );
