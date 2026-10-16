@@ -75,7 +75,7 @@ export function ProjectGrid() {
   const showHeader = skipEntrance || headerInView;
 
   return (
-    <section id="works" className="py-12 overflow-hidden">
+    <section id="works" className="py-12">
       <style>{`
         .gv-spacer { width: calc(50vw - 44vw - 12px); }
         @media (min-width: 640px) { .gv-spacer { width: calc(50vw - 280px - 12px); } }
