@@ -170,6 +170,7 @@ const TEXT_TABS: { id: string; label: string; groups: Group[] }[] = [
           { path: "ui.uiux.title", label: "Heading" },
           { path: "ui.uiux.intro", label: "Intro text", type: "textarea" },
           { path: "ui.uiux.tapToTry", label: "“Tap to try” chip" },
+          { path: "ui.uiux.tryButton", label: "“Try it” button" },
           { path: "ui.uiux.swipeHint", label: "Swipe hint" },
           { path: "ui.uiux.countLabel", label: "Count label" },
           { path: "ui.uiux.viewerSubtitle", label: "Prototype viewer subtitle" },

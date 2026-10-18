@@ -78,7 +78,7 @@ export function CaseStudy({ project }: { project: Project }) {
                   initial={{ opacity: 0, y: 8 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.6, delay: 0.5, ease: [0.22, 1, 0.36, 1] }}
-                  className="absolute bottom-5 right-5 flex items-center gap-2 px-4 py-2 rounded-full bg-ink/55 backdrop-blur-md border border-white/10"
+                  className="absolute bottom-5 right-5 flex items-center gap-2 px-4 py-2 rounded-full bg-black/55 border border-white/10"
                 >
                   <span className="text-[10px] tracking-[0.2em] uppercase font-semibold text-white/90">
                     {t.viewGallery}
@@ -94,7 +94,6 @@ export function CaseStudy({ project }: { project: Project }) {
                     <path d="M4 8 L10 14 L16 8" stroke="rgba(255,255,255,0.9)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                   </motion.svg>
                 </motion.div>
-                <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-ink/25 to-transparent" />
               </div>
             )}
           </motion.div>
@@ -156,11 +155,9 @@ export function CaseStudy({ project }: { project: Project }) {
                         sizes="(max-width: 1280px) 100vw, 1280px"
                       />
                       {project.caps?.[i] && (
-                        <div className="absolute bottom-0 left-0 right-0 py-3 px-5 bg-gradient-to-t from-ink/40 to-transparent">
-                          <span className="text-white text-[10px] tracking-[0.18em] uppercase font-bold">
-                            {project.caps[i]}
-                          </span>
-                        </div>
+                        <span className="absolute left-4 bottom-4 px-3 py-1.5 rounded-full bg-black/55 text-white text-[10px] tracking-[0.18em] uppercase font-bold">
+                          {project.caps[i]}
+                        </span>
                       )}
                     </motion.div>
                   ))}

@@ -171,7 +171,7 @@ export function ProjectGrid() {
       <div className="relative">
         <div
           ref={scrollerRef}
-          className="flex items-start gap-6 md:gap-8 overflow-x-auto overflow-y-hidden snap-x snap-mandatory -mt-4 pt-4 pb-12 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden [overscroll-behavior-x:contain]"
+          className="flex items-stretch gap-6 md:gap-8 overflow-x-auto overflow-y-hidden snap-x snap-mandatory -mt-4 pt-4 pb-12 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden [overscroll-behavior-x:contain]"
           style={{ touchAction: "pan-x pan-y" }}
         >
           {/* Leading spacer tracks half-card at every breakpoint so card 1 snaps dead-center */}
@@ -181,30 +181,21 @@ export function ProjectGrid() {
           />
 
           {mergedDeck.map((project, i) => (
-            <motion.article
+            // No slide-in transform on cards: on iOS it sometimes never
+            // finished, leaving a card stuck 60px low and cut off.
+            <article
               key={project.key}
               data-card
               data-index={i}
               data-cursor-hover
-              initial={skipEntrance ? false : { opacity: 0, y: 60 }}
-              animate={
-                skipEntrance
-                  ? undefined
-                  : { opacity: 1, y: 0 }
-              }
-              transition={{
-                duration: skipEntrance ? 0 : 0.7,
-                delay: skipEntrance ? 0 : Math.min(i * 0.05, 0.3),
-                ease: [0.22, 1, 0.36, 1],
-              }}
-              className="shrink-0 snap-center [scroll-snap-stop:always] w-[88vw] sm:w-[560px] md:w-[640px] transition-opacity duration-500"
+              className="shrink-0 snap-center [scroll-snap-stop:always] w-[88vw] sm:w-[560px] md:w-[640px] flex transition-opacity duration-500"
               style={{
                 opacity: activeIndex === i ? 1 : 0.6,
               }}
             >
-              <Link href={`/projects/${project.key}`} className="block group">
+              <Link href={`/projects/${project.key}`} className="flex w-full group">
                 <div
-                  className="relative overflow-hidden rounded-2xl bg-paper transition-[box-shadow,border-color] duration-500"
+                  className="relative w-full flex flex-col overflow-hidden rounded-2xl bg-paper transition-[box-shadow,border-color] duration-500"
                   style={{
                     border: `1.5px solid ${activeIndex === i ? "#7F011F" : "rgba(127, 1, 31, 0.45)"}`,
                     boxShadow:
@@ -214,7 +205,7 @@ export function ProjectGrid() {
                   }}
                 >
                   {/* Cover image — landscape 16/10 */}
-                  <div className="relative aspect-[16/10] overflow-hidden rounded-t-2xl">
+                  <div className="relative aspect-[16/10] shrink-0 overflow-hidden rounded-t-2xl">
                     {project.cover && (
                       <Image
                         src={project.cover}
@@ -241,7 +232,7 @@ export function ProjectGrid() {
                   </div>
 
                   {/* Info */}
-                  <div className="p-5">
+                  <div className="p-5 flex-1">
                     <div className="flex items-baseline justify-between gap-4">
                       <h3 className="font-serif text-xl md:text-2xl tracking-tight text-ink">
                         {project.name}
@@ -253,13 +244,13 @@ export function ProjectGrid() {
                     <p className="text-xs tracking-[0.12em] uppercase text-ink-50 font-medium mt-1">
                       {project.cat}
                     </p>
-                    <p className="text-sm text-ink-70 mt-2 line-clamp-2 leading-relaxed">
-                      {project.quote || project.desc.slice(0, 120) + "..."}
+                    <p className={`text-sm text-ink-70 mt-2 leading-relaxed ${project.quote ? "" : "line-clamp-3"}`}>
+                      {project.quote || project.desc}
                     </p>
                   </div>
                 </div>
               </Link>
-            </motion.article>
+            </article>
           ))}
 
           {/* Trailing spacer mirrors leading so the last card centers too */}

@@ -131,6 +131,7 @@ export interface UiText {
     title: string;
     intro: string;
     tapToTry: string;
+    tryButton: string;
     swipeHint: string;
     countLabel: string;
     viewerSubtitle: string;
@@ -254,6 +255,7 @@ export const siteData: SiteData = {
       intro:
         "Independent app redesign concepts you can actually tap through. Each one is a working interactive prototype — open it, play with it, feel the flow.",
       tapToTry: "Tap to try",
+      tryButton: "Try it",
       swipeHint: "Swipe for more",
       countLabel: "concepts",
       viewerSubtitle: "Interactive concept · tap & try it",

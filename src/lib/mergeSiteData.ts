@@ -27,7 +27,14 @@ export function mergeSiteData(raw: unknown): SiteData {
     contact: section("contact"),
     projects: Array.isArray(r.projects) ? (r.projects as SiteData["projects"]) : defaults.projects,
     uiuxVideos: Array.isArray(r.uiuxVideos)
-      ? (r.uiuxVideos as SiteData["uiuxVideos"])
+      ? (r.uiuxVideos as SiteData["uiuxVideos"]).map((v) => {
+          // Fill media links the saved entry is missing from the built-in
+          // concept with the same key (e.g. the mp4 films in /assets/videos).
+          const d = defaults.uiuxVideos.find((x) => x.key === v.key);
+          return d
+            ? { ...v, videoUrl: v.videoUrl || d.videoUrl, redesignUrl: v.redesignUrl || d.redesignUrl, poster: v.poster || d.poster }
+            : v;
+        })
       : defaults.uiuxVideos,
     ui,
   };
