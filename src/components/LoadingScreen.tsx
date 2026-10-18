@@ -5,10 +5,17 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useSiteData } from "@/lib/useSiteData";
 
-// The folder intro is for visitors, not for the admin panel.
+// Shown once per visit. Skipped on the admin panel and on shared project
+// links, which should open straight onto the project.
+let introSeen = false;
+
 export function LoadingScreen() {
   const pathname = usePathname();
-  if (pathname?.startsWith("/admin")) return null;
+  const [skip] = useState(() => introSeen || !!pathname?.startsWith("/projects"));
+  if (skip || pathname?.startsWith("/admin")) {
+    introSeen = true;
+    return null;
+  }
   return <LoadingScreenInner />;
 }
 
@@ -48,7 +55,10 @@ function LoadingScreenInner() {
     // Scroll to top when folder opens so user lands at the header
     const lenis = (window as unknown as { __lenis?: { scrollTo: (n: number, o?: { immediate?: boolean }) => void } }).__lenis;
     if (lenis) { lenis.scrollTo(0, { immediate: true }); } else { window.scrollTo({ top: 0, left: 0 }); }
-    setTimeout(() => setIsGone(true), 1000);
+    setTimeout(() => {
+      introSeen = true;
+      setIsGone(true);
+    }, 1000);
   }
 
   return (

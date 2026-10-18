@@ -8,38 +8,34 @@ declare global {
   }
 }
 
+let lastPopNav = 0;
+
 export function ScrollToTop() {
   const pathname = usePathname();
 
+  // Back/forward should land where the visitor was, not at the top.
   useEffect(() => {
-    // If we're returning from a project page to a specific card, scroll to
-    // that card instead of the top. The target id is set by CaseStudy's
-    // handleBack before navigation and survives the unmount via sessionStorage.
-    const targetFlag = "gv_scroll_to_card";
-    if (typeof window !== "undefined") {
-      const targetId = sessionStorage.getItem(targetFlag);
-      if (targetId) {
-        sessionStorage.removeItem(targetFlag);
-        const scrollToCard = (attempts = 0) => {
-          const el = document.getElementById(targetId);
-          if (el) {
-            const lenis = (window as unknown as { __lenis?: { scrollTo: (to: number | HTMLElement, opts?: { offset?: number; duration?: number }) => void } }).__lenis;
-            if (lenis) {
-              lenis.scrollTo(el, { offset: -80, duration: 1 });
-            } else {
-              el.scrollIntoView({ behavior: "smooth", block: "start" });
-            }
-            return;
-          }
-          if (attempts < 30) {
-            setTimeout(() => scrollToCard(attempts + 1), 60);
-          }
-        };
-        // Give the homepage time to mount the ProjectGrid cards.
-        setTimeout(scrollToCard, 150);
-        return;
-      }
+    const onPop = () => {
+      lastPopNav = Date.now();
+    };
+    window.addEventListener("popstate", onPop);
+    return () => window.removeEventListener("popstate", onPop);
+  }, []);
+
+  useEffect(() => {
+    // Remember where the visitor came from (used by "Back to Home").
+    const w = window as unknown as { __gvPrev?: string; __gvCur?: string };
+    if (w.__gvCur !== pathname) {
+      w.__gvPrev = w.__gvCur;
+      w.__gvCur = pathname;
     }
+
+    // The homepage project overlay changes the URL with pushState; that is
+    // not a real page change, so leave the scroll position alone.
+    if (window.__gvOverlayNav && Date.now() - window.__gvOverlayNav < 1500) return;
+    if (Date.now() - lastPopNav < 1500) return;
+    // Coming back to a specific carousel card: ProjectGrid scrolls to it.
+    if (sessionStorage.getItem("gv_return_card")) return;
 
     const goTop = () => {
       // Use Lenis if available (it owns the scroll position), else native.

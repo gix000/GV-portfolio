@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { getSupabase, SITE_DATA_ROW_ID } from "@/lib/supabase";
 import { siteData as defaultSiteData } from "@/lib/data";
 import { mergeSiteData } from "@/lib/mergeSiteData";
@@ -78,6 +79,8 @@ async function writeData(data: unknown) {
       { onConflict: "id" }
     );
   if (error) throw new Error(explain(error.message));
+  // Refresh every cached page (home, project pages, UI/UX) right away.
+  revalidatePath("/", "layout");
 }
 
 export async function GET(req: NextRequest) {

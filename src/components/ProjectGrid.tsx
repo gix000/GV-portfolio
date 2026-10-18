@@ -1,10 +1,19 @@
 "use client";
 
-import { motion, useInView } from "framer-motion";
-import { useRef, useEffect, useMemo, useState } from "react";
+import { motion, useInView, AnimatePresence } from "framer-motion";
+import { useRef, useEffect, useMemo, useState, useCallback } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useSiteData, type Project } from "@/lib/useSiteData";
+import { CaseStudy } from "@/components/CaseStudy";
+
+declare global {
+  interface Window {
+    __gvOverlayNav?: number;
+  }
+}
+
+const RETURN_KEY = "gv_return_card";
 
 let hasVisitedWorks = false;
 
@@ -21,24 +30,84 @@ export function ProjectGrid() {
   const scrollerRef = useRef<HTMLDivElement>(null);
   const [activeIndex, setActiveIndex] = useState(0);
   const [showHint, setShowHint] = useState(true);
+  const [openKey, setOpenKey] = useState<string | null>(null);
+  const openProject = useMemo(() => mergedDeck.find((p) => p.key === openKey) ?? null, [mergedDeck, openKey]);
+
+  // Case studies open as an overlay on top of the homepage: instant (no
+  // server round-trip), and closing it reveals the carousel exactly where it
+  // was. The URL still changes to /projects/<key> so links and refresh work.
+  const showProject = useCallback((key: string) => {
+    window.__gvOverlayNav = Date.now();
+    window.history.pushState({ ...window.history.state, gvProject: key }, "", `/projects/${key}`);
+    setOpenKey(key);
+  }, []);
+
+  const closeProject = useCallback(() => {
+    window.__gvOverlayNav = Date.now();
+    if (window.history.state?.gvProject) window.history.back();
+    else {
+      window.history.replaceState(window.history.state, "", "/");
+      setOpenKey(null);
+    }
+  }, []);
+
+  useEffect(() => {
+    const onPop = () => {
+      window.__gvOverlayNav = Date.now();
+      const m = window.location.pathname.match(/^\/projects\/([^/]+)/);
+      setOpenKey(m && window.history.state?.gvProject ? decodeURIComponent(m[1]) : null);
+    };
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && openKey && closeProject();
+    window.addEventListener("popstate", onPop);
+    window.addEventListener("keydown", onKey);
+    return () => {
+      window.removeEventListener("popstate", onPop);
+      window.removeEventListener("keydown", onKey);
+    };
+  }, [openKey, closeProject]);
+
+  // Freeze the page behind the overlay.
+  useEffect(() => {
+    if (!openKey) return;
+    const lenis = (window as unknown as { __lenis?: { stop: () => void; start: () => void } }).__lenis;
+    lenis?.stop();
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = prev;
+      lenis?.start();
+    };
+  }, [openKey]);
 
   useEffect(() => {
     if (!hasVisitedWorks) hasVisitedWorks = true;
   }, []);
 
-  // On first paint, scroll the first card to the horizontal center so the
-  // section opens with a project dead-centered rather than left-aligned.
+  // On first paint, center a card: the one the visitor just came back from
+  // (opened by direct link, then "Back to works"), otherwise the first one.
   useEffect(() => {
     const scroller = scrollerRef.current;
     if (!scroller) return;
-    const first = scroller.querySelector<HTMLElement>('[data-index="0"]');
-    if (!first) return;
+    const returnKey = sessionStorage.getItem(RETURN_KEY);
+    const returnIdx = returnKey ? mergedDeck.findIndex((p) => p.key === returnKey) : -1;
+    const idx = Math.max(0, returnIdx);
+    const card = scroller.querySelector<HTMLElement>(`[data-index="${idx}"]`);
+    if (!card) return;
     const raf = requestAnimationFrame(() => {
-      const cardCenter = first.offsetLeft + first.offsetWidth / 2;
-      scroller.scrollTo({ left: cardCenter - scroller.clientWidth / 2, behavior: "auto" });
+      scroller.scrollTo({ left: card.offsetLeft + card.offsetWidth / 2 - scroller.clientWidth / 2, behavior: "auto" });
+      if (returnIdx >= 0) {
+        setActiveIndex(returnIdx);
+        const section = document.getElementById("works");
+        const lenis = (window as unknown as { __lenis?: { scrollTo: (t: HTMLElement, o?: object) => void } }).__lenis;
+        if (section) {
+          if (lenis) lenis.scrollTo(section, { immediate: true, offset: 0 });
+          else section.scrollIntoView({ block: "start" });
+        }
+        setTimeout(() => sessionStorage.removeItem(RETURN_KEY), 800);
+      }
     });
     return () => cancelAnimationFrame(raf);
-  }, [mergedDeck.length]);
+  }, [mergedDeck]);
 
   // Track which card is centered using IntersectionObserver
   useEffect(() => {
@@ -193,7 +262,17 @@ export function ProjectGrid() {
                 opacity: activeIndex === i ? 1 : 0.6,
               }}
             >
-              <Link href={`/projects/${project.key}`} className="flex w-full group">
+              <Link
+                href={`/projects/${project.key}`}
+                prefetch={false}
+                scroll={false}
+                className="flex w-full group active:scale-[0.985] transition-transform duration-300"
+                onClick={(e) => {
+                  if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
+                  e.preventDefault();
+                  showProject(project.key);
+                }}
+              >
                 <div
                   className="relative w-full flex flex-col overflow-hidden rounded-2xl bg-paper transition-[box-shadow,border-color] duration-500"
                   style={{
@@ -205,7 +284,7 @@ export function ProjectGrid() {
                   }}
                 >
                   {/* Cover image — landscape 16/10 */}
-                  <div className="relative aspect-[16/10] shrink-0 overflow-hidden rounded-t-2xl">
+                  <div className="clip-rounded relative aspect-[16/10] shrink-0 overflow-hidden rounded-t-[calc(1rem-1.5px)]">
                     {project.cover && (
                       <Image
                         src={project.cover}
@@ -305,6 +384,21 @@ export function ProjectGrid() {
           </div>
         </div>
       </div>
+      <AnimatePresence>
+        {openProject && (
+          <motion.div
+            key={openProject.key}
+            className="fixed inset-0 z-[90] bg-paper overflow-y-auto overscroll-contain"
+            data-lenis-prevent
+            initial={{ opacity: 0, y: 32 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 32 }}
+            transition={{ duration: 0.42, ease: [0.22, 1, 0.36, 1] }}
+          >
+            <CaseStudy project={openProject} onBack={closeProject} />
+          </motion.div>
+        )}
+      </AnimatePresence>
     </section>
   );
 }

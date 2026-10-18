@@ -8,8 +8,11 @@ import { ScrollToTop } from "@/components/ScrollToTop";
 import { getLiveSiteData } from "@/lib/siteDataServer";
 import { SiteDataProvider } from "@/lib/useSiteData";
 
-// Render with the live admin data on every request so edits show instantly.
-export const dynamic = "force-dynamic";
+// Pages are pre-rendered and served from Vercel's edge cache (fast first
+// paint, no per-visit database call). Every admin save calls revalidatePath,
+// so edits still go live within a second or two; the hourly revalidate is
+// only a safety net.
+export const revalidate = 3600;
 
 export async function generateMetadata(): Promise<Metadata> {
   const { meta } = await getLiveSiteData();

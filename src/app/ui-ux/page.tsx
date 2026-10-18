@@ -3,6 +3,7 @@ import { useState, useRef, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { type VideoProject } from "@/lib/data";
 import { useSiteData } from "@/lib/useSiteData";
 
@@ -37,7 +38,8 @@ function ConceptViewer({
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-      className="fixed inset-0 z-[9999] flex flex-col bg-black/90"
+      className="fixed inset-0 z-[9999] flex flex-col bg-black/90 overscroll-contain"
+      data-lenis-prevent
       onClick={onClose}
     >
       <div className="flex items-center justify-between gap-3 px-5 md:px-8 py-4 shrink-0" onClick={(e) => e.stopPropagation()}>
@@ -47,7 +49,7 @@ function ConceptViewer({
         </div>
         <button
           onClick={onClose}
-          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-white/10 text-white hover:bg-white/20 transition-colors"
+          className="glass-btn glass-dark h-10 w-10 shrink-0"
           aria-label="Close"
         >
           <svg width="15" height="15" viewBox="0 0 16 16" fill="none">
@@ -103,6 +105,7 @@ function ConceptViewer({
 
 export default function UiUxPage() {
   const { data } = useSiteData();
+  const router = useRouter();
   const t = data.ui.uiux;
   const videos = useMemo(() => data.uiuxVideos, [data.uiuxVideos]);
   const scrollerRef = useRef<HTMLDivElement>(null);
@@ -207,20 +210,27 @@ export default function UiUxPage() {
     <>
       <div className="min-h-screen bg-paper">
         {/* Top bar */}
-        <div className="fixed top-0 left-0 right-0 z-50 px-[clamp(28px,6vw,72px)] py-5 flex items-center justify-between bg-paper/80 backdrop-blur-sm">
+        <div className="fixed top-0 left-0 right-0 z-50 px-[clamp(20px,5vw,72px)] pt-[max(14px,env(safe-area-inset-top))] pb-3 flex items-center justify-between gap-3 pointer-events-none">
           <Link
-            href="/#top"
-            className="text-[11px] tracking-[0.18em] uppercase font-semibold hover:text-accent transition-colors duration-300 text-ink"
+            href="/"
+            onClick={(e) => {
+              // Came from the homepage: go back so it reopens where you left it.
+              if ((window as unknown as { __gvPrev?: string }).__gvPrev === "/") {
+                e.preventDefault();
+                router.back();
+              }
+            }}
+            className="glass-btn pointer-events-auto h-10 px-4 text-[10px] tracking-[0.18em] uppercase font-bold text-ink"
             data-cursor-hover
           >
             {t.back}
           </Link>
-          <span className="text-[10px] tracking-[0.15em] uppercase text-ink-50 font-semibold">
+          <span className="glass-btn h-8 px-3 text-[9px] tracking-[0.15em] uppercase text-ink-70 font-semibold">
             {t.topRight}
           </span>
         </div>
 
-        <section className="pt-28 pb-12">
+        <section className="pt-24 pb-12">
           <div className="px-[clamp(28px,6vw,72px)] max-w-[1280px] mx-auto mb-10">
             <motion.div
               initial={{ opacity: 0, y: 30 }}
@@ -272,7 +282,7 @@ export default function UiUxPage() {
                     <button
                       type="button"
                       onClick={() => setActiveVideo({ video, mode: video.redesignUrl ? "try" : "film" })}
-                      className="relative block w-full aspect-[16/10] shrink-0 overflow-hidden rounded-t-2xl outline-none"
+                      className="clip-rounded relative block w-full aspect-[16/10] shrink-0 overflow-hidden rounded-t-[calc(1rem-1.5px)] outline-none"
                       aria-label={`${t.tapToTry}: ${video.title}`}
                     >
                       {video.poster && (

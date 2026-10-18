@@ -2,12 +2,15 @@ import Link from "next/link";
 import { getLiveSiteData } from "@/lib/siteDataServer";
 import { ProjectClientPage } from "./ProjectClientPage";
 
-// Read live from Supabase on every request so projects added, renamed or
-// deleted in /admin show up here immediately (the old build-time version only
-// ever knew the compiled defaults, so new projects 404'd and edits never
-// reached the case study pages).
-export const dynamic = "force-dynamic";
-export const revalidate = 0;
+// Pre-rendered from the live admin data and cached at the edge; admin saves
+// revalidate it. Projects added later render on first visit, then cache.
+export const revalidate = 3600;
+export const dynamicParams = true;
+
+export async function generateStaticParams() {
+  const site = await getLiveSiteData();
+  return site.projects.map((p) => ({ slug: p.key }));
+}
 
 export default async function ProjectPage({
   params,

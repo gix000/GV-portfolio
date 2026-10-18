@@ -49,12 +49,31 @@ export async function POST(req: NextRequest) {
     const arrayBuffer = await file.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
 
-    const { data, error } = await supabase.storage
-      .from(BUCKET)
-      .upload(fileName, buffer, {
+    const upload = () =>
+      supabase.storage.from(BUCKET).upload(fileName, buffer, {
         contentType: file.type,
         upsert: false,
+        cacheControl: "31536000",
       });
+
+    let { data, error } = await upload();
+
+    // First upload on a fresh Supabase project: the bucket doesn't exist yet.
+    // Create it as a public image bucket and retry once.
+    if (error && /bucket not found|not found/i.test(error.message)) {
+      const { error: createError } = await supabase.storage.createBucket(BUCKET, {
+        public: true,
+        fileSizeLimit: 10 * 1024 * 1024,
+        allowedMimeTypes: allowedTypes,
+      });
+      if (createError && !/already exists/i.test(createError.message)) {
+        return NextResponse.json(
+          { error: `Couldn't create the "${BUCKET}" storage bucket: ${createError.message}` },
+          { status: 500 },
+        );
+      }
+      ({ data, error } = await upload());
+    }
 
     if (error) {
       console.error("Supabase storage upload error:", error.message);
@@ -64,12 +83,12 @@ export async function POST(req: NextRequest) {
     // Get public URL
     const { data: urlData } = supabase.storage
       .from(BUCKET)
-      .getPublicUrl(data.path);
+      .getPublicUrl(data!.path);
 
     return NextResponse.json({
       success: true,
       url: urlData.publicUrl,
-      path: data.path,
+      path: data!.path,
     });
   } catch (err) {
     return NextResponse.json({ error: String(err) }, { status: 500 });

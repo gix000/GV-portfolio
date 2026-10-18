@@ -32,7 +32,9 @@
   html {
     scroll-behavior: auto; /* Lenis handles smooth scroll */
     -webkit-text-size-adjust: 100%;
-    overflow-x: hidden;
+    /* clip, not hidden: hidden turns html/body into scroll containers on
+       iOS, which breaks momentum scrolling and sticky headers. */
+    overflow-x: clip;
   }
 
   body {
@@ -42,7 +44,7 @@
     line-height: 1.5;
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
-    overflow-x: hidden;
+    overflow-x: clip;
   }
 
   img {
@@ -148,3 +150,58 @@
 .gv-spacer { width: calc(50vw - 44vw - 12px); }
 @media (min-width: 640px) { .gv-spacer { width: calc(50vw - 280px - 12px); } }
 @media (min-width: 768px) { .gv-spacer { width: calc(50vw - 320px - 16px); } }
+
+/* ── Liquid glass buttons ───────────────────────────────────────────────
+   Frosted, slightly saturated glass with a bright top edge and a springy
+   press. Used for back buttons, nav pills and gallery chips. */
+.glass-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+  border-radius: 9999px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.62) 0%, rgba(255, 255, 255, 0.3) 100%);
+  -webkit-backdrop-filter: blur(18px) saturate(180%);
+  backdrop-filter: blur(18px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.65);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.9),
+    inset 0 -1px 0 rgba(127, 1, 31, 0.06),
+    0 8px 24px -10px rgba(0, 0, 0, 0.28);
+  transition:
+    transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1),
+    box-shadow 0.3s ease,
+    background 0.3s ease;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+.glass-btn:active {
+  transform: scale(0.93);
+  transition-duration: 0.12s;
+}
+@media (hover: hover) {
+  .glass-btn:hover {
+    transform: translateY(-1px);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.95),
+      inset 0 -1px 0 rgba(127, 1, 31, 0.08),
+      0 12px 28px -10px rgba(0, 0, 0, 0.32);
+  }
+}
+.glass-dark {
+  color: #fff;
+  background: linear-gradient(180deg, rgba(24, 14, 16, 0.5) 0%, rgba(24, 14, 16, 0.32) 100%);
+  border-color: rgba(255, 255, 255, 0.2);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.28),
+    0 8px 24px -10px rgba(0, 0, 0, 0.45);
+}
+
+/* Safari ignores border-radius clipping on overflow:hidden boxes whose
+   children are composited (images that scale on hover, etc.), so a sharp
+   image corner pokes through the rounded border. The mask forces the clip. */
+.clip-rounded {
+  isolation: isolate;
+  -webkit-mask-image: -webkit-radial-gradient(white, black);
+  mask-image: radial-gradient(white, black);
+}

@@ -6,26 +6,24 @@ import { useRouter } from "next/navigation";
 import type { Project } from "@/lib/data";
 import { useSiteData } from "@/lib/useSiteData";
 
-export function CaseStudy({ project }: { project: Project }) {
+export function CaseStudy({ project, onBack }: { project: Project; onBack?: () => void }) {
   const [revealed, setRevealed] = useState(false);
   const prefersReduced = useReducedMotion();
   const router = useRouter();
   const t = useSiteData().data.ui.caseStudy;
 
-  // Navigate home; ScrollToTop reads this target after the homepage mounts
-  // and Lenis-scrolls to the exact card (this component unmounts on nav,
-  // so the scroll must live in a component that survives it).
+  // Opened from the homepage carousel: the overlay closes itself (history
+  // back) and the carousel is still sitting on this card. Opened directly by
+  // URL: go home and let the carousel jump to this card.
   function handleBack() {
-    if (typeof window !== "undefined") {
-      sessionStorage.setItem("gv_scroll_to_card", `project-${project.key}`);
-    }
+    if (onBack) return onBack();
+    sessionStorage.setItem("gv_return_card", project.key);
     router.push("/");
   }
 
-  // Page entrance - smooth fade/slide so there's no jarring "loading screen"
   const pageVariants = {
-    initial: { opacity: 0, y: 24 },
-    animate: { opacity: 1, y: 0, transition: { duration: 0.7, ease: [0.22, 1, 0.36, 1] as const } },
+    initial: { opacity: onBack ? 1 : 0 },
+    animate: { opacity: 1, transition: { duration: 0.4, ease: [0.22, 1, 0.36, 1] as const } },
   };
 
   return (
@@ -35,42 +33,44 @@ export function CaseStudy({ project }: { project: Project }) {
       initial="initial"
       animate="animate"
     >
-      {/* Back link */}
-      <div className="fixed top-0 left-0 right-0 z-50 px-[clamp(28px,6vw,72px)] py-5 flex items-center justify-between bg-paper/80 backdrop-blur-sm">
+      {/* Top bar - sticky so it works both as a page and inside the overlay */}
+      <div className="sticky top-0 z-50 px-[clamp(20px,5vw,72px)] pt-[max(14px,env(safe-area-inset-top))] pb-3 flex items-center justify-between gap-3 pointer-events-none">
         <button
           type="button"
           onClick={handleBack}
-          className="text-[11px] tracking-[0.18em] uppercase font-semibold hover:text-accent transition-colors duration-300 text-ink"
+          className="glass-btn pointer-events-auto h-10 px-4 text-[10px] tracking-[0.18em] uppercase font-bold text-ink"
           data-cursor-hover
         >
           {t.back}
         </button>
-        <span className="text-[10px] tracking-[0.15em] uppercase text-ink-50 font-semibold">
+        <span className="glass-btn h-8 px-3 text-[9px] tracking-[0.15em] uppercase text-ink-70 font-semibold truncate max-w-[50%]">
           {project.cat}
         </span>
       </div>
 
-      <div className="pt-24 pb-16 px-[clamp(28px,6vw,72px)]">
+      <div className="pt-3 pb-16 px-[clamp(28px,6vw,72px)]">
         <div className="max-w-[1280px] mx-auto">
           {/* Cover image with tap-to-reveal overlay */}
           <motion.div
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
-            className="relative aspect-[16/10] overflow-hidden rounded-2xl bg-paper-lo mb-8 group cursor-pointer shadow-xl"
+            transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+            className="relative aspect-[16/10] rounded-2xl bg-paper-lo mb-8 group cursor-pointer shadow-xl"
             onClick={() => !revealed && setRevealed(true)}
           >
             {project.cover && (
-              <Image
-                src={project.cover}
-                alt={`${project.name} cover`}
-                fill
-                className="object-cover transition-transform duration-700 group-hover:scale-[1.02]"
-                sizes="(max-width: 1280px) 100vw, 1280px"
-                priority
-                placeholder={project.lqip ? "blur" : "empty"}
-                blurDataURL={project.lqip || undefined}
-              />
+              <div className="clip-rounded absolute inset-0 overflow-hidden rounded-2xl">
+                <Image
+                  src={project.cover}
+                  alt={`${project.name} cover`}
+                  fill
+                  className="object-cover transition-transform duration-700 group-hover:scale-[1.02]"
+                  sizes="(max-width: 1280px) 100vw, 1280px"
+                  priority
+                  placeholder={project.lqip ? "blur" : "empty"}
+                  blurDataURL={project.lqip || undefined}
+                />
+              </div>
             )}
             {!revealed && (
               <div className="absolute inset-0 pointer-events-none">
@@ -78,7 +78,7 @@ export function CaseStudy({ project }: { project: Project }) {
                   initial={{ opacity: 0, y: 8 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.6, delay: 0.5, ease: [0.22, 1, 0.36, 1] }}
-                  className="absolute bottom-5 right-5 flex items-center gap-2 px-4 py-2 rounded-full bg-black/55 border border-white/10"
+                  className="glass-btn glass-dark absolute bottom-4 right-4 gap-2 px-4 h-9"
                 >
                   <span className="text-[10px] tracking-[0.2em] uppercase font-semibold text-white/90">
                     {t.viewGallery}
@@ -100,9 +100,9 @@ export function CaseStudy({ project }: { project: Project }) {
 
           {/* Title + subtitle */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
+            transition={{ duration: 0.6, delay: 0.08, ease: [0.22, 1, 0.36, 1] }}
             className="mb-8"
           >
             <h1 className="font-serif text-4xl md:text-6xl tracking-tight text-ink leading-[1.05] mb-3">
@@ -127,7 +127,7 @@ export function CaseStudy({ project }: { project: Project }) {
                 <div className="flex justify-end mb-4">
                   <button
                     onClick={() => setRevealed(false)}
-                    className="text-[11px] tracking-[0.18em] uppercase font-semibold text-ink-50 hover:text-accent transition-colors"
+                    className="glass-btn h-9 px-4 text-[10px] tracking-[0.18em] uppercase font-bold text-ink-70"
                     data-cursor-hover
                   >
                     {t.closeGallery}
@@ -137,25 +137,26 @@ export function CaseStudy({ project }: { project: Project }) {
                   {project.gallery.map((img, i) => (
                     <motion.div
                       key={i}
-                      initial={{ opacity: 0, y: 40, scale: 0.96 }}
-                      animate={{ opacity: 1, y: 0, scale: 1 }}
-                      transition={{
-                        duration: 0.7,
-                        delay: prefersReduced ? 0 : i * 0.12,
-                        ease: [0.22, 1, 0.36, 1],
-                      }}
-                      className="relative w-full overflow-hidden rounded-2xl bg-paper-lo shadow-lg"
+                      // Reveal each image as it scrolls into view instead of
+                      // staggering 15+ big images at once (that was the jank).
+                      initial={prefersReduced ? false : { opacity: 0, y: 24 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true, margin: "0px 0px -40px 0px" }}
+                      transition={{ duration: 0.55, delay: i < 2 ? i * 0.08 : 0, ease: [0.22, 1, 0.36, 1] }}
+                      className="relative w-full rounded-2xl bg-paper-lo shadow-lg"
                     >
-                      <Image
-                        src={img}
-                        alt={project.caps?.[i] || `${project.name} - ${i + 1}`}
-                        width={1280}
-                        height={800}
-                        className="w-full h-auto object-cover"
-                        sizes="(max-width: 1280px) 100vw, 1280px"
-                      />
+                      <div className="clip-rounded overflow-hidden rounded-2xl">
+                        <Image
+                          src={img}
+                          alt={project.caps?.[i] || `${project.name} - ${i + 1}`}
+                          width={1280}
+                          height={800}
+                          className="w-full h-auto object-cover"
+                          sizes="(max-width: 1280px) 100vw, 1280px"
+                        />
+                      </div>
                       {project.caps?.[i] && (
-                        <span className="absolute left-4 bottom-4 px-3 py-1.5 rounded-full bg-black/55 text-white text-[10px] tracking-[0.18em] uppercase font-bold">
+                        <span className="glass-btn glass-dark absolute left-4 bottom-4 h-8 px-3 text-[10px] tracking-[0.18em] uppercase font-bold">
                           {project.caps[i]}
                         </span>
                       )}
