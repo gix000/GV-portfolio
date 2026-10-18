@@ -113,6 +113,15 @@ export interface UiText {
     kickerRight: string;
     igLabel: string;
     telLabel: string;
+    copied: string;
+    copyHint: string;
+    mailApp: string;
+  };
+  notFound: {
+    code: string;
+    title: string;
+    text: string;
+    button: string;
   };
   caseStudy: {
     back: string;
@@ -243,6 +252,15 @@ export const siteData: SiteData = {
       kickerRight: "Let’s Work",
       igLabel: "IG",
       telLabel: "Tel",
+      copied: "Email copied",
+      copyHint: "Copy email",
+      mailApp: "Open in mail app",
+    },
+    notFound: {
+      code: "404",
+      title: "This page wandered off.",
+      text: "The link may be old or mistyped. The work is all still here.",
+      button: "Back to the portfolio",
     },
     caseStudy: {
       back: "← Back to Works",

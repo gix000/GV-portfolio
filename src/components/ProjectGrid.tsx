@@ -7,6 +7,7 @@ import Image from "next/image";
 import { useSiteData, type Project } from "@/lib/useSiteData";
 import { CaseStudy } from "@/components/CaseStudy";
 import { useScrollLock } from "@/lib/useScrollLock";
+import { preloadImage, whenIdle } from "@/lib/preloadImage";
 
 declare global {
   interface Window {
@@ -102,6 +103,14 @@ export function ProjectGrid() {
       window.removeEventListener("keydown", onKey);
     };
   }, [openKey, closeProject]);
+
+  // Fetch the big case-study cover of the centred card (and its neighbours)
+  // ahead of time, so tapping a card opens with the image already there.
+  useEffect(() => {
+    return whenIdle(() => {
+      [activeIndex, activeIndex + 1, activeIndex - 1].forEach((i) => preloadImage(mergedDeck[i]?.cover));
+    });
+  }, [activeIndex, mergedDeck]);
 
   // Freeze the page behind the overlay.
   useScrollLock(!!openKey);

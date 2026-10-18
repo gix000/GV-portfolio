@@ -11,7 +11,11 @@ let introSeen = false;
 
 export function LoadingScreen() {
   const pathname = usePathname();
-  const [skip] = useState(() => introSeen || !!pathname?.startsWith("/projects"));
+  const [skip, setSkip] = useState(() => introSeen || !!pathname?.startsWith("/projects"));
+  // No intro on the 404 page.
+  useEffect(() => {
+    if (document.querySelector("[data-gv-404]")) setSkip(true);
+  }, []);
   if (skip || pathname?.startsWith("/admin")) {
     introSeen = true;
     return null;

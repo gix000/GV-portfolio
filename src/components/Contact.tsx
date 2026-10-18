@@ -1,7 +1,8 @@
 "use client";
 
 import { motion, useInView } from "framer-motion";
-import { useRef } from "react";
+import { useRef, useState } from "react";
+import { AnimatePresence } from "framer-motion";
 import { useSiteData } from "@/lib/useSiteData";
 
 function Reveal({
@@ -32,6 +33,27 @@ function Reveal({
 export function Contact() {
   const { data: siteData } = useSiteData();
   const t = siteData.ui.contact;
+  const [copied, setCopied] = useState(false);
+
+  // Tapping the email copies it (most visitors don't have a mail app set up);
+  // the small envelope next to it still opens the mail app.
+  async function copyEmail() {
+    const email = siteData.contact.email;
+    try {
+      await navigator.clipboard.writeText(email);
+    } catch {
+      const ta = document.createElement("textarea");
+      ta.value = email;
+      ta.style.position = "fixed";
+      ta.style.opacity = "0";
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand("copy");
+      ta.remove();
+    }
+    setCopied(true);
+    setTimeout(() => setCopied(false), 1800);
+  }
   return (
     <section
       id="contact"
@@ -55,16 +77,49 @@ export function Contact() {
 
       {/* Email CTA */}
       <Reveal delay={0.2} className="mt-10">
-        <a
-          href={`mailto:${siteData.contact.email}`}
-          className="group inline-flex items-center gap-2 font-serif text-base md:text-lg text-ink hover:text-accent transition-colors duration-300"
-          data-cursor-hover
-        >
-          {siteData.contact.email}
-          <span className="text-sm opacity-40 group-hover:opacity-100 group-hover:translate-x-1 transition-all duration-300">
-            →
-          </span>
-        </a>
+        <div className="relative inline-flex items-center gap-3">
+          <button
+            type="button"
+            onClick={copyEmail}
+            className="group inline-flex items-center gap-2 font-serif text-base md:text-lg text-ink hover:text-accent transition-colors duration-300 active:scale-[0.97]"
+            data-cursor-hover
+            aria-label={`${t.copyHint}: ${siteData.contact.email}`}
+          >
+            {siteData.contact.email}
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="opacity-50 group-hover:opacity-100 transition-opacity" aria-hidden="true">
+              <rect x="9" y="9" width="12" height="12" rx="2" />
+              <path d="M5 15V5a2 2 0 0 1 2-2h10" />
+            </svg>
+          </button>
+          <a
+            href={`mailto:${siteData.contact.email}`}
+            className="glass-btn h-9 w-9 text-ink"
+            aria-label={t.mailApp}
+            data-cursor-hover
+          >
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <rect x="3" y="5" width="18" height="14" rx="2" />
+              <path d="m3 7 9 6 9-6" />
+            </svg>
+          </a>
+          <AnimatePresence>
+            {copied && (
+              <motion.span
+                initial={{ opacity: 0, y: 6, scale: 0.95 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: -4 }}
+                transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
+                className="glass-btn glass-static absolute left-0 -top-11 h-8 px-3 gap-1.5 text-[10px] tracking-[0.16em] uppercase font-bold text-ink"
+                role="status"
+              >
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <path d="M20 6 9 17l-5-5" />
+                </svg>
+                {t.copied}
+              </motion.span>
+            )}
+          </AnimatePresence>
+        </div>
       </Reveal>
 
       {/* Links — centered IG + Tel, no Loc */}

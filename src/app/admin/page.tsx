@@ -123,6 +123,7 @@ const TEXT_TABS: { id: string; label: string; groups: Group[] }[] = [
           { path: "contact.instagramHandle", label: "Instagram handle" },
           { path: "contact.instagramUrl", label: "Instagram link" },
           { path: "ui.contact.telLabel", label: "Phone label" },
+          { path: "ui.contact.copied", label: "“Email copied” message" },
           { path: "contact.phoneDisplay", label: "Phone (as shown)" },
           { path: "contact.phoneTel", label: "Phone (for tap-to-call)", hint: "Digits with country code, e.g. +96179106883" },
           { path: "contact.whatsapp", label: "WhatsApp number", hint: "Digits only, e.g. 96179106883" },
@@ -182,6 +183,21 @@ const TEXT_TABS: { id: string; label: string; groups: Group[] }[] = [
           { path: "ui.uiux.countLabel", label: "Count label" },
           { path: "ui.uiux.viewerSubtitle", label: "Prototype viewer subtitle" },
           { path: "ui.uiux.watchFilm", label: "“Watch film” button" },
+        ],
+      },
+    ],
+  },
+  {
+    id: "404",
+    label: "404 page",
+    groups: [
+      {
+        title: "Page not found",
+        fields: [
+          { path: "ui.notFound.code", label: "Big number" },
+          { path: "ui.notFound.title", label: "Title" },
+          { path: "ui.notFound.text", label: "Text", type: "textarea" },
+          { path: "ui.notFound.button", label: "Button" },
         ],
       },
     ],

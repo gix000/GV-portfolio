@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { verifyAdmin, adminPasswordConfigured, NOT_CONFIGURED_MESSAGE } from "@/lib/adminAuth";
 import { revalidatePath } from "next/cache";
 import { getSupabase, SITE_DATA_ROW_ID } from "@/lib/supabase";
 import { siteData as defaultSiteData } from "@/lib/data";
@@ -7,14 +8,7 @@ import { mergeSiteData } from "@/lib/mergeSiteData";
 // Top-level sections the admin may replace wholesale.
 const EDITABLE_SECTIONS = new Set(["meta", "hero", "about", "works", "contact", "ui", "uiuxVideos", "projects"]);
 
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "gv2026admin";
 
-function verifyAuth(req: NextRequest): boolean {
-  const authHeader = req.headers.get("authorization");
-  if (!authHeader || !authHeader.startsWith("Bearer ")) return false;
-  const token = authHeader.slice(7);
-  return token === ADMIN_PASSWORD;
-}
 
 // Read the site data blob from Supabase; fall back to the compiled default
 // if Supabase is misconfigured, unreachable, or no row exists yet.
@@ -84,7 +78,10 @@ async function writeData(data: unknown) {
 }
 
 export async function GET(req: NextRequest) {
-  if (!verifyAuth(req)) {
+  if (!adminPasswordConfigured()) {
+    return NextResponse.json({ error: NOT_CONFIGURED_MESSAGE }, { status: 503 });
+  }
+  if (!verifyAdmin(req)) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
   try {
@@ -96,7 +93,10 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
-  if (!verifyAuth(req)) {
+  if (!adminPasswordConfigured()) {
+    return NextResponse.json({ error: NOT_CONFIGURED_MESSAGE }, { status: 503 });
+  }
+  if (!verifyAdmin(req)) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
   try {
@@ -157,7 +157,10 @@ export async function POST(req: NextRequest) {
 }
 
 export async function DELETE(req: NextRequest) {
-  if (!verifyAuth(req)) {
+  if (!adminPasswordConfigured()) {
+    return NextResponse.json({ error: NOT_CONFIGURED_MESSAGE }, { status: 503 });
+  }
+  if (!verifyAdmin(req)) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
   const { searchParams } = new URL(req.url);

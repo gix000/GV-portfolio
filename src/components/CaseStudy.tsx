@@ -1,11 +1,13 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import type { Project } from "@/lib/data";
 import { useSiteData } from "@/lib/useSiteData";
+import { Lightbox } from "@/components/Lightbox";
+import { preloadImage, whenIdle } from "@/lib/preloadImage";
 
 export function CaseStudy({
   project,
@@ -17,12 +19,22 @@ export function CaseStudy({
   onNext?: (key: string) => void;
 }) {
   const [revealed, setRevealed] = useState(false);
+  const [lightbox, setLightbox] = useState<number | null>(null);
   const prefersReduced = useReducedMotion();
   const router = useRouter();
   const site = useSiteData().data;
   const t = site.ui.caseStudy;
   const idx = site.projects.findIndex((p) => p.key === project.key);
   const next = site.projects.length > 1 ? site.projects[(idx + 1) % site.projects.length] : null;
+
+  // Once this page has settled, quietly fetch what's likely next: the first
+  // gallery images (for "View gallery") and the next project's cover.
+  useEffect(() => {
+    return whenIdle(() => {
+      project.gallery.slice(0, 3).forEach((src) => preloadImage(src));
+      preloadImage(next?.cover);
+    });
+  }, [project.key, project.gallery, next?.cover]);
 
   // Opened from the homepage carousel: the overlay closes itself (history
   // back) and the carousel is still sitting on this card. Opened directly by
@@ -169,7 +181,8 @@ export function CaseStudy({
                       whileInView={{ opacity: 1, y: 0 }}
                       viewport={{ once: true, margin: "0px 0px -40px 0px" }}
                       transition={{ duration: 0.55, delay: i < 2 ? i * 0.08 : 0, ease: [0.22, 1, 0.36, 1] }}
-                      className="relative w-full rounded-2xl bg-paper-lo shadow-lg"
+                      className="relative w-full rounded-2xl bg-paper-lo shadow-lg cursor-zoom-in active:scale-[0.99] transition-transform duration-300"
+                      onClick={() => setLightbox(i)}
                     >
                       <div className="clip-rounded overflow-hidden rounded-2xl">
                         <Image
@@ -320,6 +333,15 @@ export function CaseStudy({
           )}
         </div>
       </div>
+
+      {lightbox !== null && (
+        <Lightbox
+          images={project.gallery}
+          captions={project.caps}
+          index={lightbox}
+          onClose={() => setLightbox(null)}
+        />
+      )}
     </motion.div>
   );
 }

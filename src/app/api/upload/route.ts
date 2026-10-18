@@ -1,17 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
+import { verifyAdmin, adminPasswordConfigured, NOT_CONFIGURED_MESSAGE } from "@/lib/adminAuth";
 import { getSupabase } from "@/lib/supabase";
 
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "gv2026admin";
 const BUCKET = "portfolio-images";
 
-function verifyAuth(req: NextRequest): boolean {
-  const authHeader = req.headers.get("authorization");
-  if (!authHeader || !authHeader.startsWith("Bearer ")) return false;
-  return authHeader.slice(7) === ADMIN_PASSWORD;
-}
 
 export async function POST(req: NextRequest) {
-  if (!verifyAuth(req)) {
+  if (!adminPasswordConfigured()) {
+    return NextResponse.json({ error: NOT_CONFIGURED_MESSAGE }, { status: 503 });
+  }
+  if (!verifyAdmin(req)) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
