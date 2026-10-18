@@ -6,6 +6,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useSiteData, type Project } from "@/lib/useSiteData";
 import { CaseStudy } from "@/components/CaseStudy";
+import { useScrollLock } from "@/lib/useScrollLock";
 
 declare global {
   interface Window {
@@ -67,17 +68,7 @@ export function ProjectGrid() {
   }, [openKey, closeProject]);
 
   // Freeze the page behind the overlay.
-  useEffect(() => {
-    if (!openKey) return;
-    const lenis = (window as unknown as { __lenis?: { stop: () => void; start: () => void } }).__lenis;
-    lenis?.stop();
-    const prev = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-    return () => {
-      document.body.style.overflow = prev;
-      lenis?.start();
-    };
-  }, [openKey]);
+  useScrollLock(!!openKey);
 
   useEffect(() => {
     if (!hasVisitedWorks) hasVisitedWorks = true;

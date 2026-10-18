@@ -6,6 +6,135 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { type VideoProject } from "@/lib/data";
 import { useSiteData } from "@/lib/useSiteData";
+import { useScrollLock } from "@/lib/useScrollLock";
+
+function fmt(t: number) {
+  if (!Number.isFinite(t)) return "0:00";
+  const m = Math.floor(t / 60);
+  const sec = Math.floor(t % 60);
+  return `${m}:${sec.toString().padStart(2, "0")}`;
+}
+
+/* Custom film player: the native iOS controls put fullscreen / picture-in-
+   picture buttons in the corners, where the rounded phone frame clips them. */
+function FilmPlayer({ src, poster }: { src: string; poster?: string }) {
+  const ref = useRef<HTMLVideoElement>(null);
+  const [playing, setPlaying] = useState(false);
+  const [muted, setMuted] = useState(false);
+  const [time, setTime] = useState(0);
+  const [duration, setDuration] = useState(0);
+
+  useEffect(() => {
+    const v = ref.current;
+    if (!v) return;
+    // Try with sound first; if the browser blocks it, start muted.
+    v.play().catch(() => {
+      v.muted = true;
+      setMuted(true);
+      v.play().catch(() => {});
+    });
+  }, [src]);
+
+  const toggle = () => {
+    const v = ref.current;
+    if (!v) return;
+    if (v.paused) v.play().catch(() => {});
+    else v.pause();
+  };
+
+  return (
+    <div className="relative w-full h-full bg-black">
+      <video
+        ref={ref}
+        src={src}
+        poster={poster}
+        className="w-full h-full object-contain"
+        playsInline
+        loop
+        preload="auto"
+        disablePictureInPicture
+        controlsList="nodownload nofullscreen noremoteplayback"
+        onClick={toggle}
+        onPlay={() => setPlaying(true)}
+        onPause={() => setPlaying(false)}
+        onTimeUpdate={(e) => setTime(e.currentTarget.currentTime)}
+        onLoadedMetadata={(e) => setDuration(e.currentTarget.duration)}
+        onVolumeChange={(e) => setMuted(e.currentTarget.muted)}
+      />
+
+      <AnimatePresence>
+        {!playing && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.85 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.85 }}
+            transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
+            className="absolute inset-0 flex items-center justify-center pointer-events-none"
+          >
+            <button type="button" onClick={toggle} className="glass-btn glass-dark w-16 h-16 pointer-events-auto" aria-label="Play">
+              <svg width="22" height="24" viewBox="0 0 20 24" fill="currentColor" aria-hidden="true">
+                <path d="M3 2L19 12L3 22V2Z" />
+              </svg>
+            </button>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Control bar, kept inside the rounded frame's safe area */}
+      <div className="glass-btn glass-dark glass-static absolute inset-x-3 bottom-4 h-11 px-2 gap-2" style={{ borderRadius: 16, justifyContent: "flex-start" }}>
+        <button type="button" onClick={toggle} className="w-8 h-8 flex items-center justify-center shrink-0" aria-label={playing ? "Pause" : "Play"}>
+          {playing ? (
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true">
+              <rect x="2" y="1" width="3.5" height="12" rx="1" />
+              <rect x="8.5" y="1" width="3.5" height="12" rx="1" />
+            </svg>
+          ) : (
+            <svg width="13" height="14" viewBox="0 0 20 24" fill="currentColor" aria-hidden="true">
+              <path d="M3 2L19 12L3 22V2Z" />
+            </svg>
+          )}
+        </button>
+        <input
+          type="range"
+          min={0}
+          max={duration || 0}
+          step={0.1}
+          value={time}
+          onChange={(e) => {
+            const v = ref.current;
+            if (v) v.currentTime = Number(e.target.value);
+          }}
+          className="film-range flex-1 min-w-0"
+          style={{ ["--p" as string]: `${duration ? (time / duration) * 100 : 0}%` }}
+          aria-label="Seek"
+        />
+        <span className="text-[10px] tabular-nums text-white/80 shrink-0 w-9 text-right">{fmt(duration - time)}</span>
+        <button
+          type="button"
+          onClick={() => {
+            const v = ref.current;
+            if (v) v.muted = !v.muted;
+          }}
+          className="w-8 h-8 flex items-center justify-center shrink-0"
+          aria-label={muted ? "Unmute" : "Mute"}
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <path d="M11 5L6 9H2v6h4l5 4V5z" fill="currentColor" />
+            {muted ? (
+              <>
+                <path d="M23 9l-6 6" />
+                <path d="M17 9l6 6" />
+              </>
+            ) : (
+              <path d="M15.5 8.5a5 5 0 010 7M19 5a10 10 0 010 14" />
+            )}
+          </svg>
+        </button>
+      </div>
+    </div>
+  );
+}
+
 
 type ViewMode = "try" | "film";
 
@@ -25,12 +154,7 @@ function ConceptViewer({
   const canFilm = !!video.videoUrl;
   const [mode, setMode] = useState<ViewMode>(initialMode === "try" && !canTry ? "film" : initialMode === "film" && !canFilm ? "try" : initialMode);
 
-  useEffect(() => {
-    document.body.style.overflow = "hidden";
-    return () => {
-      document.body.style.overflow = "";
-    };
-  }, []);
+  useScrollLock(true);
 
   return (
     <motion.div
@@ -38,7 +162,7 @@ function ConceptViewer({
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-      className="fixed inset-0 z-[9999] flex flex-col bg-black/90 overscroll-contain"
+      className="fixed inset-0 z-[9999] flex flex-col bg-black/90 overscroll-none"
       data-lenis-prevent
       onClick={onClose}
     >
@@ -86,16 +210,7 @@ function ConceptViewer({
               sandbox="allow-scripts allow-same-origin allow-popups allow-forms"
             />
           ) : (
-            <video
-              key={video.videoUrl}
-              src={video.videoUrl}
-              poster={video.poster || undefined}
-              className="w-full h-full object-contain bg-black"
-              controls
-              autoPlay
-              playsInline
-              loop
-            />
+            <FilmPlayer key={video.videoUrl} src={video.videoUrl} poster={video.poster || undefined} />
           )}
         </div>
       </div>

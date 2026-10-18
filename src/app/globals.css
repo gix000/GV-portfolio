@@ -205,3 +205,42 @@
   -webkit-mask-image: -webkit-radial-gradient(white, black);
   mask-image: radial-gradient(white, black);
 }
+.glass-static:active,
+.glass-static:hover {
+  transform: none;
+}
+
+/* Film player scrubber */
+.film-range {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 28px;
+  background: transparent;
+  touch-action: none;
+}
+.film-range::-webkit-slider-runnable-track {
+  height: 3px;
+  border-radius: 9999px;
+  background: linear-gradient(to right, #fff var(--p, 0%), rgba(255, 255, 255, 0.28) var(--p, 0%));
+}
+.film-range::-moz-range-track {
+  height: 3px;
+  border-radius: 9999px;
+  background: linear-gradient(to right, #fff var(--p, 0%), rgba(255, 255, 255, 0.28) var(--p, 0%));
+}
+.film-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 13px;
+  height: 13px;
+  margin-top: -5px;
+  border-radius: 9999px;
+  background: #fff;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+}
+.film-range::-moz-range-thumb {
+  width: 13px;
+  height: 13px;
+  border: 0;
+  border-radius: 9999px;
+  background: #fff;
+}
