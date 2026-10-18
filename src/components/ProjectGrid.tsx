@@ -159,6 +159,17 @@ export function ProjectGrid() {
                 opacity: activeIndex === i ? 1 : 0.6,
               }}
             >
+              {/* Soft glow behind the centered card — fades in/out as it becomes active */}
+              <div
+                aria-hidden="true"
+                className="pointer-events-none absolute -inset-6 -z-10 rounded-[2rem] transition-opacity duration-500"
+                style={{
+                  opacity: activeIndex === i ? 1 : 0,
+                  background:
+                    "radial-gradient(60% 55% at 50% 45%, rgba(127, 1, 31, 0.22) 0%, rgba(127, 1, 31, 0.10) 45%, rgba(127, 1, 31, 0) 75%)",
+                  filter: "blur(28px)",
+                }}
+              />
               <Link href={`/projects/${project.key}`} className="block group">
                 <div
                   className={`relative overflow-hidden rounded-2xl bg-paper border transition-all duration-500 group-hover:-translate-y-1 ${
