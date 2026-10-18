@@ -106,7 +106,8 @@ export default function UiUxPage() {
       const cardCenter = first.offsetLeft + first.offsetWidth / 2;
       scroller.scrollTo({ left: cardCenter - scroller.clientWidth / 2, behavior: "auto" });
     });
-    return () =>  }, [videos.length]);
+    return () => cancelAnimationFrame(raf);
+  }, [videos.length]);
 
   // Track centered card
   useEffect(() => {
