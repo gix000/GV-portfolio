@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
+import { useSiteData } from "@/lib/useSiteData";
 
 // The folder intro is for visitors, not for the admin panel.
 export function LoadingScreen() {
@@ -12,6 +13,7 @@ export function LoadingScreen() {
 }
 
 function LoadingScreenInner() {
+  const tapToEnter = useSiteData().data.ui.intro.tapToEnter;
   const [isOpen, setIsOpen] = useState(false);
   const [isGone, setIsGone] = useState(false);
 
@@ -106,7 +108,7 @@ function LoadingScreenInner() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.6, duration: 0.8 }}
                 >
-                  Tap to Enter
+                  {tapToEnter}
                 </motion.p>
               </div>
               <div className="absolute top-0 left-0 right-0 h-1 bg-white/40" />

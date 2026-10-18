@@ -3,7 +3,8 @@ import { useState, useRef, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
-import { siteData, type VideoProject } from "@/lib/data";
+import { type VideoProject } from "@/lib/data";
+import { useSiteData } from "@/lib/useSiteData";
 
 /* Fullscreen interactive redesign viewer — loads the live HTML concept in an iframe */
 function RedesignViewer({
@@ -13,6 +14,7 @@ function RedesignViewer({
   video: VideoProject;
   onClose: () => void;
 }) {
+  const t = useSiteData().data.ui.uiux;
   useEffect(() => {
     document.body.style.overflow = "hidden";
     return () => {
@@ -39,7 +41,7 @@ function RedesignViewer({
             {video.title}
           </p>
           <p className="text-white/50 text-[10px] tracking-[0.18em] uppercase font-semibold truncate">
-            Interactive concept · tap &amp; try it
+            {t.viewerSubtitle}
           </p>
         </div>
         <div className="flex items-center gap-2 shrink-0">
@@ -50,7 +52,7 @@ function RedesignViewer({
               rel="noopener noreferrer"
               className="hidden sm:inline-flex items-center gap-1.5 h-9 px-3.5 rounded-full bg-white/10 hover:bg-white/20 text-white text-[10px] tracking-[0.15em] uppercase font-bold transition-colors"
             >
-              Watch film
+              {t.watchFilm}
             </a>
           )}
           <button
@@ -90,7 +92,9 @@ function RedesignViewer({
 }
 
 export default function UiUxPage() {
-  const videos = useMemo(() => siteData.uiuxVideos, []);
+  const { data } = useSiteData();
+  const t = data.ui.uiux;
+  const videos = useMemo(() => data.uiuxVideos, [data.uiuxVideos]);
   const scrollerRef = useRef<HTMLDivElement>(null);
   const [activeIndex, setActiveIndex] = useState(0);
   const [showHint, setShowHint] = useState(true);
@@ -199,10 +203,10 @@ export default function UiUxPage() {
             className="text-[11px] tracking-[0.18em] uppercase font-semibold hover:text-accent transition-colors duration-300 text-ink"
             data-cursor-hover
           >
-            &larr; Back to Home
+            {t.back}
           </Link>
           <span className="text-[10px] tracking-[0.15em] uppercase text-ink-50 font-semibold">
-            UI/UX Work
+            {t.topRight}
           </span>
         </div>
 
@@ -214,16 +218,15 @@ export default function UiUxPage() {
               transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
             >
               <div className="flex items-center gap-4 text-[11px] tracking-[0.2em] uppercase text-ink-50 font-semibold mb-6">
-                <span className="text-accent">03</span>
-                <span>UI/UX Design</span>
+                <span className="text-accent">{t.number}</span>
+                <span>{t.kicker}</span>
                 <span className="flex-1 h-px bg-line" />
               </div>
               <h1 className="font-serif text-4xl md:text-6xl tracking-tight text-ink leading-[1.05] mb-4">
-                Interface &amp; Experience
+                {t.title}
               </h1>
               <p className="text-ink-70 max-w-xl leading-relaxed text-lg">
-                Independent app redesign concepts you can actually tap through. Each one is a
-                working interactive prototype — open it, play with it, feel the flow.
+                {t.intro}
               </p>
             </motion.div>
           </div>
@@ -270,14 +273,16 @@ export default function UiUxPage() {
                     >
                       {/* Poster — portrait-ish to hint at a phone app */}
                       <div className="relative aspect-[16/10] overflow-hidden rounded-t-2xl">
-                        <Image
-                          src={video.poster}
-                          alt={video.title}
-                          fill
-                          priority={i === 0}
-                          className="object-cover transition-transform duration-700 group-hover:scale-[1.03]"
-                          sizes="(max-width: 640px) 88vw, 640px"
-                        />
+                        {video.poster && (
+                          <Image
+                            src={video.poster}
+                            alt={video.title}
+                            fill
+                            priority={i === 0}
+                            className="object-cover transition-transform duration-700 group-hover:scale-[1.03]"
+                            sizes="(max-width: 640px) 88vw, 640px"
+                          />
+                        )}
                         <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-black/10 to-transparent" />
                         {/* Tap to try affordance */}
                         <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
@@ -294,7 +299,7 @@ export default function UiUxPage() {
                             }
                             className="text-[10px] tracking-[0.22em] uppercase font-bold text-white bg-black/60 px-4 py-2 rounded-full border border-white/15 shadow-lg"
                           >
-                            Tap to try
+                            {t.tapToTry}
                           </motion.span>
                         </div>
                       </div>
@@ -310,12 +315,12 @@ export default function UiUxPage() {
                           </span>
                         </div>
                         <div className="flex flex-wrap gap-1.5 mt-2.5">
-                          {video.tags.slice(0, 3).map((t) => (
+                          {video.tags.slice(0, 3).map((tag) => (
                             <span
-                              key={t}
+                              key={tag}
                               className="text-[9px] tracking-[0.12em] uppercase font-semibold text-ink-50 border border-line rounded-full px-2 py-0.5"
                             >
-                              {t}
+                              {tag}
                             </span>
                           ))}
                         </div>
@@ -348,10 +353,10 @@ export default function UiUxPage() {
                   <svg width="14" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                     <path d="M5 12h14M13 5l7 7-7 7" />
                   </svg>
-                  Swipe for more
+                  {t.swipeHint}
                 </motion.span>
                 <span className="w-px h-3 bg-line" />
-                <span className="text-ink-50">{videos.length} concepts</span>
+                <span className="text-ink-50">{videos.length} {t.countLabel}</span>
               </motion.div>
 
               <div className="flex items-center gap-2">

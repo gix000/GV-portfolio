@@ -31,6 +31,7 @@ function Reveal({
 
 export function Contact() {
   const { data: siteData } = useSiteData();
+  const t = siteData.ui.contact;
   return (
     <section
       id="contact"
@@ -38,10 +39,10 @@ export function Contact() {
     >
       {/* Kicker */}
       <Reveal className="flex items-center gap-4 text-[11px] tracking-[0.2em] uppercase text-ink-50 font-semibold mb-8">
-        <span className="text-accent">03</span>
-        <span>Contact</span>
+        <span className="text-accent">{t.number}</span>
+        <span>{t.kicker}</span>
         <span className="flex-1 h-px bg-line" />
-        <span className="hidden sm:inline">{"Let’s Work"}</span>
+        <span className="hidden sm:inline">{t.kickerRight}</span>
       </Reveal>
 
       {/* Heading */}
@@ -76,7 +77,7 @@ export function Contact() {
             className="group inline-flex items-center gap-2 font-medium hover:text-accent transition-colors duration-300"
             data-cursor-hover
           >
-            <span className="text-ink-50 text-[10px] tracking-[0.2em] uppercase font-semibold">IG</span>
+            <span className="text-ink-50 text-[10px] tracking-[0.2em] uppercase font-semibold">{t.igLabel}</span>
             {siteData.contact.instagramHandle}
           </a>
           <span className="w-px h-3.5 bg-line" aria-hidden="true" />
@@ -85,7 +86,7 @@ export function Contact() {
             className="group inline-flex items-center gap-2 font-medium hover:text-accent transition-colors duration-300"
             data-cursor-hover
           >
-            <span className="text-ink-50 text-[10px] tracking-[0.2em] uppercase font-semibold">Tel</span>
+            <span className="text-ink-50 text-[10px] tracking-[0.2em] uppercase font-semibold">{t.telLabel}</span>
             {siteData.contact.phoneDisplay}
           </a>
         </div>

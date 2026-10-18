@@ -1,164 +1,294 @@
 "use client";
-import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useState, useEffect, useMemo } from "react";
+import type { SiteData, Project, VideoProject } from "@/lib/data";
+import { ImageField } from "./ImageField";
+import { Field, TextInput, ListInput, SmallBtn, moveItem, inputCls } from "./fields";
 
-interface Project {
-  key: string;
-  name: string;
-  cat: string;
-  sub: string;
-  desc: string;
-  quote?: string;
-  tags: string[];
-  cover: string;
-  lqip: string;
-  gallery: string[];
-  caps: string[];
-  think?: {
-    challenge?: string;
-    idea?: string;
-    mark?: string;
-    craft?: string;
-    type?: string;
-    pal?: string[];
+/* ------------------------------------------------------------------ */
+/* Schema: every editable text on the site, grouped by tab            */
+/* ------------------------------------------------------------------ */
+
+type FieldType = "text" | "textarea" | "html" | "list" | "listLong" | "image";
+type FieldDef = { path: string; label: string; type?: FieldType; hint?: string; aspect?: number };
+type Group = { title: string; fields: FieldDef[] };
+
+const HTML_HINT = "Wrap words in <em>…</em> for italic. Use <br> for a line break.";
+
+const TEXT_TABS: { id: string; label: string; groups: Group[] }[] = [
+  {
+    id: "hero",
+    label: "Header & Hero",
+    groups: [
+      {
+        title: "Header",
+        fields: [
+          { path: "ui.nav.uiuxButton", label: "UI/UX button" },
+          { path: "ui.intro.tapToEnter", label: "Intro screen: “Tap to Enter”" },
+        ],
+      },
+      {
+        title: "Hero",
+        fields: [
+          { path: "ui.hero.tagline", label: "Tagline (italic, above the title)" },
+          { path: "hero.line1", label: "Big title, line 1" },
+          { path: "hero.line2", label: "Big title, line 2 (italic)" },
+          { path: "ui.hero.volumeChip", label: "Top-right chip" },
+          { path: "ui.hero.studioLabel", label: "Label 1" },
+          { path: "hero.studio", label: "Value 1" },
+          { path: "ui.hero.disciplineLabel", label: "Label 2" },
+          { path: "ui.hero.discipline", label: "Value 2" },
+          { path: "ui.hero.basedInLabel", label: "Label 3" },
+          { path: "hero.basedIn", label: "Value 3" },
+          { path: "ui.hero.volumeLabel", label: "Label 4" },
+          { path: "hero.volume", label: "Value 4" },
+          { path: "ui.hero.scroll", label: "Scroll cue" },
+        ],
+      },
+    ],
+  },
+  {
+    id: "about",
+    label: "About",
+    groups: [
+      {
+        title: "Section header",
+        fields: [
+          { path: "ui.about.number", label: "Number" },
+          { path: "ui.about.kicker", label: "Title" },
+          { path: "ui.about.kickerRight", label: "Right label" },
+        ],
+      },
+      {
+        title: "Portrait",
+        fields: [
+          { path: "ui.about.portrait", label: "Portrait photo", type: "image", aspect: 3 / 4 },
+          { path: "about.portraitTag", label: "Caption under the photo" },
+        ],
+      },
+      {
+        title: "Text",
+        fields: [
+          { path: "about.lead", label: "Intro (large text)", type: "html", hint: HTML_HINT },
+          { path: "about.paragraphs", label: "Paragraphs", type: "listLong" },
+          { path: "ui.about.servicesLabel", label: "Services heading" },
+          { path: "about.services", label: "Services", type: "list" },
+          { path: "ui.about.basedLabel", label: "Second list heading" },
+          { path: "about.basedList", label: "Second list", type: "list" },
+        ],
+      },
+    ],
+  },
+  {
+    id: "works",
+    label: "Works",
+    groups: [
+      {
+        title: "Section header",
+        fields: [
+          { path: "ui.works.number", label: "Number" },
+          { path: "ui.works.kicker", label: "Title" },
+          { path: "ui.works.kickerRight", label: "Right label" },
+          { path: "works.title", label: "Heading", type: "html", hint: HTML_HINT },
+          { path: "works.sub", label: "Intro text", type: "textarea" },
+        ],
+      },
+      {
+        title: "Carousel",
+        fields: [
+          { path: "ui.works.swipeHint", label: "Swipe hint" },
+          { path: "ui.works.countLabel", label: "Count label (after the number)" },
+          { path: "ui.works.imagesLabel", label: "Image count label on cards" },
+        ],
+      },
+    ],
+  },
+  {
+    id: "contact",
+    label: "Contact & Footer",
+    groups: [
+      {
+        title: "Section header",
+        fields: [
+          { path: "ui.contact.number", label: "Number" },
+          { path: "ui.contact.kicker", label: "Title" },
+          { path: "ui.contact.kickerRight", label: "Right label" },
+          { path: "contact.heading", label: "Heading", type: "html", hint: HTML_HINT },
+        ],
+      },
+      {
+        title: "Details",
+        fields: [
+          { path: "contact.email", label: "Email" },
+          { path: "ui.contact.igLabel", label: "Instagram label" },
+          { path: "contact.instagramHandle", label: "Instagram handle" },
+          { path: "contact.instagramUrl", label: "Instagram link" },
+          { path: "ui.contact.telLabel", label: "Phone label" },
+          { path: "contact.phoneDisplay", label: "Phone (as shown)" },
+          { path: "contact.phoneTel", label: "Phone (for tap-to-call)", hint: "Digits with country code, e.g. +96179106883" },
+          { path: "contact.whatsapp", label: "WhatsApp number", hint: "Digits only, e.g. 96179106883" },
+          { path: "contact.whatsappText", label: "WhatsApp pre-filled message", type: "textarea" },
+        ],
+      },
+      {
+        title: "Footer",
+        fields: [
+          { path: "contact.footerA", label: "Footer left (after ©year)" },
+          { path: "contact.footerB", label: "Footer right" },
+        ],
+      },
+    ],
+  },
+  {
+    id: "case",
+    label: "Project pages",
+    groups: [
+      {
+        title: "Labels on every project page",
+        fields: [
+          { path: "ui.caseStudy.back", label: "Back button" },
+          { path: "ui.caseStudy.viewGallery", label: "“View gallery” chip" },
+          { path: "ui.caseStudy.closeGallery", label: "Close gallery button" },
+          { path: "ui.caseStudy.palette", label: "Palette heading" },
+          { path: "ui.caseStudy.notFoundTitle", label: "Not-found title" },
+          { path: "ui.caseStudy.notFoundText", label: "Not-found text", type: "textarea" },
+          { path: "ui.caseStudy.notFoundButton", label: "Not-found button" },
+        ],
+      },
+    ],
+  },
+  {
+    id: "uiuxpage",
+    label: "UI/UX page",
+    groups: [
+      {
+        title: "Page text",
+        fields: [
+          { path: "ui.uiux.back", label: "Back button" },
+          { path: "ui.uiux.topRight", label: "Top-right label" },
+          { path: "ui.uiux.number", label: "Number" },
+          { path: "ui.uiux.kicker", label: "Section title" },
+          { path: "ui.uiux.title", label: "Heading" },
+          { path: "ui.uiux.intro", label: "Intro text", type: "textarea" },
+          { path: "ui.uiux.tapToTry", label: "“Tap to try” chip" },
+          { path: "ui.uiux.swipeHint", label: "Swipe hint" },
+          { path: "ui.uiux.countLabel", label: "Count label" },
+          { path: "ui.uiux.viewerSubtitle", label: "Prototype viewer subtitle" },
+          { path: "ui.uiux.watchFilm", label: "“Watch film” button" },
+        ],
+      },
+    ],
+  },
+  {
+    id: "seo",
+    label: "SEO",
+    groups: [
+      {
+        title: "Google & link previews",
+        fields: [
+          { path: "meta.title", label: "Browser tab / Google title" },
+          { path: "meta.description", label: "Google description", type: "textarea" },
+        ],
+      },
+    ],
+  },
+];
+
+const TRACKED: (keyof SiteData)[] = ["meta", "hero", "about", "works", "contact", "ui", "uiuxVideos"];
+
+/* ------------------------------------------------------------------ */
+/* Path helpers                                                        */
+/* ------------------------------------------------------------------ */
+
+type Obj = Record<string, unknown>;
+function getPath(obj: unknown, path: string): unknown {
+  return path.split(".").reduce<unknown>((o, k) => (o && typeof o === "object" ? (o as Obj)[k] : undefined), obj);
+}
+function setPath<T>(obj: T, path: string, value: unknown): T {
+  const [k, ...rest] = path.split(".");
+  const cur = (obj as Obj) ?? {};
+  return { ...cur, [k]: rest.length ? setPath(cur[k] as Obj, rest.join("."), value) : value } as T;
+}
+
+function authHeaders(): HeadersInit {
+  return {
+    "Content-Type": "application/json",
+    Authorization: `Bearer ${sessionStorage.getItem("admin_password") || ""}`,
   };
 }
 
-interface HeroData {
-  topLeft: string;
-  topLeftDetail: string;
-  line1: string;
-  line2: string;
-  studio: string;
-  disciplines: string[];
-  basedIn: string;
-  volume: string;
+async function postAction(action: string, payload: unknown): Promise<SiteData> {
+  const res = await fetch("/api/admin", { method: "POST", headers: authHeaders(), body: JSON.stringify({ action, payload }) });
+  const json = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(json.error || `Request failed (${res.status})`);
+  return json.data as SiteData;
 }
 
-interface AboutData {
-  lead: string;
-  paragraphs: string[];
-  services: string[];
-  basedList: string[];
-  portraitTag: string;
-}
+/* ------------------------------------------------------------------ */
+/* Page                                                                */
+/* ------------------------------------------------------------------ */
 
-interface ContactData {
-  heading: string;
-  email: string;
-  instagramHandle: string;
-  instagramUrl: string;
-  phoneDisplay: string;
-  phoneTel: string;
-  location: string;
-  timeChip: string;
-  whatsapp: string;
-  whatsappText: string;
-  footerA: string;
-  footerB: string;
-}
-
-interface SiteData {
-  meta: { title: string; description: string };
-  hero: HeroData;
-  about: AboutData;
-  contact: ContactData;
-  projects: Project[];
-}
+type Tab = string;
 
 export default function AdminPage() {
   const [password, setPassword] = useState("");
   const [authenticated, setAuthenticated] = useState(false);
   const [data, setData] = useState<SiteData | null>(null);
+  const [draft, setDraft] = useState<SiteData | null>(null);
   const [loading, setLoading] = useState(false);
+  const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
-  const [activeTab, setActiveTab] = useState<"projects" | "meta" | "hero" | "about" | "contact">("projects");
+  const [notice, setNotice] = useState("");
+  const [tab, setTab] = useState<Tab>("projects");
   const [editingProject, setEditingProject] = useState<Project | null>(null);
   const [showAddForm, setShowAddForm] = useState(false);
-  const [notice, setNotice] = useState("");
 
   function flash(msg: string) {
     setNotice(msg);
     setTimeout(() => setNotice(""), 2500);
   }
 
-  // Check if already authenticated
+  function applyServer(next: SiteData) {
+    setData(next);
+    setDraft(next);
+  }
+
   useEffect(() => {
-    const stored = sessionStorage.getItem("admin_auth");
-    if (stored === "true") {
+    if (sessionStorage.getItem("admin_auth") === "true") {
       setAuthenticated(true);
       fetchData();
     }
   }, []);
 
-  // Normalize whatever the API returns into a safe SiteData shape so the
-  // render path never throws on missing arrays/objects (which would trip the
-  // root ErrorBoundary and show "refresh page" instead of the real error).
-  function normalize(raw: unknown): SiteData {
-    const r = (raw && typeof raw === "object" ? raw : {}) as Record<string, unknown>;
-    const meta = (r.meta && typeof r.meta === "object" ? r.meta : {}) as Record<string, unknown>;
-    const hero = (r.hero && typeof r.hero === "object" ? r.hero : {}) as Record<string, unknown>;
-    const about = (r.about && typeof r.about === "object" ? r.about : {}) as Record<string, unknown>;
-    const contact = (r.contact && typeof r.contact === "object" ? r.contact : {}) as Record<string, unknown>;
-    return {
-      meta: {
-        title: typeof meta.title === "string" ? meta.title : "G.VIISUALS",
-        description: typeof meta.description === "string" ? meta.description : "",
-      },
-      hero: {
-        topLeft: String(hero.topLeft ?? ""),
-        topLeftDetail: String(hero.topLeftDetail ?? ""),
-        line1: String(hero.line1 ?? ""),
-        line2: String(hero.line2 ?? ""),
-        studio: String(hero.studio ?? ""),
-        disciplines: Array.isArray(hero.disciplines) ? (hero.disciplines as string[]) : [],
-        basedIn: String(hero.basedIn ?? ""),
-        volume: String(hero.volume ?? ""),
-      },
-      about: {
-        lead: String(about.lead ?? ""),
-        paragraphs: Array.isArray(about.paragraphs) ? (about.paragraphs as string[]) : [],
-        services: Array.isArray(about.services) ? (about.services as string[]) : [],
-        basedList: Array.isArray(about.basedList) ? (about.basedList as string[]) : [],
-        portraitTag: String(about.portraitTag ?? ""),
-      },
-      contact: {
-        heading: String(contact.heading ?? ""),
-        email: String(contact.email ?? ""),
-        instagramHandle: String(contact.instagramHandle ?? ""),
-        instagramUrl: String(contact.instagramUrl ?? ""),
-        phoneDisplay: String(contact.phoneDisplay ?? ""),
-        phoneTel: String(contact.phoneTel ?? ""),
-        location: String(contact.location ?? ""),
-        timeChip: String(contact.timeChip ?? ""),
-        whatsapp: String(contact.whatsapp ?? ""),
-        whatsappText: String(contact.whatsappText ?? ""),
-        footerA: String(contact.footerA ?? ""),
-        footerB: String(contact.footerB ?? ""),
-      },
-      projects: Array.isArray(r.projects) ? (r.projects as Project[]) : [],
+  const dirtyKeys = useMemo(
+    () => (data && draft ? TRACKED.filter((k) => JSON.stringify(data[k]) !== JSON.stringify(draft[k])) : []),
+    [data, draft],
+  );
+
+  // Warn before closing the tab with unsaved edits.
+  useEffect(() => {
+    if (!dirtyKeys.length) return;
+    const h = (e: BeforeUnloadEvent) => {
+      e.preventDefault();
+      e.returnValue = "";
     };
-  }
+    window.addEventListener("beforeunload", h);
+    return () => window.removeEventListener("beforeunload", h);
+  }, [dirtyKeys.length]);
 
   async function handleLogin(e: React.FormEvent) {
     e.preventDefault();
     setLoading(true);
     setError("");
-
     try {
-      const res = await fetch("/api/admin", {
-        headers: { Authorization: `Bearer ${password}` },
-      });
-
+      const res = await fetch("/api/admin", { headers: { Authorization: `Bearer ${password}` } });
       if (res.ok) {
-        const jsonData = await res.json().catch(() => ({}));
-        setData(normalize(jsonData));
+        applyServer(await res.json());
         setAuthenticated(true);
         sessionStorage.setItem("admin_auth", "true");
         sessionStorage.setItem("admin_password", password);
       } else {
         const errData = await res.json().catch(() => ({}));
-        setError((errData && errData.error) || `Invalid password or unauthorized (${res.status})`);
+        setError(errData?.error || `Invalid password or unauthorized (${res.status})`);
       }
     } catch (e) {
       setError(`Connection error: ${String(e)}`);
@@ -168,142 +298,89 @@ export default function AdminPage() {
   }
 
   async function fetchData() {
-    const storedPass = sessionStorage.getItem("admin_password");
-    if (!storedPass) return;
-
     try {
-      const res = await fetch("/api/admin", {
-        headers: { Authorization: `Bearer ${storedPass}` },
-      });
-      if (res.ok) {
-        const jsonData = await res.json().catch(() => ({}));
-        setData(normalize(jsonData));
-      } else {
-        const errData = await res.json().catch(() => ({}));
-        setError((errData && errData.error) || `Failed to load data (${res.status})`);
-        // Still render an empty shell so the page doesn't crash
-        setData(normalize({}));
-      }
+      const res = await fetch("/api/admin", { headers: authHeaders() });
+      const json = await res.json().catch(() => ({}));
+      if (res.ok) applyServer(json);
+      else setError(json?.error || `Failed to load data (${res.status})`);
     } catch (e) {
       setError(`Connection error: ${String(e)}`);
-      setData(normalize({}));
+    }
+  }
+
+  async function saveDraft() {
+    if (!draft || !dirtyKeys.length) return;
+    setSaving(true);
+    setError("");
+    try {
+      let latest: SiteData | null = null;
+      for (const key of dirtyKeys) {
+        latest = await postAction("set_section", { section: key, value: draft[key] });
+      }
+      if (latest) applyServer(latest);
+      flash("Saved — live on the site");
+    } catch (e) {
+      setError(e instanceof Error ? e.message : String(e));
+    } finally {
+      setSaving(false);
     }
   }
 
   async function saveProject(project: Project, isNew: boolean) {
-    const storedPass = sessionStorage.getItem("admin_password");
-    if (!storedPass || !data) return;
-
-    // URL-safe slug: "Balcony Burgers" -> "balcony-burgers"
-    const key = project.key
-      .trim()
-      .toLowerCase()
-      .replace(/[^a-z0-9]+/g, "-")
-      .replace(/^-+|-+$/g, "");
-    if (!key) {
-      setError("Key is required (letters or numbers).");
-      return;
-    }
+    if (!data) return;
+    const key = project.key.trim().toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
+    if (!key) return setError("Key is required (letters or numbers).");
     if (isNew && data.projects.some((p) => p.key === key)) {
-      setError(`A project with the key "${key}" already exists. Pick another key.`);
-      return;
+      return setError(`A project with the key "${key}" already exists. Pick another key.`);
     }
-    project = {
-      ...project,
-      key,
-      tags: project.tags.map((t) => t.trim()).filter(Boolean),
-      gallery: project.gallery.filter(Boolean),
-    };
-
-    setLoading(true);
+    const clean: Project = { ...project, key, tags: project.tags.map((t) => t.trim()).filter(Boolean) };
+    setSaving(true);
     setError("");
     try {
-      const res = await fetch("/api/admin", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${storedPass}`,
-        },
-        body: JSON.stringify({
-          action: "update_project",
-          payload: { key: project.key, data: project },
-        }),
-      });
-
-      if (res.ok) {
-        const result = await res.json();
-        setData(normalize(result.data));
-        setEditingProject(null);
-        setShowAddForm(false);
-        flash(isNew ? "Project added" : "Project saved");
-      } else {
-        const errData = await res.json().catch(() => ({}));
-        setError(errData.error || `Failed to save project (${res.status})`);
-      }
+      const next = await postAction("update_project", { key, data: clean });
+      // Keep any unsaved text edits in other tabs.
+      setData(next);
+      setDraft((d) => (d ? { ...d, projects: next.projects } : next));
+      setEditingProject(null);
+      setShowAddForm(false);
+      flash(isNew ? "Project added" : "Project saved");
     } catch (e) {
-      setError(`Connection error: ${String(e)}`);
+      setError(e instanceof Error ? e.message : String(e));
     } finally {
-      setLoading(false);
+      setSaving(false);
     }
   }
 
   async function deleteProject(key: string) {
     if (!confirm(`Delete project "${key}"? This cannot be undone.`)) return;
-
-    const storedPass = sessionStorage.getItem("admin_password");
-    if (!storedPass) return;
-
-    setLoading(true);
+    setSaving(true);
     try {
-      const res = await fetch(`/api/admin?key=${encodeURIComponent(key)}`, {
-        method: "DELETE",
-        headers: { Authorization: `Bearer ${storedPass}` },
-      });
-
-      if (res.ok) {
-        await fetchData();
-        flash("Project deleted");
-      } else {
-        const errData = await res.json().catch(() => ({}));
-        setError(errData.error || `Failed to delete project (${res.status})`);
-      }
+      const res = await fetch(`/api/admin?key=${encodeURIComponent(key)}`, { method: "DELETE", headers: authHeaders() });
+      const json = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(json.error || `Failed to delete project (${res.status})`);
+      setData((d) => (d ? { ...d, projects: d.projects.filter((p) => p.key !== key) } : d));
+      setDraft((d) => (d ? { ...d, projects: d.projects.filter((p) => p.key !== key) } : d));
+      flash("Project deleted");
     } catch (e) {
-      setError(`Connection error: ${String(e)}`);
+      setError(e instanceof Error ? e.message : String(e));
     } finally {
-      setLoading(false);
+      setSaving(false);
     }
   }
 
-  async function updateSection(section: string, payload: Record<string, unknown>) {
-    const storedPass = sessionStorage.getItem("admin_password");
-    if (!storedPass) return;
-
-    setLoading(true);
+  async function moveProject(from: number, to: number) {
+    if (!data) return;
+    const projects = moveItem(data.projects, from, to);
+    if (projects === data.projects) return;
+    setSaving(true);
     try {
-      const res = await fetch("/api/admin", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${storedPass}`,
-        },
-        body: JSON.stringify({
-          action: `update_${section}`,
-          payload,
-        }),
-      });
-
-      if (res.ok) {
-        const result = await res.json();
-        setData(normalize(result.data));
-        flash("Saved");
-      } else {
-        const errData = await res.json().catch(() => ({}));
-        setError(errData.error || `Failed to update (${res.status})`);
-      }
+      const next = await postAction("set_section", { section: "projects", value: projects });
+      setData(next);
+      setDraft((d) => (d ? { ...d, projects: next.projects } : next));
     } catch (e) {
-      setError(`Connection error: ${String(e)}`);
+      setError(e instanceof Error ? e.message : String(e));
     } finally {
-      setLoading(false);
+      setSaving(false);
     }
   }
 
@@ -312,28 +389,23 @@ export default function AdminPage() {
     sessionStorage.removeItem("admin_password");
     setAuthenticated(false);
     setData(null);
+    setDraft(null);
     setPassword("");
   }
 
-  // Login screen
   if (!authenticated) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#FAF3DE] to-[#EDE0BE] p-8">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="bg-white rounded-2xl shadow-2xl p-8 max-w-md w-full"
-        >
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#FAF3DE] to-[#EDE0BE] p-6">
+        <div className="bg-white rounded-2xl shadow-2xl p-8 max-w-md w-full">
           <h1 className="font-serif text-3xl text-ink mb-2">Admin Panel</h1>
           <p className="text-ink-70 mb-6">Enter your password to manage the portfolio</p>
-
           <form onSubmit={handleLogin} className="space-y-4">
             <input
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="Password"
-              className="w-full px-4 py-3 border border-line rounded-lg focus:outline-none focus:ring-2 focus:ring-accent"
+              className={inputCls}
               required
             />
             {error && <p className="text-red-600 text-sm">{error}</p>}
@@ -345,301 +417,210 @@ export default function AdminPage() {
               {loading ? "Logging in..." : "Login"}
             </button>
           </form>
-        </motion.div>
+        </div>
       </div>
     );
   }
 
-  // Admin dashboard
+  const textTab = TEXT_TABS.find((t) => t.id === tab);
+  const allTabs: { id: Tab; label: string }[] = [
+    { id: "projects", label: "Projects" },
+    { id: "uiux", label: "UI/UX concepts" },
+    ...TEXT_TABS.map((t) => ({ id: t.id, label: t.label })),
+  ];
+
   return (
-    <div className="min-h-screen bg-[#FAF3DE]">
-      {/* Header */}
-      <header className="bg-white border-b border-line sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-          <h1 className="font-serif text-2xl text-ink">Portfolio Admin</h1>
-          <button
-            onClick={handleLogout}
-            className="px-4 py-2 text-sm border border-line rounded-lg hover:bg-paper-lo transition-colors"
-          >
-            Logout
-          </button>
+    <div className="min-h-screen bg-[#FAF3DE] pb-28">
+      <header className="bg-white border-b border-line sticky top-0 z-40">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between gap-3">
+          <h1 className="font-serif text-xl sm:text-2xl text-ink">Portfolio Admin</h1>
+          <div className="flex gap-2">
+            <a href="/" target="_blank" rel="noopener noreferrer" className="px-3 py-2 text-sm border border-line rounded-lg hover:bg-paper-lo">
+              View site
+            </a>
+            <button onClick={handleLogout} className="px-3 py-2 text-sm border border-line rounded-lg hover:bg-paper-lo">
+              Logout
+            </button>
+          </div>
         </div>
+        <nav className="max-w-5xl mx-auto px-4 sm:px-6 flex gap-1 overflow-x-auto [scrollbar-width:none]">
+          {allTabs.map((t) => (
+            <button
+              key={t.id}
+              onClick={() => setTab(t.id)}
+              className={`shrink-0 px-3.5 py-2.5 text-sm font-semibold border-b-2 transition-colors ${
+                tab === t.id ? "text-ink border-ink" : "text-ink-50 border-transparent hover:text-ink-70"
+              }`}
+            >
+              {t.label}
+            </button>
+          ))}
+        </nav>
       </header>
 
-      <div className="max-w-7xl mx-auto px-6 py-8">
-        {notice && (
-          <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-[60] px-4 py-2 rounded-full bg-ink text-paper text-sm font-semibold shadow-lg">
-            {notice}
-          </div>
-        )}
-
-        {/* Error banner */}
+      <main className="max-w-5xl mx-auto px-4 sm:px-6 py-6">
         {error && (
           <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg flex items-start justify-between gap-4">
             <div>
               <p className="text-sm font-semibold text-red-800 mb-1">Something went wrong</p>
               <p className="text-sm text-red-700 break-words">{error}</p>
             </div>
-            <button
-              onClick={() => setError("")}
-              className="text-red-500 hover:text-red-700 text-lg leading-none flex-shrink-0"
-              aria-label="Dismiss error"
-            >
+            <button onClick={() => setError("")} className="text-red-500 hover:text-red-700 text-lg leading-none" aria-label="Dismiss error">
               ✕
             </button>
           </div>
         )}
 
-        {/* Tabs */}
-        <div className="flex gap-2 mb-8 border-b border-line">
-          {(["projects", "meta", "hero", "about", "contact"] as const).map((tab) => (
-            <button
-              key={tab}
-              onClick={() => setActiveTab(tab)}
-              className={`px-6 py-3 font-semibold capitalize transition-colors ${
-                activeTab === tab
-                  ? "text-ink border-b-2 border-ink"
-                  : "text-ink-50 hover:text-ink-70"
-              }`}
-            >
-              {tab}
-            </button>
-          ))}
-        </div>
+        {!draft && !error && <p className="text-ink-50">Loading…</p>}
 
-        {/* Content */}
-        <AnimatePresence mode="wait">
-          {activeTab === "projects" && (
-            <motion.div
-              key="projects"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-            >
-              <div className="flex justify-between items-center mb-6">
-                <h2 className="font-serif text-2xl text-ink">Projects ({data?.projects.length || 0})</h2>
-                <button
-                  onClick={() => {
-                    setEditingProject(null);
-                    setShowAddForm(true);
-                  }}
-                  className="px-4 py-2 bg-ink text-paper rounded-lg font-semibold hover:bg-ink-soft transition-colors"
-                >
-                  + Add Project
-                </button>
-              </div>
-
-              <div className="grid gap-4">
-                {data?.projects.map((project) => (
-                  <div
-                    key={project.key}
-                    className="bg-white rounded-xl p-6 shadow-sm border border-line flex items-center justify-between"
-                  >
-                    <div className="flex-1">
-                      <h3 className="font-serif text-xl text-ink mb-1">{project.name}</h3>
-                      <p className="text-sm text-ink-70">{project.cat}</p>
-                      <p className="text-xs text-ink-50 mt-1">{project.sub}</p>
-                    </div>
-                    <div className="flex gap-2">
-                      <button
-                        onClick={() => {
-                          setEditingProject(project);
-                          setShowAddForm(false);
-                        }}
-                        className="px-3 py-1.5 text-sm border border-line rounded-lg hover:bg-paper-lo transition-colors"
-                      >
-                        Edit
-                      </button>
-                      <button
-                        onClick={() => deleteProject(project.key)}
-                        className="px-3 py-1.5 text-sm border border-red-300 text-red-600 rounded-lg hover:bg-red-50 transition-colors"
-                      >
-                        Delete
-                      </button>
-                    </div>
+        {draft && tab === "projects" && (
+          <section>
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="font-serif text-2xl text-ink">Projects ({draft.projects.length})</h2>
+              <button
+                onClick={() => {
+                  setEditingProject(null);
+                  setShowAddForm(true);
+                }}
+                className="px-4 py-2 bg-ink text-paper rounded-lg font-semibold hover:bg-ink-soft"
+              >
+                + Add Project
+              </button>
+            </div>
+            <p className="text-sm text-ink-50 mb-4">Use the arrows to change the order on the homepage.</p>
+            <div className="grid gap-3">
+              {draft.projects.map((project, i) => (
+                <div key={project.key} className="bg-white rounded-xl p-3 sm:p-4 border border-line flex items-center gap-3">
+                  <div className="w-20 h-14 sm:w-24 sm:h-16 rounded-lg overflow-hidden bg-paper-lo shrink-0">
+                    {project.cover && (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img src={project.cover} alt="" className="w-full h-full object-cover" />
+                    )}
                   </div>
-                ))}
-              </div>
-
-              {/* Edit/Add Form */}
-              <AnimatePresence>
-                {(editingProject || showAddForm) && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -20 }}
-                    className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50 overflow-y-auto"
-                  >
-                    <div data-lenis-prevent className="bg-white rounded-2xl p-5 sm:p-8 max-w-3xl w-full max-h-[90vh] overflow-y-auto overscroll-contain">
-                      <h3 className="font-serif text-2xl text-ink mb-6">
-                        {editingProject ? "Edit Project" : "Add New Project"}
-                      </h3>
-
-                      <ProjectForm
-                        key={editingProject?.key ?? "new"}
-                        project={editingProject}
-                        saving={loading}
-                        onSave={(p) => saveProject(p, !editingProject)}
-                        onCancel={() => {
-                          setEditingProject(null);
-                          setShowAddForm(false);
-                        }}
-                      />
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </motion.div>
-          )}
-
-          {activeTab === "meta" && data && (
-            <motion.div
-              key="meta"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-            >
-              <h2 className="font-serif text-2xl text-ink mb-6">Site Metadata</h2>
-              <div className="bg-white rounded-xl p-6 shadow-sm border border-line space-y-4">
-                <div>
-                  <label className="block text-sm font-semibold text-ink mb-2">Title</label>
-                  <input
-                    type="text"
-                    defaultValue={data.meta.title}
-                    onBlur={(e) => updateSection("meta", { title: e.target.value })}
-                    className="w-full px-4 py-2 border border-line rounded-lg focus:outline-none focus:ring-2 focus:ring-accent"
-                  />
+                  <div className="flex-1 min-w-0">
+                    <h3 className="font-serif text-lg text-ink truncate">{project.name}</h3>
+                    <p className="text-xs text-ink-50 truncate">{project.cat}</p>
+                  </div>
+                  <div className="flex flex-wrap justify-end gap-1.5">
+                    <SmallBtn title="Move up" disabled={i === 0 || saving} onClick={() => moveProject(i, i - 1)}>↑</SmallBtn>
+                    <SmallBtn title="Move down" disabled={i === draft.projects.length - 1 || saving} onClick={() => moveProject(i, i + 1)}>↓</SmallBtn>
+                    <SmallBtn
+                      onClick={() => {
+                        setEditingProject(project);
+                        setShowAddForm(false);
+                      }}
+                    >
+                      Edit
+                    </SmallBtn>
+                    <SmallBtn danger disabled={saving} onClick={() => deleteProject(project.key)}>Delete</SmallBtn>
+                  </div>
                 </div>
-                <div>
-                  <label className="block text-sm font-semibold text-ink mb-2">Description</label>
-                  <textarea
-                    defaultValue={data.meta.description}
-                    onBlur={(e) => updateSection("meta", { description: e.target.value })}
-                    rows={3}
-                    className="w-full px-4 py-2 border border-line rounded-lg focus:outline-none focus:ring-2 focus:ring-accent"
-                  />
-                </div>
-              </div>
-            </motion.div>
-          )}
+              ))}
+            </div>
+          </section>
+        )}
 
-          {activeTab === "hero" && data && (
-            <motion.div
-              key="hero"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-            >
-              <h2 className="font-serif text-2xl text-ink mb-6">Hero Section</h2>
-              <div className="bg-white rounded-xl p-6 shadow-sm border border-line space-y-4">
-                <div>
-                  <label className="block text-sm font-semibold text-ink mb-2">Line 1</label>
-                  <input
-                    type="text"
-                    defaultValue={data.hero.line1}
-                    onBlur={(e) => updateSection("hero", { line1: e.target.value })}
-                    className="w-full px-4 py-2 border border-line rounded-lg focus:outline-none focus:ring-2 focus:ring-accent"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-semibold text-ink mb-2">Line 2</label>
-                  <input
-                    type="text"
-                    defaultValue={data.hero.line2}
-                    onBlur={(e) => updateSection("hero", { line2: e.target.value })}
-                    className="w-full px-4 py-2 border border-line rounded-lg focus:outline-none focus:ring-2 focus:ring-accent"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-semibold text-ink mb-2">Studio Name</label>
-                  <input
-                    type="text"
-                    defaultValue={data.hero.studio}
-                    onBlur={(e) => updateSection("hero", { studio: e.target.value })}
-                    className="w-full px-4 py-2 border border-line rounded-lg focus:outline-none focus:ring-2 focus:ring-accent"
-                  />
+        {draft && tab === "uiux" && (
+          <UiuxEditor value={draft.uiuxVideos} onChange={(v) => setDraft({ ...draft, uiuxVideos: v })} />
+        )}
+
+        {draft && textTab && (
+          <section className="space-y-6">
+            {textTab.groups.map((g) => (
+              <div key={g.title} className="bg-white rounded-xl p-4 sm:p-6 border border-line">
+                <h3 className="font-serif text-xl text-ink mb-4">{g.title}</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {g.fields.map((f) => {
+                    const wide = f.type && f.type !== "text";
+                    const val = getPath(draft, f.path);
+                    const set = (v: unknown) => setDraft((d) => (d ? setPath(d, f.path, v) : d));
+                    return (
+                      <div key={f.path} className={wide ? "md:col-span-2" : ""}>
+                        {f.type === "image" ? (
+                          <ImageField label={f.label} value={String(val ?? "")} onChange={set} aspect={f.aspect ?? null} />
+                        ) : (
+                          <Field label={f.label} hint={f.hint}>
+                            {f.type === "list" || f.type === "listLong" ? (
+                              <ListInput
+                                value={Array.isArray(val) ? (val as string[]) : []}
+                                onChange={set}
+                                multiline={f.type === "listLong"}
+                              />
+                            ) : (
+                              <TextInput
+                                value={String(val ?? "")}
+                                onChange={set}
+                                multiline={f.type === "textarea" || f.type === "html"}
+                              />
+                            )}
+                          </Field>
+                        )}
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
-            </motion.div>
-          )}
+            ))}
+          </section>
+        )}
+      </main>
 
-          {activeTab === "about" && data && (
-            <motion.div
-              key="about"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-            >
-              <h2 className="font-serif text-2xl text-ink mb-6">About Section</h2>
-              <div className="bg-white rounded-xl p-6 shadow-sm border border-line space-y-4">
-                <div>
-                  <label className="block text-sm font-semibold text-ink mb-2">Lead Text</label>
-                  <textarea
-                    defaultValue={data.about.lead}
-                    onBlur={(e) => updateSection("about", { lead: e.target.value })}
-                    rows={3}
-                    className="w-full px-4 py-2 border border-line rounded-lg focus:outline-none focus:ring-2 focus:ring-accent"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-semibold text-ink mb-2">Portrait Tag</label>
-                  <input
-                    type="text"
-                    defaultValue={data.about.portraitTag}
-                    onBlur={(e) => updateSection("about", { portraitTag: e.target.value })}
-                    className="w-full px-4 py-2 border border-line rounded-lg focus:outline-none focus:ring-2 focus:ring-accent"
-                  />
-                </div>
-              </div>
-            </motion.div>
-          )}
+      {/* Save bar for all text / UI-UX edits */}
+      {dirtyKeys.length > 0 && (
+        <div className="fixed bottom-0 inset-x-0 z-40 bg-white border-t border-line shadow-[0_-8px_24px_rgba(0,0,0,0.08)]">
+          <div className="max-w-5xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between gap-3">
+            <span className="text-sm text-ink-70">Unsaved changes</span>
+            <div className="flex gap-2">
+              <button
+                onClick={() => data && setDraft(data)}
+                disabled={saving}
+                className="px-4 py-2.5 text-sm border border-line rounded-lg hover:bg-paper-lo disabled:opacity-50"
+              >
+                Discard
+              </button>
+              <button
+                onClick={saveDraft}
+                disabled={saving}
+                className="px-5 py-2.5 text-sm bg-ink text-paper rounded-lg font-semibold hover:bg-ink-soft disabled:opacity-50"
+              >
+                {saving ? "Saving…" : "Save changes"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
-          {activeTab === "contact" && data && (
-            <motion.div
-              key="contact"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-            >
-              <h2 className="font-serif text-2xl text-ink mb-6">Contact Section</h2>
-              <div className="bg-white rounded-xl p-6 shadow-sm border border-line space-y-4">
-                <div>
-                  <label className="block text-sm font-semibold text-ink mb-2">Email</label>
-                  <input
-                    type="email"
-                    defaultValue={data.contact.email}
-                    onBlur={(e) => updateSection("contact", { email: e.target.value })}
-                    className="w-full px-4 py-2 border border-line rounded-lg focus:outline-none focus:ring-2 focus:ring-accent"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-semibold text-ink mb-2">Instagram Handle</label>
-                  <input
-                    type="text"
-                    defaultValue={data.contact.instagramHandle}
-                    onBlur={(e) => updateSection("contact", { instagramHandle: e.target.value })}
-                    className="w-full px-4 py-2 border border-line rounded-lg focus:outline-none focus:ring-2 focus:ring-accent"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-semibold text-ink mb-2">Phone</label>
-                  <input
-                    type="text"
-                    defaultValue={data.contact.phoneDisplay}
-                    onBlur={(e) => updateSection("contact", { phoneDisplay: e.target.value })}
-                    className="w-full px-4 py-2 border border-line rounded-lg focus:outline-none focus:ring-2 focus:ring-accent"
-                  />
-                </div>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
+      {notice && (
+        <div className="fixed bottom-20 left-1/2 -translate-x-1/2 z-[60] px-4 py-2 rounded-full bg-ink text-paper text-sm font-semibold shadow-lg">
+          {notice}
+        </div>
+      )}
+
+      {(editingProject || showAddForm) && (
+        <div className="fixed inset-0 bg-black/50 flex items-start sm:items-center justify-center p-0 sm:p-4 z-50" data-lenis-prevent>
+          <div className="bg-white sm:rounded-2xl p-5 sm:p-8 max-w-3xl w-full h-full sm:h-auto sm:max-h-[92vh] overflow-y-auto overscroll-contain">
+            <h3 className="font-serif text-2xl text-ink mb-6">{editingProject ? "Edit Project" : "Add New Project"}</h3>
+            <ProjectForm
+              key={editingProject?.key ?? "new"}
+              project={editingProject}
+              saving={saving}
+              onSave={(p) => saveProject(p, !editingProject)}
+              onCancel={() => {
+                setEditingProject(null);
+                setShowAddForm(false);
+              }}
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 }
 
-// Project form component
+/* ------------------------------------------------------------------ */
+/* Project form                                                        */
+/* ------------------------------------------------------------------ */
+
 function ProjectForm({
   project,
   saving,
@@ -651,394 +632,233 @@ function ProjectForm({
   onSave: (p: Project) => void;
   onCancel: () => void;
 }) {
-  const [formData, setFormData] = useState<Project>(
-    project ? { ...project, tags: project.tags ?? [], gallery: project.gallery ?? [], caps: project.caps ?? [] } : {
-      key: "",
-      name: "",
-      cat: "",
-      sub: "",
-      desc: "",
-      quote: "",
-      tags: [],
-      cover: "",
-      lqip: "",
-      gallery: [],
-      caps: [],
-      think: {},
-    }
-  );
-  const [uploading, setUploading] = useState<string | null>(null);
+  const [f, setF] = useState<Project>(() => ({
+    key: "",
+    name: "",
+    cat: "",
+    sub: "",
+    desc: "",
+    quote: "",
+    lqip: "",
+    cover: "",
+    ...project,
+    tags: project?.tags ?? [],
+    gallery: project?.gallery ?? [],
+    caps: project?.caps ?? [],
+    think: project?.think ?? {},
+  }));
+  const [tagsText, setTagsText] = useState((project?.tags ?? []).join(", "));
+  const set = <K extends keyof Project>(k: K, v: Project[K]) => setF((p) => ({ ...p, [k]: v }));
+  const setThink = (k: string, v: unknown) => setF((p) => ({ ...p, think: { ...p.think, [k]: v } }));
 
-  async function uploadFile(file: File, target: "cover" | `gallery-${number}`) {
-    setUploading(target);
-    try {
-      const fd = new FormData();
-      fd.append("file", file);
-      const password = sessionStorage.getItem("admin_password") || "";
-      const res = await fetch("/api/upload", {
-        method: "POST",
-        headers: { Authorization: `Bearer ${password}` },
-        body: fd,
-      });
-      const json = await res.json();
-      if (!res.ok || !json.success) {
-        alert(json.error || "Upload failed");
-        return;
-      }
-      if (target === "cover") {
-        setFormData((prev) => ({ ...prev, cover: json.url }));
-      } else {
-        const idx = parseInt(target.split("-")[1], 10);
-        setFormData((prev) => {
-          const next = [...prev.gallery];
-          next[idx] = json.url;
-          return { ...prev, gallery: next };
-        });
-      }
-    } catch (err) {
-      alert(String(err));
-    } finally {
-      setUploading(null);
-    }
-  }
+  // Gallery images and their captions move together.
+  const slots = f.gallery.map((img, i) => ({ img, cap: f.caps[i] ?? "" }));
+  const setSlots = (next: { img: string; cap: string }[]) =>
+    setF((p) => ({ ...p, gallery: next.map((s) => s.img), caps: next.map((s) => s.cap) }));
 
-  function handleSubmit(e: React.FormEvent) {
+  function submit(e: React.FormEvent) {
     e.preventDefault();
-    onSave(formData);
+    const keep = slots.filter((s) => s.img);
+    onSave({
+      ...f,
+      tags: tagsText.split(",").map((t) => t.trim()).filter(Boolean),
+      gallery: keep.map((s) => s.img),
+      caps: keep.map((s) => s.cap),
+    });
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
+    <form onSubmit={submit} className="space-y-5">
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <div>
-          <label className="block text-sm font-semibold text-ink mb-2">Key (URL slug)</label>
+        <Field label="Key (URL slug)" hint={project ? "Can't be changed after creation." : "e.g. balcony-burgers"}>
           <input
             type="text"
-            value={formData.key}
-            onChange={(e) => setFormData({ ...formData, key: e.target.value })}
-            className="w-full px-4 py-2 border border-line rounded-lg focus:outline-none focus:ring-2 focus:ring-accent"
+            value={f.key}
+            onChange={(e) => set("key", e.target.value)}
+            className={`${inputCls} disabled:opacity-60`}
             required
             disabled={!!project}
           />
-        </div>
-        <div>
-          <label className="block text-sm font-semibold text-ink mb-2">Name</label>
-          <input
-            type="text"
-            value={formData.name}
-            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-            className="w-full px-4 py-2 border border-line rounded-lg focus:outline-none focus:ring-2 focus:ring-accent"
-            required
-          />
-        </div>
+        </Field>
+        <Field label="Name">
+          <input type="text" value={f.name} onChange={(e) => set("name", e.target.value)} className={inputCls} required />
+        </Field>
+        <Field label="Category" hint="Shown on the card, e.g. Brand Identity · Social">
+          <input type="text" value={f.cat} onChange={(e) => set("cat", e.target.value)} className={inputCls} required />
+        </Field>
+        <Field label="Subtitle">
+          <input type="text" value={f.sub} onChange={(e) => set("sub", e.target.value)} className={inputCls} />
+        </Field>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <div>
-          <label className="block text-sm font-semibold text-ink mb-2">Category</label>
-          <input
-            type="text"
-            value={formData.cat}
-            onChange={(e) => setFormData({ ...formData, cat: e.target.value })}
-            className="w-full px-4 py-2 border border-line rounded-lg focus:outline-none focus:ring-2 focus:ring-accent"
-            required
-          />
-        </div>
-        <div>
-          <label className="block text-sm font-semibold text-ink mb-2">Subtitle</label>
-          <input
-            type="text"
-            value={formData.sub}
-            onChange={(e) => setFormData({ ...formData, sub: e.target.value })}
-            className="w-full px-4 py-2 border border-line rounded-lg focus:outline-none focus:ring-2 focus:ring-accent"
-            required
-          />
-        </div>
-      </div>
+      <Field label="Description">
+        <TextInput value={f.desc} onChange={(v) => set("desc", v)} multiline rows={4} />
+      </Field>
+      <Field label="Quote" hint="Shown on the homepage card and as a pull-quote.">
+        <TextInput value={f.quote || ""} onChange={(v) => set("quote", v)} />
+      </Field>
+
+      <ImageField label="Cover image" value={f.cover} onChange={(url) => set("cover", url)} aspect={16 / 10} />
+
+      <Field label="Tags (comma-separated)">
+        <input type="text" value={tagsText} onChange={(e) => setTagsText(e.target.value)} className={inputCls} />
+      </Field>
 
       <div>
-        <label className="block text-sm font-semibold text-ink mb-2">Description</label>
-        <textarea
-          value={formData.desc}
-          onChange={(e) => setFormData({ ...formData, desc: e.target.value })}
-          rows={4}
-          className="w-full px-4 py-2 border border-line rounded-lg focus:outline-none focus:ring-2 focus:ring-accent"
-          required
-        />
-      </div>
-
-      <div>
-        <label className="block text-sm font-semibold text-ink mb-2">Quote</label>
-        <input
-          type="text"
-          value={formData.quote || ""}
-          onChange={(e) => setFormData({ ...formData, quote: e.target.value })}
-          className="w-full px-4 py-2 border border-line rounded-lg focus:outline-none focus:ring-2 focus:ring-accent"
-        />
-      </div>
-
-      <div>
-        <label className="block text-sm font-semibold text-ink mb-2">Cover Image</label>
-        <div
-          className="relative border-2 border-dashed border-line rounded-lg p-6 text-center hover:border-accent transition-colors cursor-pointer group"
-          onClick={() => document.getElementById("cover-upload")?.click()}
-          onDragOver={(e) => { e.preventDefault(); e.currentTarget.classList.add("border-accent", "bg-paper-lo/50"); }}
-          onDragLeave={(e) => { e.currentTarget.classList.remove("border-accent", "bg-paper-lo/50"); }}
-          onDrop={async (e) => {
-            e.preventDefault();
-            e.currentTarget.classList.remove("border-accent", "bg-paper-lo/50");
-            const file = e.dataTransfer.files[0];
-            if (file) await uploadFile(file, "cover");
-          }}
-        >
-          <input
-            id="cover-upload"
-            type="file"
-            accept="image/*"
-            className="hidden"
-            onChange={async (e) => {
-              const file = e.target.files?.[0];
-              if (file) await uploadFile(file, "cover");
-            }}
-          />
-          {formData.cover ? (
-            <div className="relative inline-block">
-              <img
-                src={formData.cover}
-                alt="Cover preview"
-                className="h-40 w-auto rounded-lg border border-line object-cover shadow-sm mx-auto"
-                onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }}
-              />
-              <button
-                type="button"
-                onClick={(e) => { e.stopPropagation(); setFormData({ ...formData, cover: "" }); }}
-                className="absolute -top-2 -right-2 w-6 h-6 bg-red-500 text-white rounded-full text-xs flex items-center justify-center hover:bg-red-600"
-              >
-                ✕
-              </button>
-              <p className="text-[10px] text-ink-50 mt-2">Click or drop to replace</p>
-            </div>
-          ) : (
-            <div className="py-4">
-              <svg className="w-10 h-10 mx-auto text-ink-50 group-hover:text-accent transition-colors mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
-              </svg>
-              <p className="text-sm text-ink-70 font-medium">Drop image here or click to upload</p>
-              <p className="text-[10px] text-ink-50 mt-1">JPEG, PNG, WebP - max 10MB</p>
-            </div>
-          )}
-        </div>
-        {uploading === "cover" && (
-          <div className="mt-2 flex items-center gap-2 text-sm text-ink-50">
-            <div className="w-4 h-4 border-2 border-accent border-t-transparent rounded-full animate-spin" />
-            Uploading…
-          </div>
-        )}
-      </div>
-
-      <div>
-        <label className="block text-sm font-semibold text-ink mb-2">Tags (comma-separated)</label>
-        <input
-          type="text"
-          value={formData.tags.join(", ")}
-          onChange={(e) =>
-            setFormData({ ...formData, tags: e.target.value.split(",").map((t, i) => (i === 0 ? t.trimStart() : t.replace(/^ /, ""))) })
-          }
-          className="w-full px-4 py-2 border border-line rounded-lg focus:outline-none focus:ring-2 focus:ring-accent"
-        />
-      </div>
-
-      {/* Gallery Images */}
-      <div>
-        <label className="block text-sm font-semibold text-ink mb-2">Gallery Images</label>
-        <div className="space-y-3 mb-3">
-          {formData.gallery.map((img, i) => (
-            <div
-              key={i}
-              className="relative border-2 border-dashed border-line rounded-lg p-3 flex items-center gap-3 hover:border-accent transition-colors cursor-pointer group"
-              onClick={() => document.getElementById(`gallery-upload-${i}`)?.click()}
-              onDragOver={(e) => { e.preventDefault(); e.currentTarget.classList.add("border-accent", "bg-paper-lo/50"); }}
-              onDragLeave={(e) => { e.currentTarget.classList.remove("border-accent", "bg-paper-lo/50"); }}
-              onDrop={async (e) => {
-                e.preventDefault();
-                e.currentTarget.classList.remove("border-accent", "bg-paper-lo/50");
-                const file = e.dataTransfer.files[0];
-                if (file) await uploadFile(file, `gallery-${i}`);
-              }}
-            >
-              <input
-                id={`gallery-upload-${i}`}
-                type="file"
-                accept="image/*"
-                className="hidden"
-                onChange={async (e) => {
-                  const file = e.target.files?.[0];
-                  if (file) await uploadFile(file, `gallery-${i}`);
-                }}
-              />
-              {img ? (
-                <img
-                  src={img}
-                  alt={`Gallery ${i + 1}`}
-                  className="h-20 w-28 rounded border border-line object-cover flex-shrink-0"
-                  onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }}
+        <label className="block text-sm font-semibold text-ink mb-2">Gallery</label>
+        <div className="space-y-3">
+          {slots.map((s, i) => (
+            <div key={i} className="border border-line rounded-lg p-3 space-y-2">
+              <div className="flex items-start justify-between gap-2">
+                <ImageField
+                  compact
+                  value={s.img}
+                  onChange={(url) => setSlots(slots.map((x, j) => (j === i ? { ...x, img: url } : x)))}
                 />
-              ) : (
-                <div className="h-20 w-28 rounded border border-line bg-paper-lo flex items-center justify-center flex-shrink-0">
-                  <svg className="w-6 h-6 text-ink-50 group-hover:text-accent transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
-                  </svg>
+                <div className="flex gap-1.5">
+                  <SmallBtn title="Move up" disabled={i === 0} onClick={() => setSlots(moveItem(slots, i, i - 1))}>↑</SmallBtn>
+                  <SmallBtn title="Move down" disabled={i === slots.length - 1} onClick={() => setSlots(moveItem(slots, i, i + 1))}>↓</SmallBtn>
+                  <SmallBtn title="Remove slot" danger onClick={() => setSlots(slots.filter((_, j) => j !== i))}>✕</SmallBtn>
                 </div>
-              )}
-              <div className="flex-1 min-w-0">
-                <p className="text-xs text-ink-70 font-medium truncate">
-                  {img ? `Image ${i + 1}` : `Drop or click to upload image ${i + 1}`}
-                </p>
-                <p className="text-[10px] text-ink-50 mt-0.5">JPEG, PNG, WebP - max 10MB</p>
-                {uploading === `gallery-${i}` && (
-                  <div className="mt-1 flex items-center gap-1.5 text-[10px] text-ink-50">
-                    <div className="w-3 h-3 border-2 border-accent border-t-transparent rounded-full animate-spin" />
-                    Uploading…
-                  </div>
-                )}
               </div>
-              <button
-                type="button"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  const next = formData.gallery.filter((_, idx) => idx !== i);
-                  setFormData({ ...formData, gallery: next });
-                }}
-                className="px-3 py-2 text-red-600 border border-red-300 rounded-lg hover:bg-red-50 transition-colors text-sm self-start"
-              >
-                Remove
-              </button>
+              <input
+                type="text"
+                value={s.cap}
+                placeholder="Caption (optional)"
+                onChange={(e) => setSlots(slots.map((x, j) => (j === i ? { ...x, cap: e.target.value } : x)))}
+                className={inputCls}
+              />
             </div>
           ))}
         </div>
         <button
           type="button"
-          onClick={() => setFormData({ ...formData, gallery: [...formData.gallery, ""] })}
-          className="px-4 py-2 text-sm border border-line rounded-lg hover:bg-paper-lo transition-colors"
+          onClick={() => setSlots([...slots, { img: "", cap: "" }])}
+          className="mt-3 px-3 py-2 text-sm border border-line rounded-lg hover:bg-paper-lo"
         >
-          + Add Gallery Slot
+          + Add gallery image
         </button>
       </div>
 
-      {/* Color Palette */}
       <div>
-        <label className="block text-sm font-semibold text-ink mb-2">Color Palette (think.pal)</label>
+        <label className="block text-sm font-semibold text-ink mb-2">Color palette</label>
         <div className="space-y-2 mb-2">
-          {(formData.think?.pal || []).map((color, i) => (
+          {(f.think?.pal || []).map((color, i) => (
             <div key={i} className="flex gap-2 items-center">
-              <div
-                className="w-8 h-8 rounded border border-line flex-shrink-0"
-                style={{ backgroundColor: color }}
+              <input
+                type="color"
+                value={/^#[0-9a-f]{6}$/i.test(color) ? color : "#000000"}
+                onChange={(e) => setThink("pal", (f.think?.pal || []).map((c, j) => (j === i ? e.target.value : c)))}
+                className="w-10 h-10 rounded border border-line shrink-0 p-0.5 bg-white"
               />
               <input
                 type="text"
                 value={color}
-                onChange={(e) => {
-                  const nextPal = [...(formData.think?.pal || [])];
-                  nextPal[i] = e.target.value;
-                  setFormData({ ...formData, think: { ...formData.think, pal: nextPal } });
-                }}
-                className="flex-1 px-4 py-2 border border-line rounded-lg focus:outline-none focus:ring-2 focus:ring-accent text-sm font-mono"
-                placeholder="#HEX or color name"
+                onChange={(e) => setThink("pal", (f.think?.pal || []).map((c, j) => (j === i ? e.target.value : c)))}
+                className={`${inputCls} font-mono`}
               />
-              <button
-                type="button"
-                onClick={() => {
-                  const nextPal = (formData.think?.pal || []).filter((_, idx) => idx !== i);
-                  setFormData({ ...formData, think: { ...formData.think, pal: nextPal } });
-                }}
-                className="px-3 py-2 text-red-600 border border-red-300 rounded-lg hover:bg-red-50 transition-colors text-sm"
-              >
-                Remove
-              </button>
+              <SmallBtn danger title="Remove" onClick={() => setThink("pal", (f.think?.pal || []).filter((_, j) => j !== i))}>✕</SmallBtn>
             </div>
           ))}
         </div>
         <button
           type="button"
-          onClick={() => {
-            const currentPal = formData.think?.pal || [];
-            setFormData({ ...formData, think: { ...formData.think, pal: [...currentPal, "#"] } });
-          }}
-          className="px-4 py-2 text-sm border border-line rounded-lg hover:bg-paper-lo transition-colors"
+          onClick={() => setThink("pal", [...(f.think?.pal || []), "#7F011F"])}
+          className="px-3 py-2 text-sm border border-line rounded-lg hover:bg-paper-lo"
         >
-          + Add Color
+          + Add color
         </button>
       </div>
 
-      {/* Think Section Fields */}
-      <div className="border-t border-line pt-4 mt-4">
-        <h4 className="font-serif text-lg text-ink mb-4">Design Thinking</h4>
+      <div className="border-t border-line pt-4">
+        <h4 className="font-serif text-lg text-ink mb-3">Design thinking</h4>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div>
-            <label className="block text-sm font-semibold text-ink mb-2">Challenge</label>
-            <textarea
-              value={formData.think?.challenge || ""}
-              onChange={(e) => setFormData({ ...formData, think: { ...formData.think, challenge: e.target.value } })}
-              rows={2}
-              className="w-full px-4 py-2 border border-line rounded-lg focus:outline-none focus:ring-2 focus:ring-accent text-sm"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-semibold text-ink mb-2">Idea</label>
-            <textarea
-              value={formData.think?.idea || ""}
-              onChange={(e) => setFormData({ ...formData, think: { ...formData.think, idea: e.target.value } })}
-              rows={2}
-              className="w-full px-4 py-2 border border-line rounded-lg focus:outline-none focus:ring-2 focus:ring-accent text-sm"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-semibold text-ink mb-2">Mark</label>
-            <input
-              type="text"
-              value={formData.think?.mark || ""}
-              onChange={(e) => setFormData({ ...formData, think: { ...formData.think, mark: e.target.value } })}
-              className="w-full px-4 py-2 border border-line rounded-lg focus:outline-none focus:ring-2 focus:ring-accent text-sm"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-semibold text-ink mb-2">Craft</label>
-            <input
-              type="text"
-              value={formData.think?.craft || ""}
-              onChange={(e) => setFormData({ ...formData, think: { ...formData.think, craft: e.target.value } })}
-              className="w-full px-4 py-2 border border-line rounded-lg focus:outline-none focus:ring-2 focus:ring-accent text-sm"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-semibold text-ink mb-2">Type</label>
-            <input
-              type="text"
-              value={formData.think?.type || ""}
-              onChange={(e) => setFormData({ ...formData, think: { ...formData.think, type: e.target.value } })}
-              className="w-full px-4 py-2 border border-line rounded-lg focus:outline-none focus:ring-2 focus:ring-accent text-sm"
-            />
-          </div>
+          {(["challenge", "idea", "mark", "craft", "type"] as const).map((k) => (
+            <Field key={k} label={k[0].toUpperCase() + k.slice(1)}>
+              <TextInput value={String(f.think?.[k] ?? "")} onChange={(v) => setThink(k, v)} multiline rows={2} />
+            </Field>
+          ))}
         </div>
       </div>
 
-      <div className="flex gap-3 pt-4">
+      <div className="flex gap-3 pt-2 sticky bottom-0 bg-white pb-1">
         <button
           type="submit"
           disabled={saving}
-          className="flex-1 bg-ink text-paper py-3 rounded-lg font-semibold hover:bg-ink-soft transition-colors disabled:opacity-50"
+          className="flex-1 bg-ink text-paper py-3 rounded-lg font-semibold hover:bg-ink-soft disabled:opacity-50"
         >
-          {saving ? "Saving…" : "Save Project"}
+          {saving ? "Saving…" : "Save project"}
         </button>
-        <button
-          type="button"
-          onClick={onCancel}
-          className="px-6 py-3 border border-line rounded-lg font-semibold hover:bg-paper-lo transition-colors"
-        >
+        <button type="button" onClick={onCancel} className="px-6 py-3 border border-line rounded-lg font-semibold hover:bg-paper-lo">
           Cancel
         </button>
       </div>
     </form>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/* UI/UX concepts editor                                               */
+/* ------------------------------------------------------------------ */
+
+function UiuxEditor({ value, onChange }: { value: VideoProject[]; onChange: (v: VideoProject[]) => void }) {
+  const update = (i: number, patch: Partial<VideoProject>) => onChange(value.map((v, j) => (j === i ? { ...v, ...patch } : v)));
+
+  return (
+    <section>
+      <div className="flex justify-between items-center mb-4">
+        <h2 className="font-serif text-2xl text-ink">UI/UX concepts ({value.length})</h2>
+        <button
+          onClick={() =>
+            onChange([
+              ...value,
+              { key: `concept-${Date.now().toString(36)}`, title: "New concept", description: "", poster: "", videoUrl: "", redesignUrl: "", tags: [] },
+            ])
+          }
+          className="px-4 py-2 bg-ink text-paper rounded-lg font-semibold hover:bg-ink-soft"
+        >
+          + Add concept
+        </button>
+      </div>
+      <div className="space-y-4">
+        {value.map((v, i) => (
+          <div key={v.key} className="bg-white rounded-xl p-4 sm:p-6 border border-line space-y-4">
+            <div className="flex items-center justify-between gap-2">
+              <span className="text-xs font-semibold tracking-[0.15em] uppercase text-ink-50">{String(i + 1).padStart(2, "0")}</span>
+              <div className="flex gap-1.5">
+                <SmallBtn title="Move up" disabled={i === 0} onClick={() => onChange(moveItem(value, i, i - 1))}>↑</SmallBtn>
+                <SmallBtn title="Move down" disabled={i === value.length - 1} onClick={() => onChange(moveItem(value, i, i + 1))}>↓</SmallBtn>
+                <SmallBtn danger onClick={() => confirm(`Remove "${v.title}"?`) && onChange(value.filter((_, j) => j !== i))}>
+                  Delete
+                </SmallBtn>
+              </div>
+            </div>
+            <Field label="Title">
+              <TextInput value={v.title} onChange={(t) => update(i, { title: t })} />
+            </Field>
+            <Field label="Description">
+              <TextInput value={v.description} onChange={(t) => update(i, { description: t })} multiline rows={3} />
+            </Field>
+            <Field label="Tags (comma-separated)">
+              <input
+                type="text"
+                defaultValue={v.tags.join(", ")}
+                onBlur={(e) => update(i, { tags: e.target.value.split(",").map((t) => t.trim()).filter(Boolean) })}
+                className={inputCls}
+              />
+            </Field>
+            <ImageField label="Poster image" value={v.poster} onChange={(url) => update(i, { poster: url })} aspect={16 / 10} />
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <Field label="Prototype link" hint="Opens when the card is tapped, e.g. /uiux/whish-money.html">
+                <TextInput value={v.redesignUrl || ""} onChange={(t) => update(i, { redesignUrl: t })} />
+              </Field>
+              <Field label="Film link" hint="Optional “Watch film” button">
+                <TextInput value={v.videoUrl} onChange={(t) => update(i, { videoUrl: t })} />
+              </Field>
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
   );
 }

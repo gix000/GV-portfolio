@@ -32,6 +32,7 @@ function Reveal({
 
 export function About() {
   const { data: siteData } = useSiteData();
+  const t = siteData.ui.about;
   return (
     <section
       id="about"
@@ -39,10 +40,10 @@ export function About() {
     >
       {/* Section kicker */}
       <Reveal className="flex items-center gap-4 text-[11px] tracking-[0.2em] uppercase text-ink-50 font-semibold mb-10">
-        <span className="text-accent">01</span>
-        <span>Introduction</span>
+        <span className="text-accent">{t.number}</span>
+        <span>{t.kicker}</span>
         <span className="flex-1 h-px bg-line" />
-        <span className="hidden sm:inline">The Designer</span>
+        <span className="hidden sm:inline">{t.kickerRight}</span>
       </Reveal>
 
       {/* Portrait - big and centered, no cadre */}
@@ -50,8 +51,8 @@ export function About() {
         <Reveal className="relative flex justify-center w-full">
           <div className="relative aspect-[3/4] overflow-hidden rounded-sm w-full max-w-[480px]">
             <Image
-              src="/assets/img/about.webp"
-              alt="George Charbel, Founder of G.VIISUALS"
+              src={t.portrait || "/assets/img/about.webp"}
+              alt={siteData.about.portraitTag}
               fill
               className="object-cover object-center"
               sizes="(max-width: 768px) 90vw, 480px"
@@ -83,21 +84,21 @@ export function About() {
           <div className="grid grid-cols-2 gap-8 mt-8 pt-8 border-t border-line">
             <div>
               <div className="text-[10px] tracking-[0.2em] uppercase text-ink-50 font-semibold mb-3">
-                Services
+                {t.servicesLabel}
               </div>
               <ul className="space-y-1.5 text-sm">
-                {siteData.about.services.map((s) => (
-                  <li key={s}>{s}</li>
+                {siteData.about.services.map((s, i) => (
+                  <li key={i}>{s}</li>
                 ))}
               </ul>
             </div>
             <div>
               <div className="text-[10px] tracking-[0.2em] uppercase text-ink-50 font-semibold mb-3">
-                Based in
+                {t.basedLabel}
               </div>
               <ul className="space-y-1.5 text-sm">
-                {siteData.about.basedList.map((s) => (
-                  <li key={s}>{s}</li>
+                {siteData.about.basedList.map((s, i) => (
+                  <li key={i}>{s}</li>
                 ))}
               </ul>
             </div>

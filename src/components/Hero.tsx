@@ -4,6 +4,7 @@ import { useSiteData } from "@/lib/useSiteData";
 
 export function Hero() {
   const { data: siteData } = useSiteData();
+  const t = siteData.ui.hero;
 
   return (
     <section
@@ -19,7 +20,7 @@ export function Hero() {
       >
         <div className="flex flex-col gap-1 text-right">
           <span className="hidden sm:inline">
-            Selected Works · Vol. {siteData.hero.volume.split(",")[0]}
+            {t.volumeChip}
           </span>
         </div>
       </motion.div>
@@ -34,7 +35,7 @@ export function Hero() {
           className="mb-2 md:mb-4 overflow-hidden"
         >
           <h2 className="font-serif italic leading-none tracking-[-0.02em] text-[clamp(2rem,6vw,4.5rem)] text-ink">
-            Ideas Into Reality
+            {t.tagline}
           </h2>
         </motion.div>
 
@@ -66,13 +67,13 @@ export function Hero() {
         className="grid grid-cols-2 md:grid-cols-4 gap-x-8 gap-y-6 mt-8 md:mt-12 max-w-[1280px]"
       >
         {[
-          { label: "Studio", value: siteData.hero.studio },
-          { label: "Discipline", value: "Brand Identity" },
-          { label: "Based in", value: siteData.hero.basedIn, serif: true },
-          { label: "Volume", value: siteData.hero.volume, serif: true },
+          { label: t.studioLabel, value: siteData.hero.studio },
+          { label: t.disciplineLabel, value: t.discipline },
+          { label: t.basedInLabel, value: siteData.hero.basedIn, serif: true },
+          { label: t.volumeLabel, value: siteData.hero.volume, serif: true },
         ].map((item, i) => (
           <motion.div
-            key={item.label}
+            key={i}
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{
@@ -100,7 +101,7 @@ export function Hero() {
         transition={{ delay: 1.5, duration: 1 }}
         className="mt-12 md:mt-16 flex items-center gap-3 text-[10px] tracking-[0.2em] uppercase text-ink-50 font-semibold"
       >
-        <span>Scroll</span>
+        <span>{t.scroll}</span>
         <motion.svg
           width="12"
           height="18"

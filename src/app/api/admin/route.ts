@@ -1,6 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getSupabase, SITE_DATA_ROW_ID } from "@/lib/supabase";
 import { siteData as defaultSiteData } from "@/lib/data";
+import { mergeSiteData } from "@/lib/mergeSiteData";
+
+// Top-level sections the admin may replace wholesale.
+const EDITABLE_SECTIONS = new Set(["meta", "hero", "about", "works", "contact", "ui", "uiuxVideos", "projects"]);
 
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "gv2026admin";
 
@@ -82,7 +86,7 @@ export async function GET(req: NextRequest) {
   }
   try {
     const data = await readData();
-    return NextResponse.json(data);
+    return NextResponse.json(mergeSiteData(data));
   } catch (err) {
     return NextResponse.json({ error: String(err) }, { status: 500 });
   }
@@ -127,6 +131,14 @@ export async function POST(req: NextRequest) {
       case "update_contact":
         current.contact = { ...(current.contact as object), ...payload };
         break;
+      case "set_section": {
+        const { section, value } = payload ?? {};
+        if (!EDITABLE_SECTIONS.has(section)) {
+          return NextResponse.json({ error: `Unknown section: ${section}` }, { status: 400 });
+        }
+        current[section] = value;
+        break;
+      }
       case "full_replace":
         Object.assign(current, payload);
         break;
@@ -135,7 +147,7 @@ export async function POST(req: NextRequest) {
     }
 
     await writeData(current);
-    return NextResponse.json({ success: true, data: current });
+    return NextResponse.json({ success: true, data: mergeSiteData(current) });
   } catch (err) {
     return NextResponse.json({ error: String(err) }, { status: 500 });
   }

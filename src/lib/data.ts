@@ -74,6 +74,68 @@ export interface SiteData {
   };
   projects: Project[];
   uiuxVideos: VideoProject[];
+  ui: UiText;
+}
+
+// Every small interface label on the site, so all of it is editable in /admin.
+export interface UiText {
+  nav: { uiuxButton: string };
+  intro: { tapToEnter: string };
+  hero: {
+    tagline: string;
+    volumeChip: string;
+    studioLabel: string;
+    disciplineLabel: string;
+    discipline: string;
+    basedInLabel: string;
+    volumeLabel: string;
+    scroll: string;
+  };
+  about: {
+    number: string;
+    kicker: string;
+    kickerRight: string;
+    servicesLabel: string;
+    basedLabel: string;
+    portrait: string;
+  };
+  works: {
+    number: string;
+    kicker: string;
+    kickerRight: string;
+    swipeHint: string;
+    countLabel: string;
+    imagesLabel: string;
+  };
+  contact: {
+    number: string;
+    kicker: string;
+    kickerRight: string;
+    igLabel: string;
+    telLabel: string;
+  };
+  caseStudy: {
+    back: string;
+    viewGallery: string;
+    closeGallery: string;
+    palette: string;
+    notFoundTitle: string;
+    notFoundText: string;
+    notFoundButton: string;
+  };
+  uiux: {
+    back: string;
+    topRight: string;
+    number: string;
+    kicker: string;
+    title: string;
+    intro: string;
+    tapToTry: string;
+    swipeHint: string;
+    countLabel: string;
+    viewerSubtitle: string;
+    watchFilm: string;
+  };
 }
 
 export const siteData: SiteData = {
@@ -137,6 +199,66 @@ export const siteData: SiteData = {
     whatsappText: "Hi George, I saw your portfolio and I'd love to talk.",
     footerA: "G.VIISUALS, George Charbel",
     footerB: "End of Volume 01 · Designed with purpose",
+  },
+  ui: {
+    nav: { uiuxButton: "UI/UX" },
+    intro: { tapToEnter: "Tap to Enter" },
+    hero: {
+      tagline: "Ideas Into Reality",
+      volumeChip: "Selected Works · Vol. 01",
+      studioLabel: "Studio",
+      disciplineLabel: "Discipline",
+      discipline: "Brand Identity",
+      basedInLabel: "Based in",
+      volumeLabel: "Volume",
+      scroll: "Scroll",
+    },
+    about: {
+      number: "01",
+      kicker: "Introduction",
+      kickerRight: "The Designer",
+      servicesLabel: "Services",
+      basedLabel: "Based in",
+      portrait: "/assets/img/about.webp",
+    },
+    works: {
+      number: "02",
+      kicker: "Selected Works",
+      kickerRight: "Branding & Packaging",
+      swipeHint: "Swipe for more",
+      countLabel: "projects",
+      imagesLabel: "images",
+    },
+    contact: {
+      number: "03",
+      kicker: "Contact",
+      kickerRight: "Let’s Work",
+      igLabel: "IG",
+      telLabel: "Tel",
+    },
+    caseStudy: {
+      back: "← Back to Works",
+      viewGallery: "View gallery",
+      closeGallery: "Close Gallery ×",
+      palette: "Color Palette",
+      notFoundTitle: "Project not found",
+      notFoundText: "The project you’re looking for doesn’t exist or has been removed.",
+      notFoundButton: "Back to Works",
+    },
+    uiux: {
+      back: "← Back to Home",
+      topRight: "UI/UX Work",
+      number: "03",
+      kicker: "UI/UX Design",
+      title: "Interface & Experience",
+      intro:
+        "Independent app redesign concepts you can actually tap through. Each one is a working interactive prototype — open it, play with it, feel the flow.",
+      tapToTry: "Tap to try",
+      swipeHint: "Swipe for more",
+      countLabel: "concepts",
+      viewerSubtitle: "Interactive concept · tap & try it",
+      watchFilm: "Watch film",
+    },
   },
   projects: [
     {

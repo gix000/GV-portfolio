@@ -4,11 +4,13 @@ import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import type { Project } from "@/lib/data";
+import { useSiteData } from "@/lib/useSiteData";
 
 export function CaseStudy({ project }: { project: Project }) {
   const [revealed, setRevealed] = useState(false);
   const prefersReduced = useReducedMotion();
   const router = useRouter();
+  const t = useSiteData().data.ui.caseStudy;
 
   // Navigate home; ScrollToTop reads this target after the homepage mounts
   // and Lenis-scrolls to the exact card (this component unmounts on nav,
@@ -41,7 +43,7 @@ export function CaseStudy({ project }: { project: Project }) {
           className="text-[11px] tracking-[0.18em] uppercase font-semibold hover:text-accent transition-colors duration-300 text-ink"
           data-cursor-hover
         >
-          &larr; Back to Works
+          {t.back}
         </button>
         <span className="text-[10px] tracking-[0.15em] uppercase text-ink-50 font-semibold">
           {project.cat}
@@ -58,16 +60,18 @@ export function CaseStudy({ project }: { project: Project }) {
             className="relative aspect-[16/10] overflow-hidden rounded-2xl bg-paper-lo mb-8 group cursor-pointer shadow-xl"
             onClick={() => !revealed && setRevealed(true)}
           >
-            <Image
-              src={project.cover}
-              alt={`${project.name} cover`}
-              fill
-              className="object-cover transition-transform duration-700 group-hover:scale-[1.02]"
-              sizes="(max-width: 1280px) 100vw, 1280px"
-              priority
-              placeholder={project.lqip ? "blur" : "empty"}
-              blurDataURL={project.lqip || undefined}
-            />
+            {project.cover && (
+              <Image
+                src={project.cover}
+                alt={`${project.name} cover`}
+                fill
+                className="object-cover transition-transform duration-700 group-hover:scale-[1.02]"
+                sizes="(max-width: 1280px) 100vw, 1280px"
+                priority
+                placeholder={project.lqip ? "blur" : "empty"}
+                blurDataURL={project.lqip || undefined}
+              />
+            )}
             {!revealed && (
               <div className="absolute inset-0 pointer-events-none">
                 <motion.div
@@ -77,7 +81,7 @@ export function CaseStudy({ project }: { project: Project }) {
                   className="absolute bottom-5 right-5 flex items-center gap-2 px-4 py-2 rounded-full bg-ink/55 backdrop-blur-md border border-white/10"
                 >
                   <span className="text-[10px] tracking-[0.2em] uppercase font-semibold text-white/90">
-                    View gallery
+                    {t.viewGallery}
                   </span>
                   <motion.svg
                     width="12"
@@ -127,7 +131,7 @@ export function CaseStudy({ project }: { project: Project }) {
                     className="text-[11px] tracking-[0.18em] uppercase font-semibold text-ink-50 hover:text-accent transition-colors"
                     data-cursor-hover
                   >
-                    Close Gallery &times;
+                    {t.closeGallery}
                   </button>
                 </div>
                 <div className="flex flex-col gap-5">
@@ -183,7 +187,7 @@ export function CaseStudy({ project }: { project: Project }) {
             {project.think?.pal && project.think.pal.length > 0 && (
               <div className="mb-8">
                 <h3 className="text-[11px] tracking-[0.2em] uppercase text-ink-50 font-semibold mb-3">
-                  Color Palette
+                  {t.palette}
                 </h3>
                 <div className="flex gap-3 flex-wrap">
                   {project.think.pal.map((color, i) => (

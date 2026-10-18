@@ -10,6 +10,7 @@ let hasVisitedWorks = false;
 
 export function ProjectGrid() {
   const { data } = useSiteData();
+  const t = data.ui.works;
   const headerRef = useRef<HTMLDivElement>(null);
   const headerInView = useInView(headerRef, { once: true, margin: "-80px" });
   const skipEntrance = hasVisitedWorks;
@@ -133,10 +134,10 @@ export function ProjectGrid() {
             transition={{ duration: skipEntrance ? 0 : 0.9, ease: [0.22, 1, 0.36, 1] }}
             className="flex items-center gap-4 text-[11px] tracking-[0.2em] uppercase text-ink-50 font-semibold mb-8"
           >
-            <span className="text-accent">02</span>
-            <span>Selected Works</span>
+            <span className="text-accent">{t.number}</span>
+            <span>{t.kicker}</span>
             <span className="flex-1 h-px bg-line" />
-            <span className="hidden sm:inline">Branding &amp; Packaging</span>
+            <span className="hidden sm:inline">{t.kickerRight}</span>
           </motion.div>
 
           <motion.h2
@@ -214,16 +215,18 @@ export function ProjectGrid() {
                 >
                   {/* Cover image — landscape 16/10 */}
                   <div className="relative aspect-[16/10] overflow-hidden rounded-t-2xl">
-                    <Image
-                      src={project.cover}
-                      alt={`${project.name} - ${project.sub}`}
-                      fill
-                      priority={i === 0}
-                      className="object-cover transition-transform duration-700 group-hover:scale-[1.03]"
-                      sizes="(max-width: 640px) 88vw, 640px"
-                      placeholder={project.lqip ? "blur" : "empty"}
-                      blurDataURL={project.lqip || undefined}
-                    />
+                    {project.cover && (
+                      <Image
+                        src={project.cover}
+                        alt={`${project.name} - ${project.sub}`}
+                        fill
+                        priority={i === 0}
+                        className="object-cover transition-transform duration-700 group-hover:scale-[1.03]"
+                        sizes="(max-width: 640px) 88vw, 640px"
+                        placeholder={project.lqip ? "blur" : "empty"}
+                        blurDataURL={project.lqip || undefined}
+                      />
+                    )}
                     <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/10 to-transparent" />
                     {project.gallery.length > 1 && (
                       <div className="absolute right-3 bottom-3 flex items-center gap-1.5 bg-black/40 backdrop-blur-sm text-white text-[9px] tracking-[0.13em] uppercase font-bold px-2.5 py-1.5 rounded-full border border-white/10">
@@ -232,7 +235,7 @@ export function ProjectGrid() {
                           <circle cx="8.5" cy="8.5" r="1.5" />
                           <path d="m21 15-5-5L5 21" />
                         </svg>
-                        {project.gallery.length} images
+                        {project.gallery.length} {t.imagesLabel}
                       </div>
                     )}
                   </div>
@@ -284,10 +287,10 @@ export function ProjectGrid() {
               <svg width="14" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                 <path d="M5 12h14M13 5l7 7-7 7" />
               </svg>
-              Swipe for more
+              {t.swipeHint}
             </motion.span>
             <span className="w-px h-3 bg-line" />
-            <span className="text-ink-50">{mergedDeck.length} projects</span>
+            <span className="text-ink-50">{mergedDeck.length} {t.countLabel}</span>
           </motion.div>
 
           {/* Progress dots */}

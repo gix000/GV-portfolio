@@ -1,47 +1,21 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { createContext, createElement, useContext, type ReactNode } from "react";
 import { siteData as defaultSiteData, type SiteData, type Project } from "@/lib/data";
+import { mergeSiteData } from "@/lib/mergeSiteData";
 
-// Client-side hook that fetches the live site data from /api/site (which
-// reads Supabase with a fallback to compiled defaults). Components call this
-// instead of importing the static `siteData` so admin edits show up on the
-// live site without a rebuild/redeploy.
+// The root layout reads the live site data (Supabase merged over defaults) on
+// the server and hands it down here, so every page renders the admin's text
+// on first paint - no flash of the old defaults, no client fetch.
+const SiteDataContext = createContext<SiteData | null>(null);
+
+export function SiteDataProvider({ value, children }: { value: SiteData; children: ReactNode }) {
+  return createElement(SiteDataContext.Provider, { value }, children);
+}
+
 export function useSiteData(): { data: SiteData; loading: boolean } {
-  const [data, setData] = useState<SiteData>(defaultSiteData);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    let cancelled = false;
-    fetch("/api/site", { cache: "no-store" })
-      .then((r) => (r.ok ? r.json() : null))
-      .then((json) => {
-        if (cancelled || !json) return;
-        // Merge on top of defaults so any field the admin hasn't set still
-        // resolves to a sensible value rather than undefined.
-        setData({
-          ...defaultSiteData,
-          ...json,
-          hero: { ...defaultSiteData.hero, ...(json.hero ?? {}) },
-          about: { ...defaultSiteData.about, ...(json.about ?? {}) },
-          works: { ...defaultSiteData.works, ...(json.works ?? {}) },
-          contact: { ...defaultSiteData.contact, ...(json.contact ?? {}) },
-          meta: { ...defaultSiteData.meta, ...(json.meta ?? {}) },
-          projects: Array.isArray(json.projects) ? json.projects : defaultSiteData.projects,
-        });
-      })
-      .catch(() => {
-        // Network failure - keep the compiled defaults already in state.
-      })
-      .finally(() => {
-        if (!cancelled) setLoading(false);
-      });
-    return () => {
-      cancelled = true;
-    };
-  }, []);
-
-  return { data, loading };
+  const ctx = useContext(SiteDataContext);
+  return { data: ctx ?? mergeSiteData(defaultSiteData), loading: false };
 }
 
 export function useProject(key: string | undefined): { project: Project | undefined; loading: boolean } {

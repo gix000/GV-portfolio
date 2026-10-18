@@ -5,30 +5,37 @@ import { CustomCursor } from "@/components/CustomCursor";
 import { LoadingScreen } from "@/components/LoadingScreen";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { ScrollToTop } from "@/components/ScrollToTop";
-import { siteData } from "@/lib/data";
+import { getLiveSiteData } from "@/lib/siteDataServer";
+import { SiteDataProvider } from "@/lib/useSiteData";
 
-export const metadata: Metadata = {
-  title: siteData.meta.title,
-  description: siteData.meta.description,
-  metadataBase: new URL("https://gviisuals.com"),
-  alternates: { canonical: "/" },
-  openGraph: {
-    type: "website",
-    title: siteData.meta.title,
-    description: siteData.meta.description,
-    url: "https://gviisuals.com/",
-    images: [{ url: "/og-image.jpg", width: 1200, height: 630 }],
-    siteName: "G.VIISUALS",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: siteData.meta.title,
-    description: siteData.meta.description,
-    images: ["/og-image.jpg"],
-  },
-};
+// Render with the live admin data on every request so edits show instantly.
+export const dynamic = "force-dynamic";
 
-const jsonLd = {
+export async function generateMetadata(): Promise<Metadata> {
+  const { meta } = await getLiveSiteData();
+  return {
+    title: meta.title,
+    description: meta.description,
+    metadataBase: new URL("https://gviisuals.com"),
+    alternates: { canonical: "/" },
+    openGraph: {
+      type: "website",
+      title: meta.title,
+      description: meta.description,
+      url: "https://gviisuals.com/",
+      images: [{ url: "/og-image.jpg", width: 1200, height: 630 }],
+      siteName: "G.VIISUALS",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: meta.title,
+      description: meta.description,
+      images: ["/og-image.jpg"],
+    },
+  };
+}
+
+const buildJsonLd = (siteData: Awaited<ReturnType<typeof getLiveSiteData>>) => ({
   "@context": "https://schema.org",
   "@type": "ProfessionalService",
   name: "G.VIISUALS",
@@ -54,13 +61,15 @@ const jsonLd = {
     "Packaging Design",
     "Social Media Design",
   ],
-};
+});
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const siteData = await getLiveSiteData();
+  const jsonLd = buildJsonLd(siteData);
   return (
     <html lang="en">
       <head>
@@ -83,6 +92,7 @@ export default function RootLayout({
           ["--font-sans" as string]: "'Hanken Grotesk', sans-serif",
         }}
       >
+        <SiteDataProvider value={siteData}>
         <ErrorBoundary>
           <LoadingScreen />
           <ScrollToTop />
@@ -92,6 +102,7 @@ export default function RootLayout({
             {children}
           </SmoothScroll>
         </ErrorBoundary>
+        </SiteDataProvider>
       </body>
     </html>
   );

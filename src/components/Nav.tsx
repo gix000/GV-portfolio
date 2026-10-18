@@ -2,8 +2,10 @@
 import { motion, useScroll, useTransform } from "framer-motion";
 import Link from "next/link";
 import Image from "next/image";
+import { useSiteData } from "@/lib/useSiteData";
 
 export function Nav() {
+  const { data } = useSiteData();
   const { scrollY } = useScroll();
   const bgOpacity = useTransform(scrollY, [0, 120], [0, 0.85]);
   const blur = useTransform(scrollY, [0, 120], [0, 12]);
@@ -41,7 +43,7 @@ export function Nav() {
           <svg width="11" height="11" viewBox="0 0 20 24" fill="none" aria-hidden="true">
             <path d="M2 2L18 12L2 22V2Z" fill="currentColor" />
           </svg>
-          UI/UX
+          {data.ui.nav.uiuxButton}
         </Link>
       </div>
     </motion.nav>
