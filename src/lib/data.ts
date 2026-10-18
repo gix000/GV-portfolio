@@ -119,6 +119,12 @@ export interface UiText {
     viewGallery: string;
     closeGallery: string;
     palette: string;
+    process: string;
+    challenge: string;
+    idea: string;
+    mark: string;
+    craft: string;
+    type: string;
     notFoundTitle: string;
     notFoundText: string;
     notFoundButton: string;
@@ -242,6 +248,12 @@ export const siteData: SiteData = {
       viewGallery: "View gallery",
       closeGallery: "Close Gallery ×",
       palette: "Color Palette",
+      process: "Process",
+      challenge: "The Challenge",
+      idea: "The Idea",
+      mark: "The Mark",
+      craft: "The Craft",
+      type: "Typography",
       notFoundTitle: "Project not found",
       notFoundText: "The project you’re looking for doesn’t exist or has been removed.",
       notFoundButton: "Back to Works",

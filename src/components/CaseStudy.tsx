@@ -21,6 +21,18 @@ export function CaseStudy({ project, onBack }: { project: Project; onBack?: () =
     router.push("/");
   }
 
+  const thinking = (
+    [
+      { key: "challenge", label: t.challenge },
+      { key: "idea", label: t.idea },
+      { key: "mark", label: t.mark },
+      { key: "craft", label: t.craft },
+      { key: "type", label: t.type },
+    ] as const
+  )
+    .map((x) => ({ ...x, text: (project.think?.[x.key] ?? "").trim() }))
+    .filter((x) => x.text);
+
   const pageVariants = {
     initial: { opacity: onBack ? 1 : 0 },
     animate: { opacity: 1, transition: { duration: 0.4, ease: [0.22, 1, 0.36, 1] as const } },
@@ -180,6 +192,34 @@ export function CaseStudy({ project, onBack }: { project: Project; onBack?: () =
               <blockquote className="font-serif text-xl italic text-ink border-l-2 border-accent pl-4 mb-8">
                 &ldquo;{project.quote}&rdquo;
               </blockquote>
+            )}
+
+            {/* Design thinking */}
+            {thinking.length > 0 && (
+              <section className="mt-12 mb-12">
+                <div className="flex items-center gap-4 text-[11px] tracking-[0.2em] uppercase text-ink-50 font-semibold mb-8">
+                  <span className="text-accent">{t.process}</span>
+                  <span className="flex-1 h-px bg-line" />
+                </div>
+                <div className="grid md:grid-cols-2 gap-x-12 gap-y-8">
+                  {thinking.map((item, i) => (
+                    <motion.div
+                      key={item.key}
+                      initial={prefersReduced ? false : { opacity: 0, y: 18 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true, margin: "0px 0px -40px 0px" }}
+                      transition={{ duration: 0.55, delay: (i % 2) * 0.06, ease: [0.22, 1, 0.36, 1] }}
+                      className="border-t border-line pt-4"
+                    >
+                      <div className="flex items-baseline gap-3 mb-2.5">
+                        <span className="text-[10px] font-semibold text-ink-50 tabular-nums">{String(i + 1).padStart(2, "0")}</span>
+                        <span className="text-[10px] tracking-[0.2em] uppercase text-accent font-bold">{item.label}</span>
+                      </div>
+                      <p className="text-[15px] leading-relaxed text-ink-70">{item.text}</p>
+                    </motion.div>
+                  ))}
+                </div>
+              </section>
             )}
 
             {project.think?.pal && project.think.pal.length > 0 && (
