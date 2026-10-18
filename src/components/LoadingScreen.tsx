@@ -7,19 +7,31 @@ import { useSiteData } from "@/lib/useSiteData";
 
 // Shown once per visit. Skipped on the admin panel and on shared project
 // links, which should open straight onto the project.
+//
+// `introSeen` is only ever read/written in the browser. (It used to be set
+// during render, which on the server leaked between pre-rendered pages: the
+// homepage HTML was built without the intro, so the page flashed before the
+// intro appeared.)
 let introSeen = false;
 
 export function LoadingScreen() {
   const pathname = usePathname();
-  const [skip, setSkip] = useState(() => introSeen || !!pathname?.startsWith("/projects"));
-  // No intro on the 404 page.
+  const routeSkips = !!pathname?.startsWith("/projects") || !!pathname?.startsWith("/admin");
+  const [skip, setSkip] = useState(() => routeSkips || (typeof window !== "undefined" && introSeen));
+
   useEffect(() => {
+    // No intro on the 404 page either.
     if (document.querySelector("[data-gv-404]")) setSkip(true);
   }, []);
-  if (skip || pathname?.startsWith("/admin")) {
+  useEffect(() => {
+    if (!(skip || routeSkips)) return;
+    // Once skipped (or the visitor moved to a project/admin URL), never show
+    // it again this visit, even after returning to the homepage.
     introSeen = true;
-    return null;
-  }
+    if (!skip) setSkip(true);
+  }, [skip, routeSkips]);
+
+  if (skip || routeSkips) return null;
   return <LoadingScreenInner />;
 }
 
