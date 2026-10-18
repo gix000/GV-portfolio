@@ -185,7 +185,7 @@ export default function UiUxPage() {
             <div
               ref={scrollerRef}
               className="flex gap-6 md:gap-8 overflow-x-auto snap-x snap-mandatory pb-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden [overscroll-behavior-x:contain]"
-              style={{ touchAction: "pan-x pan-y" }}
+              style={{ touchAction: "pan-x", WebkitOverflowScrolling: "touch", scrollSnapType: "x mandatory" }}
             >
               <div aria-hidden="true" className="shrink-0 gv-spacer" />
 
@@ -202,7 +202,7 @@ export default function UiUxPage() {
                     delay: Math.min(i * 0.05, 0.3),
                     ease: [0.22, 1, 0.36, 1],
                   }}
-                  className="shrink-0 snap-center w-[88vw] sm:w-[560px] md:w-[640px] transition-transform duration-500 ease-out will-change-transform"
+                  className="shrink-0 snap-center [scroll-snap-stop:always] w-[88vw] sm:w-[560px] md:w-[640px] transition-transform duration-500 ease-out will-change-transform"
                   style={{ opacity: activeIndex === i ? 1 : 0.6 }}
                 >
                   <button
