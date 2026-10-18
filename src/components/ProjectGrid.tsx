@@ -61,33 +61,50 @@ export function ProjectGrid() {
     return () => observer.disconnect();
   }, [mergedDeck.length]);
 
-  // Hard-lock: after the user stops scrolling, snap to the nearest card center
-  // (CSS snap-mandatory drifts on iOS Safari; this guarantees it settles on a card).
+  // Fallback lock: once the swipe has fully settled (finger up + no scroll
+  // events for a moment), nudge to the nearest card center if CSS snap left
+  // it slightly off. Never runs mid-gesture, so it can't fight momentum.
   useEffect(() => {
     const scroller = scrollerRef.current;
     if (!scroller) return;
-        let timer: ReturnType<typeof setTimeout> | null = null;
+    let timer: ReturnType<typeof setTimeout> | null = null;
+    let touching = false;
     const snapToNearest = () => {
+      if (touching) return;
       const cards = Array.from(scroller.querySelectorAll<HTMLElement>("[data-card]"));
       if (cards.length === 0) return;
       const center = scroller.scrollLeft + scroller.clientWidth / 2;
-      let nearest = cards[0];
+      let target = scroller.scrollLeft;
       let minDist = Infinity;
       cards.forEach((c) => {
-        const cCenter = c.offsetLeft + c.offsetWidth / 2;
-        const dist = Math.abs(cCenter - center);
-        if (dist < minDist) { minDist = dist; nearest = c; }
+        const dist = c.offsetLeft + c.offsetWidth / 2 - center;
+        if (Math.abs(dist) < Math.abs(minDist)) minDist = dist;
       });
-      const target = (nearest as HTMLElement).offsetLeft + (nearest as HTMLElement).offsetWidth / 2 - scroller.clientWidth / 2;
+      if (Math.abs(minDist) < 2) return;
+      target = scroller.scrollLeft + minDist;
       scroller.scrollTo({ left: target, behavior: "smooth" });
     };
-    const onScroll = () => {
+    const schedule = () => {
       if (timer) clearTimeout(timer);
-      timer = setTimeout(snapToNearest, 120);
+      timer = setTimeout(snapToNearest, 180);
     };
-    scroller.addEventListener("scroll", onScroll, { passive: true });
+    const onTouchStart = () => {
+      touching = true;
+      if (timer) clearTimeout(timer);
+    };
+    const onTouchEnd = () => {
+      touching = false;
+      schedule();
+    };
+    scroller.addEventListener("scroll", schedule, { passive: true });
+    scroller.addEventListener("touchstart", onTouchStart, { passive: true });
+    scroller.addEventListener("touchend", onTouchEnd, { passive: true });
+    scroller.addEventListener("touchcancel", onTouchEnd, { passive: true });
     return () => {
-      scroller.removeEventListener("scroll", onScroll);
+      scroller.removeEventListener("scroll", schedule);
+      scroller.removeEventListener("touchstart", onTouchStart);
+      scroller.removeEventListener("touchend", onTouchEnd);
+      scroller.removeEventListener("touchcancel", onTouchEnd);
       if (timer) clearTimeout(timer);
     };
   }, [mergedDeck.length]);
@@ -107,12 +124,6 @@ export function ProjectGrid() {
 
   return (
     <section id="works" className="pt-28 pb-12">
-      <style>{`
-        .gv-spacer { width: calc(50vw - 44vw - 12px); }
-        @media (min-width: 640px) { .gv-spacer { width: calc(50vw - 280px - 12px); } }
-        @media (min-width: 768px) { .gv-spacer { width: calc(50vw - 320px - 16px); } }
-      `}</style>
-
       <div className="max-w-[1280px] mx-auto px-[clamp(28px,6vw,72px)]">
         {/* Section header */}
         <div ref={headerRef} className="mb-8">
@@ -159,8 +170,8 @@ export function ProjectGrid() {
       <div className="relative">
         <div
           ref={scrollerRef}
-          className="flex gap-6 md:gap-8 overflow-x-auto snap-x snap-mandatory pb-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden [overscroll-behavior-x:contain]"
-          style={{ touchAction: "pan-x", WebkitOverflowScrolling: "touch", scrollSnapType: "x mandatory", scrollBehavior: "smooth" }}
+          className="flex items-start gap-6 md:gap-8 overflow-x-auto overflow-y-hidden snap-x snap-mandatory -mt-4 pt-4 pb-12 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden [overscroll-behavior-x:contain]"
+          style={{ touchAction: "pan-x pan-y" }}
         >
           {/* Leading spacer tracks half-card at every breakpoint so card 1 snaps dead-center */}
           <div
@@ -185,35 +196,20 @@ export function ProjectGrid() {
                 delay: skipEntrance ? 0 : Math.min(i * 0.05, 0.3),
                 ease: [0.22, 1, 0.36, 1],
               }}
-              className="shrink-0 snap-center [scroll-snap-stop:always] w-[88vw] sm:w-[560px] md:w-[640px] transition-transform duration-500 ease-out will-change-transform"
+              className="shrink-0 snap-center [scroll-snap-stop:always] w-[88vw] sm:w-[560px] md:w-[640px] transition-opacity duration-500"
               style={{
                 opacity: activeIndex === i ? 1 : 0.6,
               }}
             >
-              {/* Soft glow behind the centered card — fades in/out as it becomes active */}
-              <div
-                aria-hidden="true"
-                className="pointer-events-none absolute -inset-6 -z-10 rounded-[2rem] transition-opacity duration-500"
-                style={{
-                  opacity: activeIndex === i ? 1 : 0,
-                  background:
-                    "radial-gradient(60% 55% at 50% 45%, rgba(127, 1, 31, 0.22) 0%, rgba(127, 1, 31, 0.10) 45%, rgba(127, 1, 31, 0) 75%)",
-                  filter: "blur(28px)",
-                }}
-              />
               <Link href={`/projects/${project.key}`} className="block group">
                 <div
-                  className={`relative overflow-hidden rounded-2xl bg-paper border transition-all duration-500 group-hover:-translate-y-1 ${
-                    activeIndex === i ? "border-accent ring-2 ring-accent/30" : "border-line"
-                  }`}
+                  className="relative overflow-hidden rounded-2xl bg-paper transition-[box-shadow,border-color] duration-500"
                   style={{
-                    borderColor: activeIndex === i ? "#7F011F" : "rgba(127, 1, 31, 0.45)",
-                    borderWidth: "1.5px",
-                    borderStyle: "solid",
+                    border: `1.5px solid ${activeIndex === i ? "#7F011F" : "rgba(127, 1, 31, 0.45)"}`,
                     boxShadow:
                       activeIndex === i
-                        ? "0 12px 34px rgba(127, 1, 31, 0.20), inset 0 2px 4px rgba(0, 0, 0, 0.05)"
-                        : "0 4px 14px rgba(127, 1, 31, 0.08)",
+                        ? "0 18px 40px -12px rgba(0, 0, 0, 0.35)"
+                        : "0 10px 24px -12px rgba(0, 0, 0, 0.18)",
                   }}
                 >
                   {/* Cover image — landscape 16/10 */}
@@ -271,7 +267,7 @@ export function ProjectGrid() {
         </div>
 
         {/* Prominent "more projects" cue — sits right under the carousel */}
-        <div className="mt-6 flex flex-col items-center gap-2">
+        <div className="flex flex-col items-center gap-2">
           {/* Animated swipe pill */}
           <motion.div
             aria-hidden="true"
