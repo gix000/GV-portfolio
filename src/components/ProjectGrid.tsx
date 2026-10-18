@@ -76,7 +76,7 @@ export function ProjectGrid() {
       const center = scroller.scrollLeft + scroller.clientWidth / 2;
       let target = scroller.scrollLeft;
       let minDist = Infinity;
-      cards.forEach((c) => {
+      cards.forEach((c: HTMLElement) => {
         const dist = c.offsetLeft + c.offsetWidth / 2 - center;
         if (Math.abs(dist) < Math.abs(minDist)) minDist = dist;
       });
@@ -221,8 +221,8 @@ export function ProjectGrid() {
                       priority={i === 0}
                       className="object-cover transition-transform duration-700 group-hover:scale-[1.03]"
                       sizes="(max-width: 640px) 88vw, 640px"
-                      placeholder="blur"
-                      blurDataURL={project.lqip}
+                      placeholder={project.lqip ? "blur" : "empty"}
+                      blurDataURL={project.lqip || undefined}
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/10 to-transparent" />
                     {project.gallery.length > 1 && (

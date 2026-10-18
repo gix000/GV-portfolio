@@ -75,6 +75,12 @@ export default function AdminPage() {
   const [activeTab, setActiveTab] = useState<"projects" | "meta" | "hero" | "about" | "contact">("projects");
   const [editingProject, setEditingProject] = useState<Project | null>(null);
   const [showAddForm, setShowAddForm] = useState(false);
+  const [notice, setNotice] = useState("");
+
+  function flash(msg: string) {
+    setNotice(msg);
+    setTimeout(() => setNotice(""), 2500);
+  }
 
   // Check if already authenticated
   useEffect(() => {
@@ -184,11 +190,33 @@ export default function AdminPage() {
     }
   }
 
-  async function saveProject(project: Project) {
+  async function saveProject(project: Project, isNew: boolean) {
     const storedPass = sessionStorage.getItem("admin_password");
     if (!storedPass || !data) return;
 
+    // URL-safe slug: "Balcony Burgers" -> "balcony-burgers"
+    const key = project.key
+      .trim()
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-+|-+$/g, "");
+    if (!key) {
+      setError("Key is required (letters or numbers).");
+      return;
+    }
+    if (isNew && data.projects.some((p) => p.key === key)) {
+      setError(`A project with the key "${key}" already exists. Pick another key.`);
+      return;
+    }
+    project = {
+      ...project,
+      key,
+      tags: project.tags.map((t) => t.trim()).filter(Boolean),
+      gallery: project.gallery.filter(Boolean),
+    };
+
     setLoading(true);
+    setError("");
     try {
       const res = await fetch("/api/admin", {
         method: "POST",
@@ -204,9 +232,10 @@ export default function AdminPage() {
 
       if (res.ok) {
         const result = await res.json();
-        setData(result.data);
+        setData(normalize(result.data));
         setEditingProject(null);
         setShowAddForm(false);
+        flash(isNew ? "Project added" : "Project saved");
       } else {
         const errData = await res.json().catch(() => ({}));
         setError(errData.error || `Failed to save project (${res.status})`);
@@ -226,13 +255,14 @@ export default function AdminPage() {
 
     setLoading(true);
     try {
-      const res = await fetch(`/api/admin?key=${key}`, {
+      const res = await fetch(`/api/admin?key=${encodeURIComponent(key)}`, {
         method: "DELETE",
         headers: { Authorization: `Bearer ${storedPass}` },
       });
 
       if (res.ok) {
-        fetchData();
+        await fetchData();
+        flash("Project deleted");
       } else {
         const errData = await res.json().catch(() => ({}));
         setError(errData.error || `Failed to delete project (${res.status})`);
@@ -264,7 +294,8 @@ export default function AdminPage() {
 
       if (res.ok) {
         const result = await res.json();
-        setData(result.data);
+        setData(normalize(result.data));
+        flash("Saved");
       } else {
         const errData = await res.json().catch(() => ({}));
         setError(errData.error || `Failed to update (${res.status})`);
@@ -336,6 +367,12 @@ export default function AdminPage() {
       </header>
 
       <div className="max-w-7xl mx-auto px-6 py-8">
+        {notice && (
+          <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-[60] px-4 py-2 rounded-full bg-ink text-paper text-sm font-semibold shadow-lg">
+            {notice}
+          </div>
+        )}
+
         {/* Error banner */}
         {error && (
           <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg flex items-start justify-between gap-4">
@@ -433,14 +470,16 @@ export default function AdminPage() {
                     exit={{ opacity: 0, y: -20 }}
                     className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50 overflow-y-auto"
                   >
-                    <div className="bg-white rounded-2xl p-8 max-w-3xl w-full max-h-[90vh] overflow-y-auto">
+                    <div data-lenis-prevent className="bg-white rounded-2xl p-5 sm:p-8 max-w-3xl w-full max-h-[90vh] overflow-y-auto overscroll-contain">
                       <h3 className="font-serif text-2xl text-ink mb-6">
                         {editingProject ? "Edit Project" : "Add New Project"}
                       </h3>
 
                       <ProjectForm
+                        key={editingProject?.key ?? "new"}
                         project={editingProject}
-                        onSave={saveProject}
+                        saving={loading}
+                        onSave={(p) => saveProject(p, !editingProject)}
                         onCancel={() => {
                           setEditingProject(null);
                           setShowAddForm(false);
@@ -603,15 +642,17 @@ export default function AdminPage() {
 // Project form component
 function ProjectForm({
   project,
+  saving,
   onSave,
   onCancel,
 }: {
   project: Project | null;
+  saving: boolean;
   onSave: (p: Project) => void;
   onCancel: () => void;
 }) {
   const [formData, setFormData] = useState<Project>(
-    project || {
+    project ? { ...project, tags: project.tags ?? [], gallery: project.gallery ?? [], caps: project.caps ?? [] } : {
       key: "",
       name: "",
       cat: "",
@@ -668,7 +709,7 @@ function ProjectForm({
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
           <label className="block text-sm font-semibold text-ink mb-2">Key (URL slug)</label>
           <input
@@ -692,7 +733,7 @@ function ProjectForm({
         </div>
       </div>
 
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
           <label className="block text-sm font-semibold text-ink mb-2">Category</label>
           <input
@@ -801,7 +842,7 @@ function ProjectForm({
           type="text"
           value={formData.tags.join(", ")}
           onChange={(e) =>
-            setFormData({ ...formData, tags: e.target.value.split(",").map((t) => t.trim()) })
+            setFormData({ ...formData, tags: e.target.value.split(",").map((t, i) => (i === 0 ? t.trimStart() : t.replace(/^ /, ""))) })
           }
           className="w-full px-4 py-2 border border-line rounded-lg focus:outline-none focus:ring-2 focus:ring-accent"
         />
@@ -933,7 +974,7 @@ function ProjectForm({
       {/* Think Section Fields */}
       <div className="border-t border-line pt-4 mt-4">
         <h4 className="font-serif text-lg text-ink mb-4">Design Thinking</h4>
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-semibold text-ink mb-2">Challenge</label>
             <textarea
@@ -985,9 +1026,10 @@ function ProjectForm({
       <div className="flex gap-3 pt-4">
         <button
           type="submit"
-          className="flex-1 bg-ink text-paper py-3 rounded-lg font-semibold hover:bg-ink-soft transition-colors"
+          disabled={saving}
+          className="flex-1 bg-ink text-paper py-3 rounded-lg font-semibold hover:bg-ink-soft transition-colors disabled:opacity-50"
         >
-          Save Project
+          {saving ? "Saving…" : "Save Project"}
         </button>
         <button
           type="button"

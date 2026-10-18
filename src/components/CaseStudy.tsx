@@ -65,8 +65,8 @@ export function CaseStudy({ project }: { project: Project }) {
               className="object-cover transition-transform duration-700 group-hover:scale-[1.02]"
               sizes="(max-width: 1280px) 100vw, 1280px"
               priority
-              placeholder="blur"
-              blurDataURL={project.lqip}
+              placeholder={project.lqip ? "blur" : "empty"}
+              blurDataURL={project.lqip || undefined}
             />
             {!revealed && (
               <div className="absolute inset-0 pointer-events-none">

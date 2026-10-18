@@ -1,22 +1,40 @@
 import Link from "next/link";
-import { siteData } from "@/lib/data";
+import { siteData, type Project } from "@/lib/data";
+import { getSupabase, SITE_DATA_ROW_ID } from "@/lib/supabase";
 import { ProjectClientPage } from "./ProjectClientPage";
 
-// Static generation: resolve the project at build time so there is zero
-// fetch wait on navigation - the case study renders immediately.
-export function generateStaticParams() {
-  return siteData.projects.map((p) => ({ slug: p.key }));
+// Read live from Supabase on every request so projects added, renamed or
+// deleted in /admin show up here immediately (the old build-time version only
+// ever knew the compiled defaults, so new projects 404'd and edits never
+// reached the case study pages).
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
+async function getProjects(): Promise<Project[]> {
+  try {
+    const supabase = getSupabase();
+    const { data, error } = await supabase
+      .from("site_data")
+      .select("data")
+      .eq("id", SITE_DATA_ROW_ID)
+      .maybeSingle();
+    const live = (data?.data as { projects?: unknown } | undefined)?.projects;
+    if (!error && Array.isArray(live)) return live as Project[];
+  } catch {
+    // Supabase unavailable - fall through to compiled defaults.
+  }
+  return siteData.projects;
 }
 
-export default function ProjectPage({
+export default async function ProjectPage({
   params,
 }: {
   params: Promise<{ slug: string }>;
 }) {
-  // Next.js 15 App Router: params is async; unwrap synchronously here since
-  // generateStaticParams guarantees the slug exists at build time.
-  const { slug } = (params as unknown as { slug: string }) ?? { slug: "" };
-  const project = siteData.projects.find((p) => p.key === slug);
+  const { slug } = await params;
+  const key = decodeURIComponent(slug);
+  const projects = await getProjects();
+  const project = projects.find((p) => p.key === key);
 
   if (!project) {
     return (

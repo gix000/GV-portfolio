@@ -3,6 +3,8 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   images: {
     formats: ["image/webp", "image/avif"],
+    // Images uploaded through /admin live in Supabase Storage.
+    remotePatterns: [{ protocol: "https", hostname: "*.supabase.co" }],
   },
   // Disable ESLint during build to prevent linting errors from failing the deployment
   eslint: {

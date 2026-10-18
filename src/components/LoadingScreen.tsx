@@ -2,8 +2,16 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect } from "react";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 
+// The folder intro is for visitors, not for the admin panel.
 export function LoadingScreen() {
+  const pathname = usePathname();
+  if (pathname?.startsWith("/admin")) return null;
+  return <LoadingScreenInner />;
+}
+
+function LoadingScreenInner() {
   const [isOpen, setIsOpen] = useState(false);
   const [isGone, setIsGone] = useState(false);
 

@@ -145,7 +145,7 @@ export default function UiUxPage() {
       const center = scroller.scrollLeft + scroller.clientWidth / 2;
       let target = scroller.scrollLeft;
       let minDist = Infinity;
-      cards.forEach((c) => {
+      cards.forEach((c: HTMLElement) => {
         const dist = c.offsetLeft + c.offsetWidth / 2 - center;
         if (Math.abs(dist) < Math.abs(minDist)) minDist = dist;
       });

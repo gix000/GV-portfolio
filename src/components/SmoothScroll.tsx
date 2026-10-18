@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useRef } from "react";
 import Lenis from "lenis";
+import { usePathname } from "next/navigation";
 
 // Expose the Lenis instance globally so other components (ScrollToTop,
 // LoadingScreen) can call lenis.scrollTo(0) instead of window.scrollTo,
@@ -13,8 +14,12 @@ declare global {
 
 export function SmoothScroll({ children }: { children: React.ReactNode }) {
   const lenisRef = useRef<Lenis | null>(null);
+  // Lenis hijacks wheel scrolling, which freezes scrollable panels like the
+  // admin edit form (its Save button became unreachable). Keep it off there.
+  const isAdmin = usePathname()?.startsWith("/admin") ?? false;
 
   useEffect(() => {
+    if (isAdmin) return;
     const prefersReducedMotion = window.matchMedia(
       "(prefers-reduced-motion: reduce)"
     ).matches;
@@ -34,17 +39,19 @@ export function SmoothScroll({ children }: { children: React.ReactNode }) {
     lenisRef.current = lenis;
     window.__lenis = lenis;
 
+    let rafId = 0;
     function raf(time: number) {
       lenis.raf(time);
-      requestAnimationFrame(raf);
+      rafId = requestAnimationFrame(raf);
     }
-    requestAnimationFrame(raf);
+    rafId = requestAnimationFrame(raf);
 
     return () => {
+      cancelAnimationFrame(rafId);
       window.__lenis = undefined;
       lenis.destroy();
     };
-  }, []);
+  }, [isAdmin]);
 
   return <>{children}</>;
 }

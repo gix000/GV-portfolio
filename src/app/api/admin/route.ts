@@ -38,6 +38,33 @@ async function readData() {
   }
 }
 
+// Strict read for writes: never build a save on top of the compiled defaults
+// because of a transient read error - that would wipe every admin edit.
+async function readDataForWrite(): Promise<Record<string, unknown>> {
+  const supabase = getSupabase();
+  const { data, error } = await supabase
+    .from("site_data")
+    .select("data")
+    .eq("id", SITE_DATA_ROW_ID)
+    .maybeSingle();
+  if (error) throw new Error(explain(error.message));
+  const blob = data?.data as Record<string, unknown> | undefined;
+  if (!blob || Object.keys(blob).length === 0) {
+    return JSON.parse(JSON.stringify(defaultSiteData));
+  }
+  return blob;
+}
+
+function explain(msg: string): string {
+  if (/row-level security|permission denied|42501/i.test(msg)) {
+    return `${msg} - SUPABASE_SERVICE_ROLE_KEY on Vercel is not the service_role key (it looks like the anon key). Copy the service_role secret from Supabase → Settings → API, update it on Vercel, then redeploy.`;
+  }
+  if (/relation .*site_data.* does not exist|could not find the table/i.test(msg)) {
+    return `${msg} - the site_data table is missing in Supabase.`;
+  }
+  return msg;
+}
+
 async function writeData(data: unknown) {
   const supabase = getSupabase();
   const { error } = await supabase
@@ -46,7 +73,7 @@ async function writeData(data: unknown) {
       { id: SITE_DATA_ROW_ID, data, updated_at: new Date().toISOString() },
       { onConflict: "id" }
     );
-  if (error) throw new Error(error.message);
+  if (error) throw new Error(explain(error.message));
 }
 
 export async function GET(req: NextRequest) {
@@ -68,7 +95,7 @@ export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
     const { action, payload } = body;
-    const current = (await readData()) as Record<string, unknown>;
+    const current = await readDataForWrite();
 
     switch (action) {
       case "update_project": {
@@ -123,7 +150,7 @@ export async function DELETE(req: NextRequest) {
   if (!key) return NextResponse.json({ error: "Missing key" }, { status: 400 });
 
   try {
-    const current = (await readData()) as Record<string, unknown>;
+    const current = await readDataForWrite();
     const projects = (current.projects as Array<{ key: string }>) || [];
     current.projects = projects.filter((p) => p.key !== key);
     await writeData(current);
