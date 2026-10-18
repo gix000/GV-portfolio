@@ -120,6 +120,7 @@ export interface UiText {
     closeGallery: string;
     palette: string;
     process: string;
+    nextProject: string;
     challenge: string;
     idea: string;
     mark: string;
@@ -249,6 +250,7 @@ export const siteData: SiteData = {
       closeGallery: "Close Gallery ×",
       palette: "Color Palette",
       process: "Process",
+      nextProject: "Next project",
       challenge: "The Challenge",
       idea: "The Idea",
       mark: "The Mark",

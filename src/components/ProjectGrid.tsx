@@ -16,6 +16,27 @@ declare global {
 
 const RETURN_KEY = "gv_return_card";
 
+const NUMBER_WORDS = [
+  "Zero", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten",
+  "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eighteen",
+  "Nineteen", "Twenty",
+];
+
+// Keep the heading honest: "{count}" or a number before "brands"/"projects"
+// is replaced with the real project count, matching the original style
+// (word or digits, capitalised or not).
+function withProjectCount(title: string, count: number): string {
+  const word = NUMBER_WORDS[count] ?? String(count);
+  const asWord = (sample: string) =>
+    /^\d+$/.test(sample) ? String(count) : sample[0] === sample[0].toLowerCase() ? word.toLowerCase() : word;
+  return title
+    .replace(/\{count\}/g, word)
+    .replace(
+      new RegExp(`\\b(${NUMBER_WORDS.join("|")}|\\d+)(?=(\\s|&nbsp;)+(brands?|projects?|identities)\\b)`, "i"),
+      (m) => asWord(m),
+    );
+}
+
 let hasVisitedWorks = false;
 
 export function ProjectGrid() {
@@ -49,6 +70,21 @@ export function ProjectGrid() {
     else {
       window.history.replaceState(window.history.state, "", "/");
       setOpenKey(null);
+    }
+  }, []);
+
+  // "Next project" inside the overlay: swap the project in place (no new
+  // history entry, so Back still returns to the carousel) and move the
+  // carousel underneath to that card.
+  const overlayRef = useRef<HTMLDivElement>(null);
+  const nextProject = useCallback((key: string) => {
+    window.__gvOverlayNav = Date.now();
+    window.history.replaceState({ ...window.history.state, gvProject: key }, "", `/projects/${key}`);
+    setOpenKey(key);
+    const scroller = scrollerRef.current;
+    const card = scroller?.querySelector<HTMLElement>(`[data-key="${CSS.escape(key)}"]`);
+    if (scroller && card) {
+      scroller.scrollTo({ left: card.offsetLeft + card.offsetWidth / 2 - scroller.clientWidth / 2, behavior: "auto" });
     }
   }, []);
 
@@ -209,7 +245,7 @@ export function ProjectGrid() {
               ease: [0.22, 1, 0.36, 1],
             }}
             className="font-serif text-3xl md:text-5xl tracking-tight text-ink leading-[1.1]"
-            dangerouslySetInnerHTML={{ __html: data.works.title }}
+            dangerouslySetInnerHTML={{ __html: withProjectCount(data.works.title, mergedDeck.length) }}
           />
 
           <motion.p
@@ -246,6 +282,7 @@ export function ProjectGrid() {
             <article
               key={project.key}
               data-card
+              data-key={project.key}
               data-index={i}
               data-cursor-hover
               className="shrink-0 snap-center [scroll-snap-stop:always] w-[88vw] sm:w-[560px] md:w-[640px] flex transition-opacity duration-500"
@@ -378,7 +415,8 @@ export function ProjectGrid() {
       <AnimatePresence>
         {openProject && (
           <motion.div
-            key={openProject.key}
+            key="project-overlay"
+            ref={overlayRef}
             className="fixed inset-0 z-[90] bg-paper overflow-y-auto overscroll-contain"
             data-lenis-prevent
             initial={{ opacity: 0, y: 32 }}
@@ -386,7 +424,18 @@ export function ProjectGrid() {
             exit={{ opacity: 0, y: 32 }}
             transition={{ duration: 0.42, ease: [0.22, 1, 0.36, 1] }}
           >
-            <CaseStudy project={openProject} onBack={closeProject} />
+            <AnimatePresence mode="wait" initial={false}>
+              <motion.div
+                key={openProject.key}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.25 }}
+                onAnimationStart={() => overlayRef.current?.scrollTo({ top: 0 })}
+              >
+                <CaseStudy project={openProject} onBack={closeProject} onNext={nextProject} />
+              </motion.div>
+            </AnimatePresence>
           </motion.div>
         )}
       </AnimatePresence>

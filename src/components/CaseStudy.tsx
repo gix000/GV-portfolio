@@ -3,14 +3,26 @@ import { useState } from "react";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import type { Project } from "@/lib/data";
 import { useSiteData } from "@/lib/useSiteData";
 
-export function CaseStudy({ project, onBack }: { project: Project; onBack?: () => void }) {
+export function CaseStudy({
+  project,
+  onBack,
+  onNext,
+}: {
+  project: Project;
+  onBack?: () => void;
+  onNext?: (key: string) => void;
+}) {
   const [revealed, setRevealed] = useState(false);
   const prefersReduced = useReducedMotion();
   const router = useRouter();
-  const t = useSiteData().data.ui.caseStudy;
+  const site = useSiteData().data;
+  const t = site.ui.caseStudy;
+  const idx = site.projects.findIndex((p) => p.key === project.key);
+  const next = site.projects.length > 1 ? site.projects[(idx + 1) % site.projects.length] : null;
 
   // Opened from the homepage carousel: the overlay closes itself (history
   // back) and the carousel is still sitting on this card. Opened directly by
@@ -252,6 +264,58 @@ export function CaseStudy({ project, onBack }: { project: Project; onBack?: () =
               ))}
             </div>
           </motion.div>
+
+          {/* Next project */}
+          {next && (
+            <motion.div
+              initial={prefersReduced ? false : { opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "0px 0px -40px 0px" }}
+              transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+              className="mt-16 pt-8 border-t border-line"
+            >
+              <Link
+                href={`/projects/${next.key}`}
+                prefetch={false}
+                onClick={(e) => {
+                  if (!onNext || e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return;
+                  e.preventDefault();
+                  onNext(next.key);
+                }}
+                className="group block active:scale-[0.985] transition-transform duration-300"
+                data-cursor-hover
+              >
+                <div className="flex items-center justify-between gap-4 mb-4">
+                  <span className="text-[11px] tracking-[0.2em] uppercase text-ink-50 font-semibold">{t.nextProject}</span>
+                  <span className="glass-btn h-10 w-10 text-ink" aria-hidden="true">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M5 12h14M13 5l7 7-7 7" />
+                    </svg>
+                  </span>
+                </div>
+                <div className="relative aspect-[16/7] rounded-2xl bg-paper-lo shadow-lg">
+                  {next.cover && (
+                    <div className="clip-rounded absolute inset-0 overflow-hidden rounded-2xl">
+                      <Image
+                        src={next.cover}
+                        alt={next.name}
+                        fill
+                        className="object-cover transition-transform duration-700 group-hover:scale-[1.03]"
+                        sizes="(max-width: 1280px) 100vw, 1280px"
+                        placeholder={next.lqip ? "blur" : "empty"}
+                        blurDataURL={next.lqip || undefined}
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-black/10 to-transparent" />
+                    </div>
+                  )}
+                  <div className="absolute left-5 right-5 bottom-4 text-white">
+                    <p className="font-serif text-3xl md:text-5xl tracking-tight leading-none">{next.name}</p>
+                    {next.sub && <p className="mt-1.5 text-sm md:text-base font-serif italic text-white/85">{next.sub}</p>}
+                  </div>
+                </div>
+              </Link>
+            </motion.div>
+          )}
         </div>
       </div>
     </motion.div>

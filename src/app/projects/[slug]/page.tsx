@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { getLiveSiteData } from "@/lib/siteDataServer";
 import { ProjectClientPage } from "./ProjectClientPage";
@@ -10,6 +11,39 @@ export const dynamicParams = true;
 export async function generateStaticParams() {
   const site = await getLiveSiteData();
   return site.projects.map((p) => ({ slug: p.key }));
+}
+
+// Share previews: a project link sent on WhatsApp/Instagram/iMessage shows
+// that project's cover, name and line instead of the generic site card.
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+  const { slug } = await params;
+  const key = decodeURIComponent(slug);
+  const site = await getLiveSiteData();
+  const project = site.projects.find((p) => p.key === key);
+  if (!project) return { title: site.ui.caseStudy.notFoundTitle };
+
+  const studio = site.hero.studio || "G.VIISUALS";
+  const title = `${project.name} · ${studio}`;
+  const description = project.quote || project.sub || project.desc.slice(0, 160);
+  const images = project.cover ? [{ url: project.cover, width: 1600, height: 1000, alt: project.name }] : undefined;
+  return {
+    title,
+    description,
+    alternates: { canonical: `/projects/${project.key}` },
+    openGraph: {
+      type: "article",
+      title,
+      description,
+      url: `/projects/${project.key}`,
+      siteName: studio,
+      images,
+    },
+    twitter: { card: "summary_large_image", title, description, images: images?.map((i) => i.url) },
+  };
 }
 
 export default async function ProjectPage({
