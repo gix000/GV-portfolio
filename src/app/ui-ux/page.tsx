@@ -423,7 +423,7 @@ export default function UiUxPage() {
                               ? { duration: 2.2, repeat: Infinity, ease: "easeInOut" }
                               : { duration: 0.3 }
                           }
-                          className="text-[10px] tracking-[0.22em] uppercase font-bold text-white bg-black/60 px-4 py-2 rounded-full border border-white/15 shadow-lg"
+                          className="glass-btn glass-clear text-[10px] tracking-[0.22em] uppercase font-bold px-4 h-9"
                         >
                           {video.redesignUrl ? t.tapToTry : t.watchFilm}
                         </motion.span>

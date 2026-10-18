@@ -99,7 +99,7 @@ export function CaseStudy({
                   initial={{ opacity: 0, y: 8 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.6, delay: 0.5, ease: [0.22, 1, 0.36, 1] }}
-                  className="glass-btn glass-dark absolute bottom-4 right-4 gap-2 px-4 h-9"
+                  className="glass-btn glass-clear absolute bottom-4 right-4 gap-2 px-4 h-9"
                 >
                   <span className="text-[10px] tracking-[0.2em] uppercase font-semibold text-white/90">
                     {t.viewGallery}

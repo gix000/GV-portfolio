@@ -327,7 +327,7 @@ export function ProjectGrid() {
                     )}
                     <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/10 to-transparent" />
                     {project.gallery.length > 1 && (
-                      <div className="absolute right-3 bottom-3 flex items-center gap-1.5 bg-black/40 backdrop-blur-sm text-white text-[9px] tracking-[0.13em] uppercase font-bold px-2.5 py-1.5 rounded-full border border-white/10">
+                      <div className="glass-btn glass-clear absolute right-3 bottom-3 gap-1.5 text-[9px] tracking-[0.13em] uppercase font-bold px-2.5 h-7">
                         <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                           <rect x="3" y="3" width="18" height="18" rx="2" />
                           <circle cx="8.5" cy="8.5" r="1.5" />
