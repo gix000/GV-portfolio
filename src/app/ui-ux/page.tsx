@@ -106,8 +106,7 @@ export default function UiUxPage() {
       const cardCenter = first.offsetLeft + first.offsetWidth / 2;
       scroller.scrollTo({ left: cardCenter - scroller.clientWidth / 2, behavior: "auto" });
     });
-    return () => cancelAnimationFrame(raf);
-  }, [videos.length]);
+    return () =>  }, [videos.length]);
 
   // Track centered card
   useEffect(() => {
@@ -135,8 +134,7 @@ export default function UiUxPage() {
   useEffect(() => {
     const scroller = scrollerRef.current;
     if (!scroller) return;
-    let raf = 0;
-    let timer: ReturnType<typeof setTimeout> | null = null;
+        let timer: ReturnType<typeof setTimeout> | null = null;
     const snapToNearest = () => {
       const cards = Array.from(scroller.querySelectorAll<HTMLElement>("[data-card]"));
       if (cards.length === 0) return;
@@ -153,14 +151,12 @@ export default function UiUxPage() {
     };
     const onScroll = () => {
       if (timer) clearTimeout(timer);
-      cancelAnimationFrame(raf);
       timer = setTimeout(snapToNearest, 120);
     };
     scroller.addEventListener("scroll", onScroll, { passive: true });
     return () => {
       scroller.removeEventListener("scroll", onScroll);
       if (timer) clearTimeout(timer);
-      cancelAnimationFrame(raf);
     };
   }, [videos.length]);
 

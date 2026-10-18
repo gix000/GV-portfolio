@@ -36,8 +36,7 @@ export function ProjectGrid() {
       const cardCenter = first.offsetLeft + first.offsetWidth / 2;
       scroller.scrollTo({ left: cardCenter - scroller.clientWidth / 2, behavior: "auto" });
     });
-    return () => cancelAnimationFrame(raf);
-  }, [mergedDeck.length]);
+    return () =>  }, [mergedDeck.length]);
 
   // Track which card is centered using IntersectionObserver
   useEffect(() => {
@@ -66,8 +65,7 @@ export function ProjectGrid() {
   useEffect(() => {
     const scroller = scrollerRef.current;
     if (!scroller) return;
-    let raf = 0;
-    let timer: ReturnType<typeof setTimeout> | null = null;
+        let timer: ReturnType<typeof setTimeout> | null = null;
     const snapToNearest = () => {
       const cards = Array.from(scroller.querySelectorAll<HTMLElement>("[data-card]"));
       if (cards.length === 0) return;
@@ -84,14 +82,12 @@ export function ProjectGrid() {
     };
     const onScroll = () => {
       if (timer) clearTimeout(timer);
-      cancelAnimationFrame(raf);
       timer = setTimeout(snapToNearest, 120);
     };
     scroller.addEventListener("scroll", onScroll, { passive: true });
     return () => {
       scroller.removeEventListener("scroll", onScroll);
       if (timer) clearTimeout(timer);
-      cancelAnimationFrame(raf);
     };
   }, [mergedDeck.length]);
 
