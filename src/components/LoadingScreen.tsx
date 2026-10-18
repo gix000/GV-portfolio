@@ -95,7 +95,7 @@ function LoadingScreenInner() {
         <motion.div
           initial={{ opacity: 1 }}
           exit={{ opacity: 0, transition: { duration: 0.55, ease: EASE_IN_OUT } }}
-          className="fixed inset-0 z-[9999] flex flex-col items-center justify-center overflow-hidden bg-[#EDE0BE] select-none"
+          className="fixed inset-0 z-[9999] overflow-hidden bg-[#EDE0BE] select-none"
           onClick={handleTap}
           role="button"
           aria-label={tapToEnter}
@@ -109,9 +109,14 @@ function LoadingScreenInner() {
           />
           <div
             className="absolute inset-0 pointer-events-none"
-            style={{ background: "radial-gradient(120% 80% at 50% 45%, rgba(250,243,222,0.9) 0%, rgba(237,224,190,0) 60%)" }}
+            style={{ background: "radial-gradient(120% 80% at 50% 50%, rgba(250,243,222,0.9) 0%, rgba(237,224,190,0) 60%)" }}
           />
 
+          {/* Visible-screen box (dvh excludes Safari's toolbars) - the folder is
+              centred in it exactly, and the pill hangs below the folder so it
+              doesn't push the folder off-centre. */}
+          <div className="absolute inset-x-0 top-0 h-[100dvh]">
+          <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
           {/* Folder */}
           <motion.div
             initial={{ opacity: 0, y: 24, scale: 0.94 }}
@@ -238,11 +243,17 @@ function LoadingScreenInner() {
             </div>
           </motion.div>
 
+          </div>
+
           {/* Tap to enter */}
+          <div
+            className="absolute inset-x-0 flex justify-center"
+            style={{ top: `calc(50% + ${((FLAP_TOP + FLAP_H) * scale) / 2 + 34}px)` }}
+          >
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={isOpen ? { opacity: 0, y: 6, transition: { duration: 0.25 } } : { opacity: 1, y: 0, transition: { duration: 0.7, delay: 0.7, ease: EASE_OUT } }}
-            className="glass-btn glass-static mt-10 h-10 px-5 gap-2 text-[10px] tracking-[0.22em] uppercase font-bold text-[#7F011F]"
+            className="glass-btn glass-static h-10 px-5 gap-2 text-[10px] tracking-[0.22em] uppercase font-bold text-[#7F011F]"
           >
             <motion.span
               className="w-1.5 h-1.5 rounded-full bg-[#7F011F]"
@@ -251,6 +262,8 @@ function LoadingScreenInner() {
             />
             {tapToEnter}
           </motion.div>
+          </div>
+          </div>
         </motion.div>
       )}
     </AnimatePresence>
