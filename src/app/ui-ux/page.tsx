@@ -130,6 +130,40 @@ export default function UiUxPage() {
     return () => observer.disconnect();
   }, [videos.length]);
 
+  // Hard-lock: after the user stops scrolling, snap to the nearest card center
+  // (CSS snap-mandatory drifts on iOS Safari; this guarantees it settles on a card).
+  useEffect(() => {
+    const scroller = scrollerRef.current;
+    if (!scroller) return;
+    let raf = 0;
+    let timer: ReturnType<typeof setTimeout> | null = null;
+    const snapToNearest = () => {
+      const cards = Array.from(scroller.querySelectorAll<HTMLElement>("[data-card]"));
+      if (cards.length === 0) return;
+      const center = scroller.scrollLeft + scroller.clientWidth / 2;
+      let nearest = cards[0];
+      let minDist = Infinity;
+      cards.forEach((c) => {
+        const cCenter = c.offsetLeft + c.offsetWidth / 2;
+        const dist = Math.abs(cCenter - center);
+        if (dist < minDist) { minDist = dist; nearest = c; }
+      });
+      const target = (nearest as HTMLElement).offsetLeft + (nearest as HTMLElement).offsetWidth / 2 - scroller.clientWidth / 2;
+      scroller.scrollTo({ left: target, behavior: "smooth" });
+    };
+    const onScroll = () => {
+      if (timer) clearTimeout(timer);
+      cancelAnimationFrame(raf);
+      timer = setTimeout(snapToNearest, 120);
+    };
+    scroller.addEventListener("scroll", onScroll, { passive: true });
+    return () => {
+      scroller.removeEventListener("scroll", onScroll);
+      if (timer) clearTimeout(timer);
+      cancelAnimationFrame(raf);
+    };
+  }, [videos.length]);
+
   // Hide hint after scrolling
   useEffect(() => {
     const scroller = scrollerRef.current;
