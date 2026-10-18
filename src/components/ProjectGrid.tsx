@@ -129,7 +129,7 @@ export function ProjectGrid() {
         <div
           ref={scrollerRef}
           className="flex gap-6 md:gap-8 overflow-x-auto snap-x snap-mandatory pb-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden [overscroll-behavior-x:contain]"
-          style={{ touchAction: "pan-x", WebkitOverflowScrolling: "touch", scrollSnapType: "x mandatory" }}
+          style={{ touchAction: "pan-x", WebkitOverflowScrolling: "touch", scrollSnapType: "x mandatory", scrollBehavior: "smooth" }}
         >
           {/* Leading spacer tracks half-card at every breakpoint so card 1 snaps dead-center */}
           <div
@@ -176,10 +176,13 @@ export function ProjectGrid() {
                     activeIndex === i ? "border-accent ring-2 ring-accent/30" : "border-line"
                   }`}
                   style={{
+                    borderColor: activeIndex === i ? "#7F011F" : "rgba(127, 1, 31, 0.45)",
+                    borderWidth: "1.5px",
+                    borderStyle: "solid",
                     boxShadow:
                       activeIndex === i
-                        ? "inset 0 2px 4px rgba(0, 0, 0, 0.06), 0 0 8px rgba(127, 1, 31, 0.08)"
-                        : "inset 0 1px 3px rgba(0, 0, 0, 0.04), 0 0 6px rgba(127, 1, 31, 0.05)",
+                        ? "0 12px 34px rgba(127, 1, 31, 0.20), inset 0 2px 4px rgba(0, 0, 0, 0.05)"
+                        : "0 4px 14px rgba(127, 1, 31, 0.08)",
                   }}
                 >
                   {/* Cover image — landscape 16/10 */}
