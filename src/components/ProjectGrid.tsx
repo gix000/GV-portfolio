@@ -176,9 +176,7 @@ export function ProjectGrid() {
                     activeIndex === i ? "border-accent ring-2 ring-accent/30" : "border-line"
                   }`}
                   style={{
-                    boxShadow: activeIndex === i
-                      ? "inset 0 2px 4px rgba(0, 0, 0, 0.06), 0 0 8px rgba(127, 1, 31, 0.08)"
-                      : "inset 0 1px 3px rgba(0, 0, 0, 0.04), 0 0 6px rgba(127, 1, 31, 0.05)",
+                    boxShadow: "none",
                   }}
                 >
                   {/* Cover image — landscape 16/10 */}
