@@ -36,7 +36,8 @@ export function ProjectGrid() {
       const cardCenter = first.offsetLeft + first.offsetWidth / 2;
       scroller.scrollTo({ left: cardCenter - scroller.clientWidth / 2, behavior: "auto" });
     });
-    return () =>  }, [mergedDeck.length]);
+    return () => cancelAnimationFrame(raf);
+  }, [mergedDeck.length]);
 
   // Track which card is centered using IntersectionObserver
   useEffect(() => {
