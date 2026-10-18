@@ -182,7 +182,7 @@ export function CaseStudy({
                         />
                       </div>
                       {project.caps?.[i] && (
-                        <span className="glass-btn glass-dark absolute left-4 bottom-4 h-8 px-3 text-[10px] tracking-[0.18em] uppercase font-bold">
+                        <span className="glass-btn glass-clear absolute left-4 bottom-4 h-8 px-3 text-[10px] tracking-[0.18em] uppercase font-bold">
                           {project.caps[i]}
                         </span>
                       )}
