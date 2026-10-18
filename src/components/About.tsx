@@ -49,13 +49,13 @@ export function About() {
       {/* Portrait - big and centered, no cadre */}
       <div className="flex flex-col items-center mb-10">
         <Reveal className="relative flex justify-center w-full">
-          <div className="relative aspect-[3/4] overflow-hidden rounded-sm w-full max-w-[480px]">
+          <div className="clip-rounded relative aspect-[3/4] overflow-hidden rounded-2xl w-[64%] max-w-[320px] shadow-lg">
             <Image
               src={t.portrait || "/assets/img/about.webp"}
               alt={siteData.about.portraitTag}
               fill
               className="object-cover object-center"
-              sizes="(max-width: 768px) 90vw, 480px"
+              sizes="(max-width: 768px) 64vw, 320px"
               priority
             />
           </div>
