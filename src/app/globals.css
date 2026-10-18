@@ -139,11 +139,6 @@
   font-family: var(--font-sans);
 }
 
-/* Kill any shadow on the loading-screen folder (the dark band under the GV folder) */
-.fixed.z-\[9999\] div[class*="rounded-b-xl"] {
-  box-shadow: none !important;
-  filter: none !important;
-}
 
 /* Carousel edge spacers (shared by the projects and UI/UX carousels) so the
    first and last cards can sit dead-center. */
