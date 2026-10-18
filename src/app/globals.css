@@ -255,3 +255,19 @@
   backdrop-filter: blur(18px) saturate(170%);
   box-shadow: 0 1px 0 rgba(127, 1, 31, 0.1), 0 8px 24px -16px rgba(0, 0, 0, 0.25);
 }
+
+/* Soft paper fade behind the sticky case-study bar, so the buttons and the
+   phone status bar don't sit on top of busy images while scrolling. */
+.case-topbar::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 -18px 0;
+  z-index: -1;
+  pointer-events: none;
+  background: linear-gradient(
+    to bottom,
+    rgba(245, 235, 208, 0.92) 0%,
+    rgba(245, 235, 208, 0.7) 55%,
+    rgba(245, 235, 208, 0) 100%
+  );
+}

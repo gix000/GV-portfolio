@@ -58,7 +58,7 @@ export function CaseStudy({
       animate="animate"
     >
       {/* Top bar - sticky so it works both as a page and inside the overlay */}
-      <div className="sticky top-0 z-50 px-[clamp(20px,5vw,72px)] pt-[max(14px,env(safe-area-inset-top))] pb-3 flex items-center justify-between gap-3 pointer-events-none">
+      <div className="case-topbar sticky top-0 z-50 px-[clamp(20px,5vw,72px)] pt-[max(14px,env(safe-area-inset-top))] pb-3 flex items-center justify-between gap-3 pointer-events-none">
         <button
           type="button"
           onClick={handleBack}
@@ -67,8 +67,10 @@ export function CaseStudy({
         >
           {t.back}
         </button>
-        <span className="glass-btn h-8 px-3 text-[9px] tracking-[0.15em] uppercase text-ink-70 font-semibold truncate max-w-[50%]">
-          {project.cat}
+        {/* Category chip: desktop only - on phones it can't fit next to Back
+            without being cut off, so it moves under the title instead. */}
+        <span className="glass-btn hidden sm:inline-flex h-8 px-3 max-w-[45%] min-w-0 text-[9px] tracking-[0.15em] uppercase text-ink-70 font-semibold">
+          <span className="block truncate">{project.cat}</span>
         </span>
       </div>
 
@@ -129,6 +131,11 @@ export function CaseStudy({
             transition={{ duration: 0.6, delay: 0.08, ease: [0.22, 1, 0.36, 1] }}
             className="mb-8"
           >
+            {project.cat && (
+              <p className="sm:hidden text-[10px] tracking-[0.18em] uppercase text-ink-50 font-semibold mb-2.5">
+                {project.cat}
+              </p>
+            )}
             <h1 className="font-serif text-4xl md:text-6xl tracking-tight text-ink leading-[1.05] mb-3">
               {project.name}
             </h1>
