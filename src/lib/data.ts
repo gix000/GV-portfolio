@@ -4,6 +4,7 @@ export interface VideoProject {
   description: string;
   poster: string;
   videoUrl: string;
+  redesignUrl?: string;
   tags: string[];
 }
 
@@ -690,6 +691,7 @@ export const siteData: SiteData = {
   uiuxVideos: [
     {
       key: "whish-money",
+      redesignUrl: "/uiux/whish-money.html",
       title: "Whish Money - App Redesign",
       description:
         "An independent redesign concept that makes everyday money management feel simpler. A cleaner interface brings together live transfer tracking, bill splitting, scam checks, and Arabic language support in one intuitive experience.",
@@ -699,6 +701,7 @@ export const siteData: SiteData = {
     },
     {
       key: "toters",
+      redesignUrl: "/uiux/toters.html",
       title: "Toters - Delivery Reimagined",
       description:
         "An independent redesign concept focused on a smoother ordering experience, from browsing to delivery. Clearer arrival estimates, group orders, instant refunds, and smarter address entry help make every step feel more straightforward.",
@@ -708,6 +711,7 @@ export const siteData: SiteData = {
     },
     {
       key: "omt-pay",
+      redesignUrl: "/uiux/omt-pay.html",
       title: "OMT Pay - Without the Queue",
       description:
         "An independent redesign concept for OMT Pay that eliminates the queue. Features include live wait times, Western Union to wallet transfers, and a guarantee that the app never freezes, backed by real support.",
@@ -717,6 +721,7 @@ export const siteData: SiteData = {
     },
     {
       key: "suyool",
+      redesignUrl: "/uiux/suyool.html",
       title: "Suyool - Everything in View",
       description:
         "An independent redesign concept for Suyool that brings everything into view. Key features include subscription management, a dedicated Euro pocket, the ability to erase purchases, and family wallets for shared expenses.",
@@ -726,6 +731,7 @@ export const siteData: SiteData = {
     },
     {
       key: "neo",
+      redesignUrl: "/uiux/neo.html",
       title: "Neo - A Bank You Can Just Ask",
       description:
         "An independent redesign concept for Neo by Bank Audi, reimagined as a bank you can just ask. Features include 'Ask Neo' AI support, live ATM cash availability, a top-up guarantee, and seamless web integration.",
