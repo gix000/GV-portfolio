@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import type { ReactNode } from "react";
 import { getLiveSiteData } from "@/lib/siteDataServer";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -19,6 +20,6 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-export default function UiUxLayout({ children }: { children: React.ReactNode }) {
+export default function UiUxLayout({ children }: { children: ReactNode }) {
   return children;
 }
