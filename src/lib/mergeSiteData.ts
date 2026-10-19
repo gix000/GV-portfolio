@@ -24,7 +24,11 @@ export function mergeSiteData(raw: unknown): SiteData {
     hero: section("hero"),
     about: section("about"),
     works: section("works"),
-    contact: section("contact"),
+    contact: (() => {
+      const c = section("contact");
+      return { ...c, profiles: Array.isArray(c.profiles) ? c.profiles : [] };
+    })(),
+    faq: Array.isArray(r.faq) ? (r.faq as SiteData["faq"]) : defaults.faq,
     projects: Array.isArray(r.projects) ? (r.projects as SiteData["projects"]) : defaults.projects,
     uiuxVideos: Array.isArray(r.uiuxVideos)
       ? (r.uiuxVideos as SiteData["uiuxVideos"]).map((v) => {

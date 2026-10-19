@@ -210,14 +210,33 @@ const TEXT_TABS: { id: string; label: string; groups: Group[] }[] = [
         title: "Google & link previews",
         fields: [
           { path: "meta.title", label: "Browser tab / Google title" },
-          { path: "meta.description", label: "Google description", type: "textarea" },
+          { path: "meta.description", label: "Google description", type: "textarea", hint: "One or two plain sentences: who you are, what you do, where. AI assistants and Google quote this." },
+          { path: "meta.ogImage", label: "Share image (WhatsApp / Instagram link preview)", type: "image", aspect: 1200 / 630 },
+        ],
+      },
+      {
+        title: "Profiles (helps Google & AI connect you)",
+        fields: [
+          {
+            path: "contact.profiles",
+            label: "Profile links",
+            type: "list",
+            hint: "Full links, one per line: LinkedIn, Behance, Dribbble, Google Business Profile… Instagram is added automatically.",
+          },
+        ],
+      },
+      {
+        title: "Search engine verification",
+        fields: [
+          { path: "meta.googleVerification", label: "Google Search Console code", hint: "Search Console → Add property → HTML tag → paste only the content=\"…\" value." },
+          { path: "meta.bingVerification", label: "Bing Webmaster code", hint: "Bing Webmaster Tools → HTML Meta Tag → paste only the content value." },
         ],
       },
     ],
   },
 ];
 
-const TRACKED: (keyof SiteData)[] = ["meta", "hero", "about", "works", "contact", "ui", "uiuxVideos"];
+const TRACKED: (keyof SiteData)[] = ["meta", "hero", "about", "works", "contact", "ui", "uiuxVideos", "faq"];
 
 /* ------------------------------------------------------------------ */
 /* Path helpers                                                        */
@@ -450,6 +469,7 @@ export default function AdminPage() {
   const allTabs: { id: Tab; label: string }[] = [
     { id: "projects", label: "Projects" },
     { id: "uiux", label: "UI/UX concepts" },
+    { id: "faq", label: "FAQ" },
     ...TEXT_TABS.map((t) => ({ id: t.id, label: t.label })),
   ];
 
@@ -546,6 +566,15 @@ export default function AdminPage() {
 
         {draft && tab === "uiux" && (
           <UiuxEditor value={draft.uiuxVideos} onChange={(v) => setDraft({ ...draft, uiuxVideos: v })} />
+        )}
+
+        {draft && tab === "faq" && (
+          <FaqEditor
+            value={draft.faq}
+            onChange={(v) => setDraft({ ...draft, faq: v })}
+            heading={draft.ui.faq}
+            onHeading={(h) => setDraft({ ...draft, ui: { ...draft.ui, faq: h } })}
+          />
         )}
 
         {draft && textTab && (
@@ -883,6 +912,77 @@ function UiuxEditor({ value, onChange }: { value: VideoProject[]; onChange: (v: 
           </div>
         ))}
       </div>
+    </section>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/* FAQ editor                                                          */
+/* ------------------------------------------------------------------ */
+
+function FaqEditor({
+  value,
+  onChange,
+  heading,
+  onHeading,
+}: {
+  value: SiteData["faq"];
+  onChange: (v: SiteData["faq"]) => void;
+  heading: SiteData["ui"]["faq"];
+  onHeading: (h: SiteData["ui"]["faq"]) => void;
+}) {
+  const update = (i: number, patch: Partial<SiteData["faq"][number]>) =>
+    onChange(value.map((f, j) => (j === i ? { ...f, ...patch } : f)));
+
+  return (
+    <section className="space-y-6">
+      <div className="bg-white rounded-xl p-4 sm:p-6 border border-line">
+        <h3 className="font-serif text-xl text-ink mb-1">Section heading</h3>
+        <p className="text-sm text-ink-50 mb-4">
+          Shown on the homepage before Contact. Plain, factual answers here are what Google and AI assistants quote, so
+          write them the way you'd answer a client.
+        </p>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <Field label="Number (optional)">
+            <TextInput value={heading.number} onChange={(v) => onHeading({ ...heading, number: v })} />
+          </Field>
+          <Field label="Small title">
+            <TextInput value={heading.kicker} onChange={(v) => onHeading({ ...heading, kicker: v })} />
+          </Field>
+          <Field label="Heading">
+            <TextInput value={heading.title} onChange={(v) => onHeading({ ...heading, title: v })} />
+          </Field>
+        </div>
+      </div>
+
+      <div className="flex justify-between items-center">
+        <h2 className="font-serif text-2xl text-ink">Questions ({value.length})</h2>
+        <button
+          onClick={() => onChange([...value, { q: "", a: "" }])}
+          className="px-4 py-2 bg-ink text-paper rounded-lg font-semibold hover:bg-ink-soft"
+        >
+          + Add question
+        </button>
+      </div>
+
+      {value.map((f, i) => (
+        <div key={i} className="bg-white rounded-xl p-4 sm:p-6 border border-line space-y-4">
+          <div className="flex items-center justify-between gap-2">
+            <span className="text-xs font-semibold tracking-[0.15em] uppercase text-ink-50">{String(i + 1).padStart(2, "0")}</span>
+            <div className="flex gap-1.5">
+              <SmallBtn title="Move up" disabled={i === 0} onClick={() => onChange(moveItem(value, i, i - 1))}>↑</SmallBtn>
+              <SmallBtn title="Move down" disabled={i === value.length - 1} onClick={() => onChange(moveItem(value, i, i + 1))}>↓</SmallBtn>
+              <SmallBtn danger onClick={() => onChange(value.filter((_, j) => j !== i))}>Delete</SmallBtn>
+            </div>
+          </div>
+          <Field label="Question">
+            <TextInput value={f.q} onChange={(v) => update(i, { q: v })} />
+          </Field>
+          <Field label="Answer">
+            <TextInput value={f.a} onChange={(v) => update(i, { a: v })} multiline rows={3} />
+          </Field>
+        </div>
+      ))}
     </section>
   );
 }

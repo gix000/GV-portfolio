@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { getLiveSiteData } from "@/lib/siteDataServer";
 import { ProjectClientPage } from "./ProjectClientPage";
+import { projectJsonLd, ldJson } from "@/lib/structuredData";
+import { SITE_URL } from "@/lib/siteUrl";
 
 // Pre-rendered from the live admin data and cached at the edge; admin saves
 // revalidate it. Projects added later render on first visit, then cache.
@@ -29,7 +31,8 @@ export async function generateMetadata({
   const studio = site.hero.studio || "G.VIISUALS";
   const title = `${project.name} · ${studio}`;
   const description = project.quote || project.sub || project.desc.slice(0, 160);
-  const images = project.cover ? [{ url: project.cover, width: 1600, height: 1000, alt: project.name }] : undefined;
+  const cover = project.cover ? (project.cover.startsWith("http") ? project.cover : `${SITE_URL}${project.cover}`) : undefined;
+  const images = cover ? [{ url: cover, width: 1600, height: 1000, alt: project.name }] : undefined;
   return {
     title,
     description,
@@ -79,5 +82,10 @@ export default async function ProjectPage({
     );
   }
 
-  return <ProjectClientPage project={project} />;
+  return (
+    <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: ldJson(projectJsonLd(site, project)) }} />
+      <ProjectClientPage project={project} />
+    </>
+  );
 }

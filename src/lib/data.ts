@@ -36,6 +36,12 @@ export interface SiteData {
   meta: {
     title: string;
     description: string;
+    /** Share image for the homepage (1200x630). Falls back to the first project cover. */
+    ogImage?: string;
+    /** Google Search Console "HTML tag" verification code (content value only). */
+    googleVerification?: string;
+    /** Bing Webmaster Tools msvalidate.01 code. */
+    bingVerification?: string;
   };
   hero: {
     topLeft: string;
@@ -71,7 +77,10 @@ export interface SiteData {
     whatsappText: string;
     footerA: string;
     footerB: string;
+    /** Other profiles (LinkedIn, Behance, Dribbble...) - linked for search/AI. */
+    profiles: string[];
   };
+  faq: { q: string; a: string }[];
   projects: Project[];
   uiuxVideos: VideoProject[];
   ui: UiText;
@@ -116,6 +125,11 @@ export interface UiText {
     copied: string;
     copyHint: string;
     mailApp: string;
+  };
+  faq: {
+    number: string;
+    kicker: string;
+    title: string;
   };
   notFound: {
     code: string;
@@ -216,7 +230,26 @@ export const siteData: SiteData = {
     whatsappText: "Hi George, I saw your portfolio and I'd love to talk.",
     footerA: "G.VIISUALS, George Charbel",
     footerB: "End of Volume 01 · Designed with purpose",
+    profiles: [],
   },
+  faq: [
+    {
+      q: "What does G.VIISUALS do?",
+      a: "G.VIISUALS is the brand identity and packaging design studio of George Charbel, based in Beirut, Lebanon. The studio designs logos and full identity systems, packaging, social media content, and UI/UX for apps and websites.",
+    },
+    {
+      q: "Do you design bilingual Arabic and English brands?",
+      a: "Yes. Working across Arabic and Latin scripts is at the core of the studio: logos, type and packaging are designed so both languages feel native and consistent, for brands rooted in the MENA region and held to an international standard.",
+    },
+    {
+      q: "Where are you based, and do you work with clients abroad?",
+      a: "The studio is based in Beirut, Lebanon, and works with clients across Lebanon, the Gulf and worldwide, remotely.",
+    },
+    {
+      q: "How do I start a project?",
+      a: "Send a message on WhatsApp or by email with a few lines about your brand and what you need. You'll get a reply with next steps and a quote.",
+    },
+  ],
   ui: {
     nav: { uiuxButton: "UI/UX" },
     intro: { tapToEnter: "Tap to Enter" },
@@ -255,6 +288,11 @@ export const siteData: SiteData = {
       copied: "Email copied",
       copyHint: "Copy email",
       mailApp: "Open in mail app",
+    },
+    faq: {
+      number: "",
+      kicker: "FAQ",
+      title: "Good to know",
     },
     notFound: {
       code: "404",

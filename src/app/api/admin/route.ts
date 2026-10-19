@@ -6,7 +6,7 @@ import { siteData as defaultSiteData } from "@/lib/data";
 import { mergeSiteData } from "@/lib/mergeSiteData";
 
 // Top-level sections the admin may replace wholesale.
-const EDITABLE_SECTIONS = new Set(["meta", "hero", "about", "works", "contact", "ui", "uiuxVideos", "projects"]);
+const EDITABLE_SECTIONS = new Set(["meta", "hero", "about", "works", "contact", "ui", "uiuxVideos", "projects", "faq"]);
 
 
 
