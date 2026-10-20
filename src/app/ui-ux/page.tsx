@@ -208,6 +208,22 @@ function ConceptViewer({
               title={`${video.title} interactive concept`}
               className="w-full h-full border-0 bg-white"
               sandbox="allow-scripts allow-same-origin allow-popups allow-forms"
+              onLoad={(e) => {
+                // Same-origin prototype: stop it from panning sideways inside
+                // the phone frame (wide headlines made the page drift left/right).
+                try {
+                  const doc = e.currentTarget.contentDocument;
+                  if (doc && !doc.getElementById("gv-embed-guard")) {
+                    const st = doc.createElement("style");
+                    st.id = "gv-embed-guard";
+                    st.textContent =
+                      "html{-webkit-text-size-adjust:100%;text-size-adjust:100%}html,body{max-width:100%;overflow-x:hidden;overflow-x:clip;overscroll-behavior-x:none}h1,h2{overflow-wrap:break-word}";
+                    doc.head.appendChild(st);
+                  }
+                } catch {
+                  /* cross-origin prototype: leave it as is */
+                }
+              }}
             />
           ) : (
             <FilmPlayer key={video.videoUrl} src={video.videoUrl} poster={video.poster || undefined} />
