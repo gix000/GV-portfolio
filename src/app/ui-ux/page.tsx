@@ -1,4 +1,5 @@
 "use client";
+import { KickerLine } from "@/components/motion/KickerLine";
 import { useState, useRef, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
@@ -371,7 +372,7 @@ export default function UiUxPage() {
               <div className="flex items-center gap-4 text-[11px] tracking-[0.2em] uppercase text-ink-50 font-semibold mb-6">
                 <span className="text-accent">{t.number}</span>
                 <span>{t.kicker}</span>
-                <span className="flex-1 h-px bg-line" />
+                <KickerLine />
               </div>
               <h1 className="font-serif text-4xl md:text-6xl tracking-tight text-ink leading-[1.05] mb-4">
                 {t.title}

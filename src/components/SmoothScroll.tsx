@@ -2,10 +2,7 @@
 import { useEffect, useRef } from "react";
 import Lenis from "lenis";
 import { usePathname } from "next/navigation";
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-
-gsap.registerPlugin(ScrollTrigger);
+import { gsap, ScrollTrigger } from "@/lib/gsap";
 
 // Expose the Lenis instance globally so other components (ScrollToTop,
 // LoadingScreen) can call lenis.scrollTo(0) instead of window.scrollTo,
