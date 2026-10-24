@@ -4,6 +4,8 @@ import { motion, useInView } from "framer-motion";
 import { useRef, useState } from "react";
 import { AnimatePresence } from "framer-motion";
 import { useSiteData } from "@/lib/useSiteData";
+import { KickerLine } from "@/components/motion/KickerLine";
+import { LineReveal } from "@/components/motion/LineReveal";
 
 function Reveal({
   children,
@@ -63,17 +65,15 @@ export function Contact() {
       <Reveal className="flex items-center gap-4 text-[11px] tracking-[0.2em] uppercase text-ink-50 font-semibold mb-8">
         <span className="text-accent">{t.number}</span>
         <span>{t.kicker}</span>
-        <span className="flex-1 h-px bg-line" />
+        <KickerLine />
         <span className="hidden sm:inline">{t.kickerRight}</span>
       </Reveal>
 
       {/* Heading */}
-      <Reveal delay={0.1}>
-        <h2
-          className="font-serif text-4xl md:text-6xl lg:text-7xl tracking-tight text-ink leading-[1.05]"
-          dangerouslySetInnerHTML={{ __html: siteData.contact.heading }}
-        />
-      </Reveal>
+      <LineReveal
+        html={siteData.contact.heading}
+        className="font-serif text-4xl md:text-6xl lg:text-7xl tracking-tight text-ink leading-[1.05]"
+      />
 
       {/* Email CTA */}
       <Reveal delay={0.2} className="mt-10">

@@ -7,6 +7,7 @@ import Image from "next/image";
 import { useSiteData, type Project } from "@/lib/useSiteData";
 import { CaseStudy } from "@/components/CaseStudy";
 import { useScrollLock } from "@/lib/useScrollLock";
+import { KickerLine } from "@/components/motion/KickerLine";
 import { preloadImage, whenIdle } from "@/lib/preloadImage";
 
 declare global {
@@ -241,7 +242,7 @@ export function ProjectGrid() {
           >
             <span className="text-accent">{t.number}</span>
             <span>{t.kicker}</span>
-            <span className="flex-1 h-px bg-line" />
+            <KickerLine skip={skipEntrance} />
             <span className="hidden sm:inline">{t.kickerRight}</span>
           </motion.div>
 

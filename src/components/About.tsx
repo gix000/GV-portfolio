@@ -4,6 +4,9 @@ import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
 import Image from "next/image";
 import { useSiteData } from "@/lib/useSiteData";
+import { KickerLine } from "@/components/motion/KickerLine";
+import { ScrubText } from "@/components/motion/ScrubText";
+import { PortraitReveal } from "@/components/motion/PortraitReveal";
 
 function Reveal({
   children,
@@ -42,14 +45,14 @@ export function About() {
       <Reveal className="flex items-center gap-4 text-[11px] tracking-[0.2em] uppercase text-ink-50 font-semibold mb-10">
         <span className="text-accent">{t.number}</span>
         <span>{t.kicker}</span>
-        <span className="flex-1 h-px bg-line" />
+        <KickerLine />
         <span className="hidden sm:inline">{t.kickerRight}</span>
       </Reveal>
 
       {/* Portrait - big and centered, no cadre */}
       <div className="flex flex-col items-center mb-10">
-        <Reveal className="relative flex justify-center w-full">
-          <div className="clip-rounded relative aspect-[3/4] overflow-hidden rounded-2xl w-[64%] max-w-[320px] shadow-lg">
+        <div className="relative flex justify-center w-full">
+          <PortraitReveal className="clip-rounded relative aspect-[3/4] overflow-hidden rounded-2xl w-[64%] max-w-[320px] shadow-lg">
             <Image
               src={t.portrait || "/assets/img/about.webp"}
               alt={siteData.about.portraitTag}
@@ -58,8 +61,8 @@ export function About() {
               sizes="(max-width: 768px) 64vw, 320px"
               priority
             />
-          </div>
-        </Reveal>
+          </PortraitReveal>
+        </div>
         <span className="mt-5 block text-[10px] tracking-[0.18em] uppercase text-ink-50 font-semibold text-center">
           {siteData.about.portraitTag}
         </span>
@@ -67,12 +70,10 @@ export function About() {
 
       {/* Content - centered below portrait */}
       <div className="max-w-2xl mx-auto">
-        <Reveal delay={0.1}>
-          <p
-            className="font-serif text-2xl md:text-3xl leading-relaxed text-ink mb-8"
-            dangerouslySetInnerHTML={{ __html: siteData.about.lead }}
-          />
-        </Reveal>
+        <ScrubText
+          html={siteData.about.lead}
+          className="font-serif text-2xl md:text-3xl leading-relaxed text-ink mb-8"
+        />
 
         <Reveal delay={0.2} className="space-y-5 text-ink-70 leading-relaxed">
           {siteData.about.paragraphs.map((p, i) => (

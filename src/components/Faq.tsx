@@ -2,6 +2,11 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useSiteData } from "@/lib/useSiteData";
+import { KickerLine } from "@/components/motion/KickerLine";
+import { LineReveal } from "@/components/motion/LineReveal";
+
+const escapeHtml = (s: string) =>
+  s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 
 // Plain-language answers in real text: useful for visitors, and exactly the
 // kind of content search engines and AI assistants quote.
@@ -17,10 +22,13 @@ export function Faq() {
       <div className="flex items-center gap-4 text-[11px] tracking-[0.2em] uppercase text-ink-50 font-semibold mb-8">
         {t.number && <span className="text-accent">{t.number}</span>}
         <span>{t.kicker}</span>
-        <span className="flex-1 h-px bg-line" />
+        <KickerLine />
       </div>
       {t.title && (
-        <h2 className="font-serif text-3xl md:text-5xl tracking-tight text-ink leading-[1.1] mb-8">{t.title}</h2>
+        <LineReveal
+          html={escapeHtml(t.title)}
+          className="font-serif text-3xl md:text-5xl tracking-tight text-ink leading-[1.1] mb-8"
+        />
       )}
 
       <div className="max-w-3xl border-t border-line">
